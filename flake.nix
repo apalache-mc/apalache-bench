@@ -57,8 +57,8 @@
 
               # Build inputs are the packages that we provide in the PATH in the nix shell
               buildInputs = with pkgs; [
-                # Configuration
-                dhall
+                # Build
+                sbt
 
                 # Testing
                 ocamlPackages.mdx
