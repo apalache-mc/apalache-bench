@@ -1,0 +1,14 @@
+.DS_Store
+.idea
+*.log
+tmp/
+
+# Tooling configuration
+.bloop/
+.bsp/
+.metals/
+.history
+
+# Artifact generation locations
+results/
+target/
