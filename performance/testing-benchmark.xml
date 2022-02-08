@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE benchmark PUBLIC "+//IDN sosy-lab.org//DTD BenchExec benchmark 1.18//EN" "https://www.sosy-lab.org/benchexec/benchmark-1.18.dtd">
+<!-- NOTE: This file is generated file. Edit the build.sbt instead. -->
+<benchmark tool=".apalache" displayName="testing-benchmark">
+  <rundefinition name="length 2">
+    <option>check</option>
+    <option>--inv=Inv</option>
+    <option>--length=2</option>
+  </rundefinition>
+  <rundefinition name="length 10">
+    <option>check</option>
+    <option>--inv=Inv</option>
+    <option>--length=10</option>
+  </rundefinition>
+  <rundefinition name="length 15">
+    <option>check</option>
+    <option>--inv=Inv</option>
+    <option>--length=15</option>
+  </rundefinition>
+  <rundefinition name="length 20">
+    <option>check</option>
+    <option>--inv=Inv</option>
+    <option>--length=20</option>
+  </rundefinition>
+  <rundefinition name="length 30">
+    <option>check</option>
+    <option>--inv=Inv</option>
+    <option>--length=30</option>
+  </rundefinition>
+  <tasks name="prisoners">
+    <include>Prisoners/APAPrisoners.tla</include>
+  </tasks>
+  <tasks name="counter">
+    <include>Counter.tla</include>
+  </tasks>
+</benchmark>
