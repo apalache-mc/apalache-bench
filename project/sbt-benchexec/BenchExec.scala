@@ -14,41 +14,50 @@ object BenchExec extends AutoPlugin {
   object autoImport {
     val BenchExecDsl = systems.informal.benchexec.BenchExecDsl
 
+    import BenchExecDsl._
     lazy val benchmarks =
-      settingKey[Seq[BenchExecDsl.Bench.T]]("Benchmark suite definitions")
+      settingKey[Seq[Bench.T[Bench.Specified]]](
+        "Benchmark suite definitions"
+      )
 
-    // Enable taking a specific benchmark
-    lazy val benchmarkDefs = taskKey[Seq[File]]("A benchmark definition")
+    // TODO Enable running a specific benchmark
+    lazy val benchmarkDefs =
+      taskKey[Seq[Bench.T[Bench.Defined]]]("A benchmark definition")
+
     lazy val benchmarkResults =
-      taskKey[Seq[File]]("Results of a benchmarking run")
+      taskKey[Seq[Bench.T[Bench.Executed]]]("Results of a benchmarking run")
+
+    lazy val benchmarkReports =
+      taskKey[Seq[File]]("Reports from a benchmarking run")
   }
 
   import autoImport._
   import BenchExecDsl._
 
-  lazy val benchexecSetup: Def.Initialize[Task[Seq[File]]] = Def.task {
-    val log = streams.value.log
-    val resourceDir = (Compile / resourceManaged).value
-    val projectDir = baseDirectory.value
+  lazy val benchexecSetup: Def.Initialize[Task[Seq[Bench.T[Bench.Defined]]]] =
+    Def.task {
+      val log = streams.value.log
+      val resourceDir = (Compile / resourceManaged).value
+      val projectDir = baseDirectory.value
 
-    log.info(s"Copying resource files from ${projectDir} to ${resourceDir}")
-    IO.listFiles(projectDir).foreach { file =>
-      val fname = file.toPath.getFileName.toString
-      val destination = resourceDir / fname
-      if (file.isDirectory() && !(fname == "target")) {
-        IO.copyDirectory(file, destination)
-      } else if (file.isFile()) {
-        IO.copyFile(file, destination)
+      log.info(s"Copying resource files from ${projectDir} to ${resourceDir}")
+      IO.listFiles(projectDir).foreach { file =>
+        val fname = file.toPath.getFileName.toString
+        val destination = resourceDir / fname
+        if (file.isDirectory() && !(fname == "target")) {
+          IO.copyDirectory(file, destination)
+        } else if (file.isFile()) {
+          IO.copyFile(file, destination)
+        }
+      }
+
+      benchmarks.value.map { b =>
+        log.info(
+          s"Generating benchmark definition for ${b.name} in ${resourceDir}"
+        )
+        b.save(resourceDir)
       }
     }
-
-    benchmarks.value.flatMap { b =>
-      log.info(
-        s"Generating benchmark definition for ${b.name} in ${resourceDir}"
-      )
-      b.save(resourceDir)
-    }
-  }
 
   private def benchexecCmd(file: File, outdir: File): List[String] =
     List(
@@ -62,32 +71,54 @@ object BenchExec extends AutoPlugin {
       "/home",
     )
 
-  lazy val benchexecRun: Def.Initialize[Task[Seq[File]]] = Def.task {
-    val log = streams.value.log
-    val timestamp =
-      new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date())
-    val workdir = (Compile / resourceManaged).value
-    benchmarkDefs.value.map { defFile =>
-      val name =
-        FilenameUtils.removeExtension(defFile.toPath().getFileName().toString())
-      val outdir = workdir / s"${name}.${timestamp}.results"
-      IO.createDirectory(outdir)
-      log.info(
-        s"Running benchmark ${defFile.toPath().getFileName()} with results in ${outdir}"
-      )
-      Process(benchexecCmd(defFile, outdir), workdir) ! log
-      outdir
-    }
-  }
+  lazy val benchexecRun: Def.Initialize[Task[Seq[Bench.T[Bench.Executed]]]] =
+    Def.task {
+      val log = streams.value.log
+      val timestamp =
+        new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date())
+      val workdir = (Compile / resourceManaged).value
+      benchmarkDefs.value.map { bench =>
+        log.info(
+          s"Running benchmark ${bench.name} with results to ${workdir}"
+        )
+        bench match {
+          case runs: Bench.Runs[Bench.Defined] =>
+            Bench.run(runs, workdir, timestamp)
 
-  // override lazy val globalSettings: Seq[Setting[_]] = Seq(
-  //   helloGreeting := "hi"
-  // )
+          case suite: Bench.Suite[Bench.Defined] =>
+            Bench.run(suite, workdir, timestamp)
+        }
+      }
+    }
+
+  lazy val benchexecReport: Def.Initialize[Task[Seq[File]]] =
+    Def.task {
+      val log = streams.value.log
+      val workdir = (Compile / resourceManaged).value
+      benchmarkResults.value.map { executed =>
+        // TODO Clean up file searches when I figure out how to use SBT's Glob:
+        // val reports = Glob(executed.state.resultDir.toPath / "*.xml.bz2")
+        val reports: List[String] = IO
+          .listFiles(executed.state.resultDir)
+          .toList
+          .map(_.toString)
+          .filter(_.matches(""".*\.xml\.bz2"""))
+        Process("table-generator" :: reports) ! log
+        // Return the HTML report location
+        IO
+          .listFiles(executed.state.resultDir)
+          .toList
+          // FIXME: err handling forindexing err (tho there shoud only ever be 1 html file)
+          .filter(_.toString.matches(""".*\.html"""))(0)
+
+      }
+    }
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
     benchmarks := Seq(),
     benchmarkDefs := benchexecSetup.value,
     benchmarkResults := benchexecRun.value,
+    benchmarkReports := benchexecReport.value,
     Compile / compile := ((Compile / compile)
       .dependsOn(benchmarkDefs))
       .value,
