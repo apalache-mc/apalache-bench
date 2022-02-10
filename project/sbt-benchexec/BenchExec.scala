@@ -83,10 +83,10 @@ object BenchExec extends AutoPlugin {
         )
         bench match {
           case runs: Bench.Runs[Bench.Defined] =>
-            Bench.run(runs, workdir, timestamp)
+            Bench.run(runs, workdir, timestamp, log)
 
           case suite: Bench.Suite[Bench.Defined] =>
-            Bench.run(suite, workdir, timestamp)
+            Bench.run(suite, workdir, timestamp, log)
         }
       }
     }
@@ -95,22 +95,34 @@ object BenchExec extends AutoPlugin {
     Def.task {
       val log = streams.value.log
       val workdir = (Compile / resourceManaged).value
+      val reports = (ThisBuild / baseDirectory).value / "reports"
       benchmarkResults.value.map { executed =>
         // TODO Clean up file searches when I figure out how to use SBT's Glob:
         // val reports = Glob(executed.state.resultDir.toPath / "*.xml.bz2")
-        val reports: List[String] = IO
+        val results: List[String] = IO
           .listFiles(executed.state.resultDir)
           .toList
           .map(_.toString)
           .filter(_.matches(""".*\.xml\.bz2"""))
-        Process("table-generator" :: reports) ! log
+        Process("table-generator" :: results) ! log
         // Return the HTML report location
-        IO
+        val report = IO
           .listFiles(executed.state.resultDir)
           .toList
-          // FIXME: err handling forindexing err (tho there shoud only ever be 1 html file)
-          .filter(_.toString.matches(""".*\.html"""))(0)
-
+          .filter(_.toString.matches(""".*\.html""")) match {
+          case Seq(r) => r
+          case Nil =>
+            throw new RuntimeException("No html file found for report")
+          case _ =>
+            throw new RuntimeException(
+              "More than one html file found, report is corrupted"
+            )
+        }
+        val reportDir = reports / executed.name
+        val reportDest = reportDir / report.name
+        IO.createDirectory(reportDir)
+        IO.copyFile(report, reportDest)
+        reportDest
       }
     }
 

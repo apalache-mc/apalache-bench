@@ -158,13 +158,14 @@ object BenchExecDsl {
         runs: Runs[Defined],
         workdir: File,
         timestamp: String,
+        // The SBT logger is not in scope outside of tasks, so we need to thread it through
+        log: sbt.internal.util.ManagedLogger,
       ): Runs[Executed] = {
       // Runs only ever have a single Xml file defining them
       val defFile = runs.state.xmlFiles(0)
       val resultDir = workdir / s"${runs.name}.${timestamp}.results"
       IO.createDirectory(resultDir)
-      // TODO Log here?
-      (Process(benchexecCmd(defFile, resultDir), workdir) !)
+      Process(benchexecCmd(defFile, resultDir), workdir) ! log
       runs.copy(state = Executed(resultDir))
     }
 
@@ -173,13 +174,13 @@ object BenchExecDsl {
         suite: Suite[Defined],
         workdir: File,
         timestamp: String,
+        // The SBT logger is not in scope outside of tasks, so we need to thread it through
+        log: sbt.internal.util.ManagedLogger,
       ): Suite[Executed] = {
       val defFiles: Seq[File] = suite.state.xmlFiles
       val resultDir = workdir / s"${suite.name}.${timestamp}.results"
-      println(s"outfiles ${defFiles}")
       IO.createDirectory(resultDir)
-      // TODO Log here?
-      defFiles.foreach(f => Process(benchexecCmd(f, resultDir), workdir) !)
+      defFiles.foreach(f => Process(benchexecCmd(f, resultDir), workdir) ! log)
       val executedRuns = suite.runs.map(_.copy(state = Executed(resultDir)))
       suite.copy(state = Executed(resultDir), runs = executedRuns)
     }
