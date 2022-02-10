@@ -3,7 +3,10 @@ ThisBuild / organization := "systems.informal"
 // TODO
 // ThisBuild / homepage := Some(url("https://github.com/sbt/sbt-hello"))
 
-libraryDependencies += "commons-io" % "commons-io" % "2.11.0"
+libraryDependencies ++= Seq(
+  "commons-io" % "commons-io" % "2.11.0",
+  "org.scala-sbt" % "sbt" % "1.6.2",
+)
 
 lazy val root = (project in file("."))
   .enablePlugins(SbtPlugin)

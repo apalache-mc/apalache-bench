@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat
 import scala.sys.process.Process
 import java.util.Date
 import org.apache.commons.io.FilenameUtils
+import sbt.nio.file.{Glob, FileTreeView}
+import java.nio.file.Path
 
 import sbt._
 import Keys._
@@ -91,37 +93,38 @@ object BenchExec extends AutoPlugin {
       }
     }
 
+  private def globPaths(glob: Glob): Seq[Path] =
+    FileTreeView.default.list(glob).map(_._1)
+
   lazy val benchexecReport: Def.Initialize[Task[Seq[File]]] =
     Def.task {
       val log = streams.value.log
       val workdir = (Compile / resourceManaged).value
       val reports = (ThisBuild / baseDirectory).value / "reports"
       benchmarkResults.value.map { executed =>
-        // TODO Clean up file searches when I figure out how to use SBT's Glob:
-        // val reports = Glob(executed.state.resultDir.toPath / "*.xml.bz2")
-        val results: List[String] = IO
-          .listFiles(executed.state.resultDir)
-          .toList
-          .map(_.toString)
-          .filter(_.matches(""".*\.xml\.bz2"""))
-        Process("table-generator" :: results) ! log
-        // Return the HTML report location
-        val report = IO
-          .listFiles(executed.state.resultDir)
-          .toList
-          .filter(_.toString.matches(""".*\.html""")) match {
-          case Seq(r) => r
-          case Nil =>
-            throw new RuntimeException("No html file found for report")
-          case _ =>
-            throw new RuntimeException(
-              "More than one html file found, report is corrupted"
-            )
-        }
+        val results: Seq[String] =
+          globPaths(executed.state.resultDir.toGlob / "*.xml.bz2")
+            .map(_.toString)
+
+        // Generate the table using the benchexec talbe-generator CLI tool
+        Process("table-generator" +: results) ! log
+
+        val report =
+          globPaths(executed.state.resultDir.toGlob / "*.html") match {
+            case Seq(r) => r.toFile
+            case Nil =>
+              throw new RuntimeException("No html file found for report")
+            case _ =>
+              throw new RuntimeException(
+                "More than one html file found, report is corrupted"
+              )
+          }
+
         val reportDir = reports / executed.name
         val reportDest = reportDir / report.name
         IO.createDirectory(reportDir)
         IO.copyFile(report, reportDest)
+
         reportDest
       }
     }
