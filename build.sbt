@@ -13,23 +13,113 @@ import BenchExecDsl._
 
 lazy val performance = (project in file("performance"))
   .settings(
-    benchmarks += {
-      val length = Seq(2, 10, 15, 20, 30)
-      val cmds = length.map(n =>
+    benchmarks +=
+      Bench.Runs(
+        "001indinv-apalache-APABakery",
+        timelimit = "1h",
+        cmds = Seq(
+          Cmd(
+            "init with Init",
+            Opt("check"),
+            Opt("--init", "Init"),
+            Opt("--inv", "Inv"),
+            Opt("--length", 0),
+          ),
+          Cmd(
+            "init with Inv",
+            Opt("check"),
+            Opt("--init", "Inv"),
+            Opt("--inv", "Inv"),
+            Opt("--length", 1),
+          ),
+        ),
+        tasks = Seq(Tasks("APABakery", "Bakery-Boulangerie/APABakery.tla")),
+      ),
+    benchmarks += Bench.Runs(
+      "001indinv-apalache-APAEWD840.tla",
+      timelimit = "3h",
+      cmds = Seq(
         Cmd(
-          s"length ${n}",
+          "without init",
+          Opt("check"),
+          Opt("--inv", "InvAndTypeOK"),
+          Opt("--length", 0),
+          Opt("--cinit", "ConstInit10"),
+        ),
+        Cmd(
+          "with init",
+          Opt("check"),
+          Opt("--init", "InvAndTypeOK"),
+          Opt("--inv", "InvAndTypeOK"),
+          Opt("--length", 1),
+          Opt("--cinit", "ConstInit10"),
+        ),
+      ),
+      tasks = Seq(Tasks("APAEWD840.tla", "ewd840/APAEWD840.tla")),
+    ),
+    benchmarks += Bench.Runs(
+      "001indinv-apalache-APAbcastByz",
+      timelimit = "3h",
+      cmds = Seq(
+        Cmd(
+          "init with InitNoBcast",
+          Opt("check"),
+          Opt("--init", "IndInv_Unforg_NoBcast"),
+          Opt("--inv", "InitNoBcast"),
+          Opt("--length", 0),
+          Opt("--cinit", "ConstInit4"),
+        ),
+        Cmd(
+          "with init IndInv_Unforg_NoBcast",
+          Opt("check"),
+          Opt("--init", "IndInv_Unforg_NoBcast"),
+          Opt("--inv", "IndInv_Unforg_NoBcast"),
+          Opt("--length", 1),
+          Opt("--cinit", "ConstInit4"),
+        ),
+      ),
+      tasks = Seq(Tasks("APAbcastByz.tla", "bcastByz/APAbcastByz.tla")),
+    ),
+    benchmarks += Bench.Runs(
+      "001indinv-apalache-APATwoPhase",
+      timelimit = "23h",
+      cmds = Seq(
+        Cmd(
+          "no init",
           Opt("check"),
           Opt("--inv", "Inv"),
-          Opt("--length", n),
-        )
-      )
-      Benchmark(
-        "testing-benchmark",
-        cmds,
-        tasks = Seq(
-          Tasks("prisoners", "Prisoners/APAPrisoners.tla"),
-          Tasks("counter", "Counter.tla"),
+          Opt("--length", 0),
+          Opt("--cinit", "ConstInit7"),
         ),
-      )
-    }
+        Cmd(
+          "init with InitInv",
+          Opt("check"),
+          Opt("--init", "InitInv"),
+          Opt("--inv", "Inv"),
+          Opt("--length", 1),
+          Opt("--cinit", "ConstInit7"),
+        ),
+      ),
+      tasks = Seq(Tasks("APAbcastByz.tla", "two-phase/APATwoPhase.tla")),
+    ),
+
+    // benchmarks(+= {
+    //   val length = Seq(2, 10, 15, 20, 30)
+    //   val cmds = length.map(n =>
+    //     Cmd(
+    //       s"length ${n}",
+    //       Opt("check"),
+    //       Opt("--inv", "Inv"),
+    //       Opt("--length", n),
+    //     )
+    //   )
+    //   Benchmark(
+    //     "testing-benchmark",
+    //     cmds,
+    //     tasks = Seq(
+    //       Tasks("prisoners", "Prisoners/APAPrisoners.tla"),
+    //       Tasks("counter", "Counter.tla"),
+    //     ),
+    //   )
+    // }),
   )

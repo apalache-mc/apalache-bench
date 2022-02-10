@@ -15,7 +15,7 @@ object BenchExec extends AutoPlugin {
     val BenchExecDsl = systems.informal.benchexec.BenchExecDsl
 
     lazy val benchmarks =
-      settingKey[Seq[BenchExecDsl.Benchmark]]("Benchmark suite definitions")
+      settingKey[Seq[BenchExecDsl.Bench.T]]("Benchmark suite definitions")
 
     // Enable taking a specific benchmark
     lazy val benchmarkDefs = taskKey[Seq[File]]("A benchmark definition")
@@ -42,13 +42,11 @@ object BenchExec extends AutoPlugin {
       }
     }
 
-    benchmarks.value.map { b =>
+    benchmarks.value.flatMap { b =>
       log.info(
         s"Generating benchmark definition for ${b.name} in ${resourceDir}"
       )
-      val file = resourceDir / s"${b.name}.xml"
-      b.save(file)
-      file
+      b.save(resourceDir)
     }
   }
 
