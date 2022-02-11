@@ -4,5 +4,8 @@ libraryDependencies ++= Seq(
 )
 
 // Add the locally defined BenchExec plugin
-lazy val root = project.in(file(".")).dependsOn(benchExecPlugin)
+lazy val root = (project in file("."))
+  .dependsOn(benchExecPlugin, apalachePlugin)
+
 lazy val benchExecPlugin = RootProject(file("sbt-benchexec"))
+lazy val apalachePlugin = RootProject(file("sbt-apalache"))

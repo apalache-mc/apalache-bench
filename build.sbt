@@ -11,6 +11,9 @@ ThisBuild / organization := "systems.informal"
 
 import BenchExecDsl._
 
+lazy val root = (project in file("."))
+  .enablePlugins(Apalache)
+
 lazy val performance = (project in file("performance"))
   .settings(
     benchmarks +=
@@ -107,24 +110,4 @@ lazy val performance = (project in file("performance"))
           )
         ),
       )
-
-    // benchmarks(+= {
-    //   val length = Seq(2, 10, 15, 20, 30)
-    //   val cmds = length.map(n =>
-    //     Cmd(
-    //       s"length ${n}",
-    //       Opt("check"),
-    //       Opt("--inv", "Inv"),
-    //       Opt("--length", n),
-    //     )
-    //   )
-    //   Benchmark(
-    //     "testing-benchmark",
-    //     cmds,
-    //     tasks = Seq(
-    //       Tasks("prisoners", "Prisoners/APAPrisoners.tla"),
-    //       Tasks("counter", "Counter.tla"),
-    //     ),
-    //   )
-    // }),
   )
