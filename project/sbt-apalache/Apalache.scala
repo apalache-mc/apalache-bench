@@ -7,7 +7,9 @@ import Keys._
 object Apalache extends AutoPlugin {
   object autoImport {
     lazy val apalacheVersion =
-      settingKey[String]("The version (as a tag) or branch of apalache to use")
+      settingKey[String](
+        "The version (@v1.2.3) or branch (#branchname) of Apalache to use"
+      )
 
     lazy val apalacheDir = taskKey[File](
       "The managed resource location where aplache binaries are saved"
@@ -31,7 +33,7 @@ object Apalache extends AutoPlugin {
   import autoImport._
 
   override lazy val globalSettings: Seq[Setting[_]] = Seq(
-    apalacheVersion := "v0.20.2"
+    apalacheVersion := "#unstable"
   )
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
@@ -46,21 +48,42 @@ object Apalache extends AutoPlugin {
   )
 
   private def fetchByVersion(version: String, destdir: File) =
-    s"curl --fail -L https://github.com/informalsystems/apalache/releases/download/${version}/apalache.tgz -o ${destdir}"
+    s"curl --fail -L https://github.com/informalsystems/apalache/releases/download/v${version}/apalache.tgz -o ${destdir}"
+
+  private def fetchByBranch(branch: String, destdir: File) =
+    s"git clone -b ${branch} --single-branch https://github.com/informalsystems/apalache.git ${destdir}"
 
   lazy val apalacheFetchImpl: Def.Initialize[Task[File]] = Def.task {
     val log = streams.value.log
-    val version = apalacheVersion.value
+
+    val glyph = apalacheVersion.value.substring(0, 1)
+    val version = apalacheVersion.value.substring(1)
     val destDir = apalacheDir.value / version
-    val destTar = destDir / "apalache.tgz"
-    IO.createDirectory(destDir)
-    if (version.startsWith("v")) {
-      log.info(s"Fetching Apalache by version tag to ${destTar}")
-      Process(fetchByVersion(version, destTar)) ! log
-      log.info(s"Unpacking Apalache to ${destDir}")
-      Process(s"tar zxvf ${destTar} -C ${destDir}") ! log
+
+    glyph match {
+      case "@" => {
+        IO.createDirectory(destDir)
+        val destTar = destDir / "apalache.tgz"
+        log.info(s"Fetching Apalache release version ${version} to ${destDir}")
+        Process(fetchByVersion(version, destTar)) ! log
+        log.info(s"Unpacking Apalache to ${destDir}")
+        Process(s"tar zxvf ${destTar} -C ${destDir}") ! log
+        destDir
+      }
+      case "#" => {
+        IO.createDirectory(destDir)
+        log.info(s"Fetching Apalache branch ${version} to ${destDir}")
+        Process(fetchByBranch(version, destDir)) ! log
+        log.info("Building Apalache")
+        Process(s"make -C ${destDir} package") ! log
+        destDir
+      }
+      case _ => {
+        throw new RuntimeException(
+          s"Invalid Apalache version '${apalacheVersion.value}'. Must start with '@' if version tag or '#' if branch/commit ref"
+        )
+      }
     }
-    destDir
   }
 
   lazy val apalacheSetVersionImpl: Def.Initialize[Task[Unit]] = Def.task {
