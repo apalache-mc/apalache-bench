@@ -65,6 +65,9 @@
 
                 # Testing
                 python39Full
+
+                # Reporting
+                jekyll
               ];
             };
         };
