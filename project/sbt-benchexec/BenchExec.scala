@@ -11,8 +11,6 @@ import sbt._
 import Keys._
 
 object BenchExec extends AutoPlugin {
-  override def trigger = allRequirements
-
   object autoImport {
     val BenchExecDsl = systems.informal.benchexec.BenchExecDsl
 

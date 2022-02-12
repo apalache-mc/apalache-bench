@@ -4,17 +4,19 @@ import scala.sys.process.Process
 import java.util.Date
 import org.apache.commons.io.FilenameUtils
 
+name := "apalache-bench"
+
 ThisBuild / version := "0.0.1"
 ThisBuild / sbtVersion := "1.6.1"
 ThisBuild / scalaVersion := "2.13.6"
 ThisBuild / organization := "systems.informal"
-
 import BenchExecDsl._
 
 lazy val root = (project in file("."))
   .enablePlugins(Apalache)
 
 lazy val performance = (project in file("performance"))
+  .enablePlugins(BenchExec)
   .settings(
     benchmarks +=
       Bench.Suite(
