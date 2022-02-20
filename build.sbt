@@ -5,12 +5,17 @@ import java.util.Date
 import org.apache.commons.io.FilenameUtils
 
 name := "apalache-bench"
+description := "The Apalache Benchmarking System"
+organizationHomepage := Some(url("https://apalache.informal.systems/"))
 
 ThisBuild / version := "0.0.1"
 ThisBuild / sbtVersion := "1.6.1"
 ThisBuild / scalaVersion := "2.13.6"
 ThisBuild / organization := "systems.informal"
 import BenchExecDsl._
+
+ThisBuild / apalacheVersion := "#unstable"
+ThisBuild / benchmarksToolVersion := apalacheEnableVersion.value
 
 lazy val root = (project in file("."))
   .enablePlugins(Apalache)

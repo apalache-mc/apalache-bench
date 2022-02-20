@@ -57,17 +57,11 @@
 
               # Build inputs are the packages that we provide in the PATH in the nix shell
               buildInputs = with pkgs; [
-                # Environment
-                direnv
-
                 # Build
                 sbt
 
                 # Testing
                 python39Full
-
-                # Reporting
-                jekyll
               ];
             };
         };

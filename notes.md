@@ -35,11 +35,12 @@ Ends up in the `results` dir in the working directory
 - [x] Make sbt config into a plugin
 - [x] Fetch apalache executable
 - [x] Add way to specify which apalache version
-- [ ] Transfer over the existing benchmarks
 - [ ] Publish the BenchExec reports on GH pages
-    - [ ] Set up
+    - [x] Set up sbt-site
     - [ ] Construct index for all benchmarks
+- [ ] Transfer over the existing benchmarks
 - [ ] Fix any missing results in output data
+  - [ ] Compare across different version wc
 - [ ] Enable running individual suites
 - [ ] Enable running individual benchmarks in a suite?
 - [ ] Open source the benchexec sbt rules

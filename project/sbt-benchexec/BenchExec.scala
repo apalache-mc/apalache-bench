@@ -21,14 +21,20 @@ object BenchExec extends AutoPlugin {
       )
 
     // TODO Enable running a specific benchmark
-    lazy val benchmarkDefs =
+    lazy val benchmarksDef =
       taskKey[Seq[Bench.T[Bench.Defined]]]("A benchmark definition")
 
-    lazy val benchmarkResults =
+    lazy val benchmarksRun =
       taskKey[Seq[Bench.T[Bench.Executed]]]("Results of a benchmarking run")
 
-    lazy val benchmarkReports =
+    lazy val benchmarksReport =
       taskKey[Seq[File]]("Reports from a benchmarking run")
+
+    lazy val bencharmkReportsDir =
+      settingKey[File]("The location to which generated reports are written")
+
+    lazy val benchmarksToolVersion =
+      taskKey[String]("The version of the tool being benchmarked")
   }
 
   import autoImport._
@@ -71,22 +77,25 @@ object BenchExec extends AutoPlugin {
       "/home",
     )
 
+  private def timestamp() =
+    new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date())
+
   lazy val benchexecRun: Def.Initialize[Task[Seq[Bench.T[Bench.Executed]]]] =
     Def.task {
       val log = streams.value.log
-      val timestamp =
-        new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date())
       val workdir = (Compile / resourceManaged).value
-      benchmarkDefs.value.map { bench =>
+      val time = timestamp()
+      val version = benchmarksToolVersion.value
+      benchmarksDef.value.map { bench =>
         log.info(
-          s"Running benchmark ${bench.name} with results to ${workdir}"
+          s"Running benchmark ${bench.name} with tool version ${version} and results to ${workdir}"
         )
         bench match {
           case runs: Bench.Runs[Bench.Defined] =>
-            Bench.run(runs, workdir, timestamp, log)
+            Bench.run(runs, workdir, time, log)
 
           case suite: Bench.Suite[Bench.Defined] =>
-            Bench.run(suite, workdir, timestamp, log)
+            Bench.run(suite, workdir, time, log)
         }
       }
     }
@@ -98,42 +107,40 @@ object BenchExec extends AutoPlugin {
     Def.task {
       val log = streams.value.log
       val workdir = (Compile / resourceManaged).value
-      val reports = (ThisBuild / baseDirectory).value / "reports"
-      benchmarkResults.value.map { executed =>
+      val toolVersion = benchmarksToolVersion.value
+      benchmarksRun.value.map { executed =>
         val results: Seq[String] =
           globPaths(executed.state.resultDir.toGlob / "*.xml.bz2")
             .map(_.toString)
 
-        // Generate the table using the benchexec talbe-generator CLI tool
-        Process("table-generator" +: results) ! log
-
-        val report =
-          globPaths(executed.state.resultDir.toGlob / "*.html") match {
-            case Seq(r) => r.toFile
-            case Nil =>
-              throw new RuntimeException("No html file found for report")
-            case _ =>
-              throw new RuntimeException(
-                "More than one html file found, report is corrupted"
-              )
-          }
-
-        val reportDir = reports / executed.name
-        val reportDest = reportDir / report.name
+        val reportDir = bencharmkReportsDir.value / toolVersion / executed.name
         IO.createDirectory(reportDir)
-        IO.copyFile(report, reportDest)
 
-        reportDest
+        log.info(s"Generating report to ${reportDir}")
+        // Generate the table using the benchexec table-generator CLI tool
+        val cmd =
+          "table-generator" +: "--outputpath" +: reportDir.toString +: results
+        log.info(cmd.toString)
+        Process(cmd) ! log
+
+        reportDir
       }
     }
 
+  override lazy val globalSettings = Seq(
+    bencharmkReportsDir := (ThisBuild / baseDirectory).value / "src" / "site" / "reports"
+  )
+
+  // override lazy val buildSettings = Seq(
+  // )
+
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
     benchmarks := Seq(),
-    benchmarkDefs := benchexecSetup.value,
-    benchmarkResults := benchexecRun.value,
-    benchmarkReports := benchexecReport.value,
-    Compile / compile := ((Compile / compile)
-      .dependsOn(benchmarkDefs))
-      .value,
+    benchmarksDef := benchexecSetup.value,
+    benchmarksRun := benchexecRun.value,
+    benchmarksReport := benchexecReport.value,
+    // Compile / compile := ((Compile / compile)
+    //   .dependsOn(benchmarksDef))
+    //   .value,
   )
 }

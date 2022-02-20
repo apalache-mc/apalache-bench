@@ -1,3 +1,5 @@
+addSbtPlugin("com.typesafe.sbt" % "sbt-site" % "1.4.1")
+
 // Required by BenchExec plugin
 libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.11.0"
