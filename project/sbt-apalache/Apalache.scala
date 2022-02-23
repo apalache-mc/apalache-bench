@@ -74,7 +74,7 @@ object Apalache extends AutoPlugin {
   )
 
   private def fetchByVersion(version: String, destdir: File) =
-    s"curl --fail -L https://github.com/informalsystems/apalache/releases/download/v${version}/apalache.tgz -o ${destdir}"
+    s"curl --fail -L https://github.com/informalsystems/apalache/releases/download/${version}/apalache.tgz -o ${destdir}"
 
   private def fetchByBranch(branch: String, destdir: File) =
     s"git clone -b ${branch} --single-branch https://github.com/informalsystems/apalache.git ${destdir}"
@@ -96,7 +96,7 @@ object Apalache extends AutoPlugin {
         log.info(s"Fetching Apalache release version ${version} to ${destDir}")
         Process(fetchByVersion(version, destTar)) ! log
         log.info(s"Unpacking Apalache to ${destDir}")
-        Process(s"tar zxvf ${destTar} -C ${destDir}") ! log
+        Process(s"tar zxvf ${destTar} --strip-components=1 -C ${destDir}") ! log
       }
       case Version.Branch(version) => {
         if (destDir.exists()) {
