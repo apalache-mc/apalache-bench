@@ -5,7 +5,31 @@ import sbt._
 import Keys._
 
 object Apalache extends AutoPlugin {
+
+  object Version {
+    sealed abstract class T {
+      def version: String
+      override def toString: String = version
+    }
+
+    case class Branch(version: String) extends T
+    case class Release(version: String) extends T
+
+    def ofString: String => T = { s =>
+      val version = s.substring(1)
+      s.substring(0, 1) match {
+        case "@" => Release(version)
+        case "#" => Branch(version)
+        case _ =>
+          throw new RuntimeException(
+            s"Invalid Apalache version '${s}': must start with '@' for tagged release version or '#' for git ref"
+          )
+      }
+    }
+  }
+
   object autoImport {
+
     lazy val apalacheVersion =
       settingKey[String](
         "The version (@v1.2.3) or branch (#branchname) of Apalache to use"
@@ -26,8 +50,10 @@ object Apalache extends AutoPlugin {
     lazy val useApalache =
       taskKey[Unit]("Add the fetched apalache binary to the head of the path")
 
-    lazy val apalacheSetVersion =
-      taskKey[Unit]("Set the current version of apalache to `apalacheVersion`")
+    lazy val apalacheEnableVersion =
+      taskKey[String](
+        "Set the current version of Apalache to `apalacheVersion`, returning its reported version"
+      )
   }
 
   import autoImport._
@@ -44,7 +70,7 @@ object Apalache extends AutoPlugin {
     },
     apalacheExec := apalacheDir.value / "exec",
     apalacheFetch := apalacheFetchImpl.value,
-    apalacheSetVersion := apalacheSetVersionImpl.value,
+    apalacheEnableVersion := apalacheEnableVersionImpl.value,
   )
 
   private def fetchByVersion(version: String, destdir: File) =
@@ -53,44 +79,52 @@ object Apalache extends AutoPlugin {
   private def fetchByBranch(branch: String, destdir: File) =
     s"git clone -b ${branch} --single-branch https://github.com/informalsystems/apalache.git ${destdir}"
 
+  private def fetchBranch(destDir: File) =
+    s"git -C ${destDir} pull"
+
   lazy val apalacheFetchImpl: Def.Initialize[Task[File]] = Def.task {
     val log = streams.value.log
 
-    val glyph = apalacheVersion.value.substring(0, 1)
-    val version = apalacheVersion.value.substring(1)
-    val destDir = apalacheDir.value / version
+    val version = Version.ofString(apalacheVersion.value)
 
-    glyph match {
-      case "@" => {
+    val destDir = apalacheDir.value / version.toString
+
+    version match {
+      case Version.Release(version) => {
         IO.createDirectory(destDir)
         val destTar = destDir / "apalache.tgz"
         log.info(s"Fetching Apalache release version ${version} to ${destDir}")
         Process(fetchByVersion(version, destTar)) ! log
         log.info(s"Unpacking Apalache to ${destDir}")
         Process(s"tar zxvf ${destTar} -C ${destDir}") ! log
-        destDir
       }
-      case "#" => {
-        IO.createDirectory(destDir)
-        log.info(s"Fetching Apalache branch ${version} to ${destDir}")
-        Process(fetchByBranch(version, destDir)) ! log
+      case Version.Branch(version) => {
+        if (destDir.exists()) {
+          log.info(s"Updating Apalache branch ${version} in ${destDir}")
+          Process(fetchBranch(destDir)) ! log
+        } else {
+          IO.createDirectory(destDir)
+          log.info(s"Fetching Apalache branch ${version} to ${destDir}")
+          Process(fetchByBranch(version, destDir)) ! log
+        }
         log.info("Building Apalache")
         Process(s"make -C ${destDir} package") ! log
-        destDir
-      }
-      case _ => {
-        throw new RuntimeException(
-          s"Invalid Apalache version '${apalacheVersion.value}'. Must start with '@' if version tag or '#' if branch/commit ref"
-        )
       }
     }
+    destDir
   }
 
-  lazy val apalacheSetVersionImpl: Def.Initialize[Task[Unit]] = Def.task {
+  // TODO Do not recompile or fetch version if already cached
+  lazy val apalacheEnableVersionImpl: Def.Initialize[Task[String]] = Def.task {
     val log = streams.value.log
-    log.info(s"Symlinking ${apalacheExec.value} -> ${apalacheFetch.value}")
-    val cmd = s"ln -sfn ${apalacheFetch.value} ${apalacheExec.value} "
+    val executableDir = apalacheFetch.value
+    val symlink = apalacheExec.value
+    log.info(s"Symlinking ${symlink} -> ${executableDir}")
+    val cmd = s"ln -sfn ${executableDir} ${symlink} "
     log.info(cmd)
     Process(cmd) ! log
+
+    val exec = symlink / "bin" / "apalache-mc"
+    (Process(s"""${exec} version""") !! log).trim()
   }
 }

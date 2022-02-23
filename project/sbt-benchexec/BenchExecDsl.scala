@@ -1,4 +1,4 @@
-package systems.informal.benchexec
+package systems.informal.sbt.benchexec
 
 import java.text.SimpleDateFormat
 import scala.sys.process.Process
@@ -96,15 +96,9 @@ object BenchExecDsl {
         Nil,
       )
 
-      /** Save the XML representation of the runs definitions a file in `dir`
-        *
-        * The file's name is determined by the `name` of the runs
-        */
-      def save(dir: File): Runs[Defined] = {
-        assert(dir.isDirectory)
-        val file = new File(dir, s"${name}.xml")
+      def writePrettyXml(file: File, content: xml.Elem): Unit = {
         val pp = new xml.PrettyPrinter(100, 2)
-        val formatted = pp.format(this.toXml)
+        val formatted = pp.format(content)
         IO.writer(file, "", charset = IO.defaultCharset) { w =>
           // First write the encoding and doctype
           xml.XML.write(
@@ -120,6 +114,16 @@ object BenchExecDsl {
           // Then write the pretty printed XML payload
           w.append(formatted)
         }
+      }
+
+      /** Save the XML representation of the runs definitions a file in `dir`
+        *
+        * The file's name is determined by the `name` of the runs
+        */
+      def save(dir: File): Runs[Defined] = {
+        assert(dir.isDirectory)
+        val file = new File(dir, s"${name}.xml")
+        writePrettyXml(file, this.toXml)
         this.copy(state = Defined(Seq(file)))
       }
     }
