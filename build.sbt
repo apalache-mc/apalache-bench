@@ -4,8 +4,8 @@ import scala.sys.process.Process
 import java.util.Date
 import org.apache.commons.io.FilenameUtils
 
-name := "apalache-bench"
 description := "The Apalache Benchmarking System"
+name := "apalache-bench"
 organizationHomepage := Some(url("https://apalache.informal.systems/"))
 
 ThisBuild / version := "0.0.1"
@@ -19,6 +19,16 @@ ThisBuild / benchmarksToolVersion := apalacheEnableVersion.value
 
 lazy val root = (project in file("."))
   .enablePlugins(Apalache)
+
+lazy val site = (project in file("src/site"))
+  .enablePlugins(BenchExec)
+  .dependsOn(
+    performance
+  ) // Should depend on every project that generates reports
+  .settings(
+    // Set this
+    benchmarksIndexFile := Some(baseDirectory.value / "index.html")
+  )
 
 lazy val performance = (project in file("performance"))
   .enablePlugins(BenchExec)
@@ -70,29 +80,29 @@ lazy val performance = (project in file("performance"))
           //   ),
           //   tasks = Seq(Tasks("APAEWD840.tla", "ewd840/APAEWD840.tla")),
           // ),
-          // Bench.Runs(
-          //   "APAbcastByz",
-          //   timelimit = "3h",
-          //   cmds = Seq(
-          //     Cmd(
-          //       "init with InitNoBcast",
-          //       Opt("check"),
-          //       Opt("--init", "IndInv_Unforg_NoBcast"),
-          //       Opt("--inv", "InitNoBcast"),
-          //       Opt("--length", 0),
-          //       Opt("--cinit", "ConstInit4"),
-          //     ),
-          //     Cmd(
-          //       "with init IndInv_Unforg_NoBcast",
-          //       Opt("check"),
-          //       Opt("--init", "IndInv_Unforg_NoBcast"),
-          //       Opt("--inv", "IndInv_Unforg_NoBcast"),
-          //       Opt("--length", 1),
-          //       Opt("--cinit", "ConstInit4"),
-          //     ),
-          //   ),
-          //   tasks = Seq(Tasks("APAbcastByz.tla", "bcastByz/APAbcastByz.tla")),
-          // ),
+          Bench.Runs(
+            "APAbcastByz",
+            timelimit = "3h",
+            cmds = Seq(
+              Cmd(
+                "init with InitNoBcast",
+                Opt("check"),
+                Opt("--init", "IndInv_Unforg_NoBcast"),
+                Opt("--inv", "InitNoBcast"),
+                Opt("--length", 0),
+                Opt("--cinit", "ConstInit4"),
+              ),
+              Cmd(
+                "with init IndInv_Unforg_NoBcast",
+                Opt("check"),
+                Opt("--init", "IndInv_Unforg_NoBcast"),
+                Opt("--inv", "IndInv_Unforg_NoBcast"),
+                Opt("--length", 1),
+                Opt("--cinit", "ConstInit4"),
+              ),
+            ),
+            tasks = Seq(Tasks("APAbcastByz.tla", "bcastByz/APAbcastByz.tla")),
+          ),
           Bench.Runs(
             "APATwoPhase",
             timelimit = "23h",
@@ -114,7 +124,7 @@ lazy val performance = (project in file("performance"))
               ),
             ),
             tasks = Seq(Tasks("APAbcastByz.tla", "two-phase/APATwoPhase.tla")),
-          )
+          ),
         ),
       )
   )

@@ -5,7 +5,7 @@ libraryDependencies ++= Seq(
   "org.scala-sbt" % "sbt" % "1.6.2"
 )
 
-lazy val root = (project in file("."))
+lazy val sbt_apalache = (project in file("."))
   .enablePlugins(SbtPlugin)
   .settings(
     name := "sbt-apalache",

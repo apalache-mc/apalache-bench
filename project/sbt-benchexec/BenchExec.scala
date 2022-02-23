@@ -1,4 +1,4 @@
-package systems.informal.benchexec
+package systems.informal.sbt.benchexec
 
 import java.text.SimpleDateFormat
 import scala.sys.process.Process
@@ -12,7 +12,7 @@ import Keys._
 
 object BenchExec extends AutoPlugin {
   object autoImport {
-    val BenchExecDsl = systems.informal.benchexec.BenchExecDsl
+    val BenchExecDsl = systems.informal.sbt.benchexec.BenchExecDsl
 
     import BenchExecDsl._
     lazy val benchmarks =
@@ -30,11 +30,22 @@ object BenchExec extends AutoPlugin {
     lazy val benchmarksReport =
       taskKey[Seq[File]]("Reports from a benchmarking run")
 
-    lazy val bencharmkReportsDir =
+    lazy val benchmarkReportsDir =
       settingKey[File]("The location to which generated reports are written")
 
     lazy val benchmarksToolVersion =
       taskKey[String]("The version of the tool being benchmarked")
+
+    lazy val benchmarksIndexFile =
+      settingKey[Option[File]](
+        "Location for the index of all the reports that have been generated as an HTML page"
+      )
+
+    lazy val benchmarksIndexUpdate =
+      taskKey[Unit](
+        "Update the index of reports to the `benchmarksIndex` file, if it has been set"
+      )
+
   }
 
   import autoImport._
@@ -113,7 +124,7 @@ object BenchExec extends AutoPlugin {
           globPaths(executed.state.resultDir.toGlob / "*.xml.bz2")
             .map(_.toString)
 
-        val reportDir = bencharmkReportsDir.value / toolVersion / executed.name
+        val reportDir = benchmarkReportsDir.value / toolVersion / executed.name
         IO.createDirectory(reportDir)
 
         log.info(s"Generating report to ${reportDir}")
@@ -127,18 +138,121 @@ object BenchExec extends AutoPlugin {
       }
     }
 
-  override lazy val globalSettings = Seq(
-    bencharmkReportsDir := (ThisBuild / baseDirectory).value / "src" / "site" / "reports"
-  )
+  private def writePrettyXml(file: File, content: xml.Elem): Unit = {
+    val pp = new xml.PrettyPrinter(100, 2)
+    val formatted = pp.format(content)
+    IO.writer(file, "", charset = IO.defaultCharset) { w =>
+      // First write the encoding and doctype
+      xml.XML.write(
+        w,
+        xml.Text(""),
+        "UTF-8",
+        xmlDecl = true,
+        doctype =
+          xml.dtd.DocType("html", xml.dtd.SystemID("about:legacy-compat"), Nil),
+      )
+      w.append(
+        "<!-- NOTE: This file is generated. Edit the build.sbt instead. -->\n"
+      )
+      // Then write the pretty printed XML payload
+      w.append(formatted)
+    }
+  }
 
-  // override lazy val buildSettings = Seq(
-  // )
+  private val columnsOfPath: Path => Seq[String] = p => {
+    val lastPathIdx = p.getNameCount - 1
+    0.to(lastPathIdx).map {
+      case `lastPathIdx` =>
+        // results.2022-02-20_13-22-43.table.html => 2022-02-20_13-22-43
+        p.getName(lastPathIdx).toString().split("\\.")(1)
+      case i => p.getName(i).toString()
+    }
+  }
+
+  private val rowOfData: ((Seq[String], String)) => Seq[xml.Elem] = {
+    case (columns, url) => {
+      val timestamp = <td><a href={s"${url}"}>{columns.last}</a></td>
+      columns.dropRight(1).map((x: String) => <td>{x}</td>) :+ timestamp
+    }
+  }
+
+  lazy val benchmarksIndexUpdateImpl: Def.Initialize[Task[Unit]] =
+    Def.task {
+      benchmarksIndexFile.value.map { file =>
+        val reportsDir = benchmarkReportsDir.value.toPath
+        val resultsData =
+          globPaths(reportsDir.toGlob / ** / "*.html")
+            .map { path =>
+              val relativePath = reportsDir.relativize(path)
+              val columns = columnsOfPath(relativePath)
+              val url = (reportsDir.getFileName.resolve(relativePath)).toString
+              (columns, url)
+            }
+        val header = <tr><th>Version</th><th>Strategy</th><th>Results</th></tr>
+        val rows =
+          resultsData.map(
+            ((x: Seq[xml.Elem]) => <tr>{x}</tr>).compose(rowOfData)
+          )
+        val style = xml.Unparsed("""
+body {
+  margin: auto;
+  width: 75%;
+  padding: 5;
+}
+
+h1 {
+  text-align: center;
+}
+""")
+        val script = xml.Unparsed("""
+                $(document).ready(function() {
+                        $("#results-table").fancyTable({
+                            sortColumn:0,
+                            pagination: true,
+                            perPage:10,
+                            globalSearch:true
+                        });
+                });
+""")
+        val page =
+          // See https://frontbackend.com/jquery/a-jquery-plugin-for-making-html-tables-searchable-and-sortable
+          // NOTE: Curly braces in the inline js are doubled up to make them litterals
+          <html lang="en">
+            <head>
+              <title>Apalache Benchmark Reports</title>
+              <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+              <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"/>
+              <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+              <script src="https://cdn.jsdelivr.net/npm/jquery.fancytable/dist/fancyTable.min.js"></script>
+              <style>{style}</style>
+            </head>
+            <body>
+              <h1>Apalache Benchmark Reports</h1>
+              <table id="results-table" class="table table-striped sampleTable">
+                <thead>{header}</thead>
+                <tbody>{rows}</tbody>
+              </table>
+              <script>
+                {script}
+              </script>
+            </body>
+        </html>
+
+        writePrettyXml(file, page)
+      }
+    }
+
+  override lazy val globalSettings = Seq(
+    benchmarksIndexFile := None,
+    benchmarkReportsDir := (ThisBuild / baseDirectory).value / "src" / "site" / "reports",
+  )
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
     benchmarks := Seq(),
     benchmarksDef := benchexecSetup.value,
     benchmarksRun := benchexecRun.value,
     benchmarksReport := benchexecReport.value,
+    benchmarksIndexUpdate := benchmarksIndexUpdateImpl.value,
     // Compile / compile := ((Compile / compile)
     //   .dependsOn(benchmarksDef))
     //   .value,

@@ -88,10 +88,10 @@ object Apalache extends AutoPlugin {
     val version = Version.ofString(apalacheVersion.value)
 
     val destDir = apalacheDir.value / version.toString
-    IO.createDirectory(destDir)
 
     version match {
       case Version.Release(version) => {
+        IO.createDirectory(destDir)
         val destTar = destDir / "apalache.tgz"
         log.info(s"Fetching Apalache release version ${version} to ${destDir}")
         Process(fetchByVersion(version, destTar)) ! log
@@ -103,6 +103,7 @@ object Apalache extends AutoPlugin {
           log.info(s"Updating Apalache branch ${version} in ${destDir}")
           Process(fetchBranch(destDir)) ! log
         } else {
+          IO.createDirectory(destDir)
           log.info(s"Fetching Apalache branch ${version} to ${destDir}")
           Process(fetchByBranch(version, destDir)) ! log
         }

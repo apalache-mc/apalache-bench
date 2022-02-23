@@ -8,7 +8,7 @@ libraryDependencies ++= Seq(
   "org.scala-sbt" % "sbt" % "1.6.2",
 )
 
-lazy val root = (project in file("."))
+lazy val sbt_benchexec = (project in file("."))
   .enablePlugins(SbtPlugin)
   .settings(
     name := "sbt-benchexec",
