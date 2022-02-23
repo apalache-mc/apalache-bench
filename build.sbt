@@ -19,14 +19,14 @@ ThisBuild / benchmarksToolVersion := apalacheEnableVersion.value
 
 lazy val root = (project in file("."))
   .enablePlugins(Apalache)
+  .aggregate(
+    // Should aggregate every project that can run reports
+    performance
+  )
 
 lazy val site = (project in file("src/site"))
   .enablePlugins(BenchExec)
-  .dependsOn(
-    performance
-  ) // Should depend on every project that generates reports
   .settings(
-    // Set this
     benchmarksIndexFile := Some(baseDirectory.value / "index.html")
   )
 
