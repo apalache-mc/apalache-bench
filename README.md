@@ -25,10 +25,11 @@ sbt 'set apalacheVersion := "@v0.21.0"; benchmarksReport'
 
 #### For a branch or commit
 
-Prefix the branch of commit name with `#`:
+Prefix the branch name or commit ref with `#`:
 
 ``` sh
 sbt 'set apalacheVersion := "#unstable"; benchmarksReport'
+sbt 'set apalacheVersion := "#c1ed9ef1596bb6e8df6b4f77a8335448eebfa80f"; benchmarksReport'
 ```
 
 ### For a specific project
