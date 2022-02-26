@@ -42,8 +42,8 @@ object BenchExecDsl {
   case class Tasks(name: String, filePatterns: String*) extends ToXml {
     def toXml =
       <tasks name={name}>
-      {filePatterns.map(f => <include>{f}</include>)}
-    </tasks>
+        {filePatterns.map(f => <include>{f}</include>)}
+      </tasks>
   }
 
   object Bench {

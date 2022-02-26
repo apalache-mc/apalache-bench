@@ -123,7 +123,7 @@ lazy val performance = (project in file("performance"))
                 Opt("--cinit", "ConstInit7"),
               ),
             ),
-            tasks = Seq(Tasks("APAbcastByz.tla", "two-phase/APATwoPhase.tla")),
+            tasks = Seq(Tasks("APATwoPhasetla", "two-phase/APATwoPhase.tla")),
           ),
         ),
       )
