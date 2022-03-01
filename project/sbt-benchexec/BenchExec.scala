@@ -114,42 +114,6 @@ object BenchExec extends AutoPlugin {
   private def globPaths(glob: Glob): Seq[Path] =
     FileTreeView.default.list(glob).map(_._1)
 
-  private val htmlDocType =
-    xml.dtd.DocType("html", xml.dtd.SystemID("about:legacy-compat"), Nil)
-
-  private val tableGeneratorDocType = xml.dtd.DocType(
-    "table",
-    xml.dtd.PublicID(
-      "+//IDN sosy-lab.org//DTD BenchExec table 1.10//EN",
-      "https://www.sosy-lab.org/benchexec/table-1.10.dtd",
-    ),
-    Nil,
-  )
-
-  private def writePrettyXml(
-      doctype: xml.dtd.DocType,
-      file: File,
-      content: xml.Elem,
-    ): Unit = {
-    val pp = new xml.PrettyPrinter(100, 2)
-    val formatted = pp.format(content)
-    IO.writer(file, "", charset = IO.defaultCharset) { w =>
-      // First write the encoding and doctype
-      xml.XML.write(
-        w,
-        xml.Text(""),
-        "UTF-8",
-        xmlDecl = true,
-        doctype = doctype,
-      )
-      w.append(
-        "<!-- NOTE: This file is generated. Edit the build.sbt instead. -->\n"
-      )
-      // Then write the pretty printed XML payload
-      w.append(formatted)
-    }
-  }
-
   private def tableGeneratorConfigXml(results: Seq[String]): xml.Elem = {
     val resultFiles = results.zipWithIndex.map { case (f, i) =>
       <result id={i.toString()} filename={f}/>
@@ -173,9 +137,9 @@ object BenchExec extends AutoPlugin {
         // See https://github.com/sosy-lab/benchexec/blob/main/doc/table-generator.md#complex-tables-with-custom-columns-or-combination-of-results
         val tableGenConfig =
           executed.state.resultDir / s"result.${timestamp()}.${executed.name}.table-generator.xml"
-        writePrettyXml(
-          tableGeneratorDocType,
+        BenchExecXml.save(
           tableGenConfig,
+          BenchExecXml.DocType.trableGenerator,
           tableGeneratorConfigXml(results),
         )
 
@@ -280,7 +244,7 @@ h1 {
             </body>
         </html>
 
-        writePrettyXml(htmlDocType, file, page)
+        BenchExecXml.save(file, BenchExecXml.DocType.html, page)
       }
     }
 

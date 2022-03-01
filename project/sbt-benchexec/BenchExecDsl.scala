@@ -99,35 +99,6 @@ object BenchExecDsl {
           {tasks.map(_.toXml)}
         </benchmark>
 
-      private def docType = xml.dtd.DocType(
-        "benchmark",
-        xml.dtd.PublicID(
-          "+//IDN sosy-lab.org//DTD BenchExec benchmark 1.18//EN",
-          "https://www.sosy-lab.org/benchexec/benchmark-1.18.dtd",
-        ),
-        Nil,
-      )
-
-      def writePrettyXml(file: File, content: xml.Elem): Unit = {
-        val pp = new xml.PrettyPrinter(100, 2)
-        val formatted = pp.format(content)
-        IO.writer(file, "", charset = IO.defaultCharset) { w =>
-          // First write the encoding and doctype
-          xml.XML.write(
-            w,
-            xml.Text(""),
-            "UTF-8",
-            xmlDecl = true,
-            doctype = this.docType,
-          )
-          w.append(
-            "<!-- NOTE: This file is generated. Edit the build.sbt instead. -->\n"
-          )
-          // Then write the pretty printed XML payload
-          w.append(formatted)
-        }
-      }
-
       /** Save the XML representation of the runs definitions a file in `dir`
         *
         * The file's name is determined by the `name` of the runs
@@ -135,7 +106,7 @@ object BenchExecDsl {
       def save(dir: File): Runs[Defined] = {
         assert(dir.isDirectory)
         val file = new File(dir, s"${name}.xml")
-        writePrettyXml(file, this.toXml)
+        BenchExecXml.save(file, BenchExecXml.DocType.benchmark, this.toXml)
         this.copy(state = Defined(Seq(file)))
       }
     }
