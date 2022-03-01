@@ -36,13 +36,25 @@ object BenchExecDsl {
     </rundefinition>
   }
 
-  /** The tasks (files) to run in the suite. Each command will be run on each
-    * file matching the `filePattern`
+  /** The tasks to run in the suite.
+    *
+    * Each command in the suite will be run on each task.
+    *
+    * @param options
+    *   additional CLI options to be supplied for this task, these will be added
+    *   in addition to the options in the suite [[Cmd]]s
+    * @param filePatterns
+    *   files on which the options are to be run
     */
-  case class Tasks(name: String, filePatterns: String*) extends ToXml {
+  case class Tasks(
+      name: String,
+      filePatterns: Seq[String],
+      options: Seq[Opt] = Nil)
+      extends ToXml {
     def toXml =
       <tasks name={name}>
         {filePatterns.map(f => <include>{f}</include>)}
+        {options.map(_.toXml)}
       </tasks>
   }
 
