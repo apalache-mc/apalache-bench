@@ -33,38 +33,38 @@ lazy val site = (project in file("src/site"))
 lazy val performance = (project in file("performance"))
   .enablePlugins(BenchExec)
   .settings(
+    // benchmarks +=
+    // Bench.Suite(
+    //   name = "010encoding-SetAdd",
+    //   runs = Seq(
+    //     Bench.Runs(
+    //       "SetAdd",
+    //       timelimit = "2h",
+    //       tasks = Seq(
+    //         Tasks("SetAdd Array Encoding", Seq("array-encoding/SetAdd.tla"))
+    //       ),
+    //       cmds = {
+    //         def checkCmd(enc: String, len: Int) = {
+    //           Cmd(
+    //             s"length ${len}",
+    //             Opt("check"),
+    //             Opt("--init", "Init"),
+    //             Opt("--inv", "Inv"),
+    //             Opt("--next", "Next"),
+    //             Opt("--smt-encoding", enc),
+    //             Opt("--length", len),
+    //             Opt("--cinit", s"CInit$len"),
+    //           )
+    //         }
+    //         // TODO: Set to 14
+    //         0.to(4).flatMap { l =>
+    //           Seq(checkCmd("arrays", l), checkCmd("oopsla19", l))
+    //         }
+    //       },
+    //     )
+    //   ),
+    // ),
     benchmarks +=
-      // Bench.Suite(
-      //   name = "010encoding-SetAdd",
-      //   runs = Seq(
-      //     Bench.Runs(
-      //       "SetAdd",
-      //       timelimit = "2h",
-      //       tasks = Seq(
-      //         Tasks("SetAdd Array Encoding", Seq("array-encoding/SetAdd.tla"))
-      //       ),
-      //       cmds = {
-      //         def checkCmd(enc: String, len: Int) = {
-      //           Cmd(
-      //             s"length ${len}",
-      //             Opt("check"),
-      //             Opt("--init", "Init"),
-      //             Opt("--inv", "Inv"),
-      //             Opt("--next", "Next"),
-      //             Opt("--smt-encoding", enc),
-      //             Opt("--length", len),
-      //             Opt("--cinit", s"CInit$len"),
-      //           )
-      //         }
-      //         // TODO: Set to 14
-      //         0.to(4).flatMap { l =>
-      //           Seq(checkCmd("arrays", l), checkCmd("oopsla19", l))
-      //         }
-      //       },
-      //     )
-      //   ),
-      // ),
-      benchmarks +=
       Bench.Suite(
         name = "001indinv-apalache",
         runs = Seq(
