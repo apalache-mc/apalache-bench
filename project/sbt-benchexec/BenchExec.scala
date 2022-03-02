@@ -114,6 +114,13 @@ object BenchExec extends AutoPlugin {
   private def globPaths(glob: Glob): Seq[Path] =
     FileTreeView.default.list(glob).map(_._1)
 
+  private def tableGeneratorConfigXml(results: Seq[String]): xml.Elem = {
+    val resultFiles = results.zipWithIndex.map { case (f, i) =>
+      <result id={i.toString()} filename={f}/>
+    }
+    <table><union>{resultFiles}</union></table>
+  }
+
   lazy val benchexecReport: Def.Initialize[Task[Seq[File]]] =
     Def.task {
       val log = streams.value.log
@@ -124,40 +131,39 @@ object BenchExec extends AutoPlugin {
           globPaths(executed.state.resultDir.toGlob / "*.xml.bz2")
             .map(_.toString)
 
+        // Create the table-generator XML config
+        // We need to generate a custom table-generator config so we can
+        // combine all results from a given suite run into the same columns.
+        // See https://github.com/sosy-lab/benchexec/blob/main/doc/table-generator.md#complex-tables-with-custom-columns-or-combination-of-results
+        val tableGenConfig =
+          executed.state.resultDir / s"result.${timestamp()}.${executed.name}.table-generator.xml"
+        BenchExecXml.save(
+          tableGenConfig,
+          BenchExecXml.DocType.trableGenerator,
+          tableGeneratorConfigXml(results),
+        )
+
         val reportDir = benchmarkReportsDir.value / toolVersion / executed.name
         IO.createDirectory(reportDir)
 
         log.info(s"Generating report to ${reportDir}")
         // Generate the table using the benchexec table-generator CLI tool
+        // See https://github.com/sosy-lab/benchexec/blob/main/doc/table-generator.md
         val cmd =
-          "table-generator" +: "--outputpath" +: reportDir.toString +: results
-        log.info(cmd.toString)
+          Seq(
+            "table-generator",
+            "-x",
+            tableGenConfig.toString,
+            "--outputpath",
+            reportDir.toString,
+          )
+        log.info("Generating results tables")
+        log.info(cmd.mkString(" "))
         Process(cmd) ! log
 
         reportDir
       }
     }
-
-  private def writePrettyXml(file: File, content: xml.Elem): Unit = {
-    val pp = new xml.PrettyPrinter(100, 2)
-    val formatted = pp.format(content)
-    IO.writer(file, "", charset = IO.defaultCharset) { w =>
-      // First write the encoding and doctype
-      xml.XML.write(
-        w,
-        xml.Text(""),
-        "UTF-8",
-        xmlDecl = true,
-        doctype =
-          xml.dtd.DocType("html", xml.dtd.SystemID("about:legacy-compat"), Nil),
-      )
-      w.append(
-        "<!-- NOTE: This file is generated. Edit the build.sbt instead. -->\n"
-      )
-      // Then write the pretty printed XML payload
-      w.append(formatted)
-    }
-  }
 
   private val columnsOfPath: Path => Seq[String] = p => {
     val lastPathIdx = p.getNameCount - 1
@@ -238,7 +244,7 @@ h1 {
             </body>
         </html>
 
-        writePrettyXml(file, page)
+        BenchExecXml.save(file, BenchExecXml.DocType.html, page)
       }
     }
 
