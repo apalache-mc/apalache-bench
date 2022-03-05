@@ -76,7 +76,7 @@ object BenchExecDsl {
       *
       * They have a name, and can saved saved to files
       */
-    sealed abstract class T[State] {
+    sealed abstract class T[+State] {
       val state: State
       val name: String
 
@@ -84,13 +84,48 @@ object BenchExecDsl {
       def save(dir: File): T[Defined]
     }
 
+    private class DefinedTasks(
+        filename: String,
+        taskDef: TaskDefinition.Format,
+        tasks: Tasks)
+        extends ToXml {
+      def toXml =
+        <tasks name={tasks.name}>
+          <include>{filename}</include>
+          {tasks.options.map(_.toXml)}
+        </tasks>
+
+      def addSuiteName(prefix: String): DefinedTasks = {
+        new DefinedTasks(s"${prefix}-${filename}", taskDef, tasks)
+      }
+
+      // We want the full task name to come from the task, so they are absolute
+      def save(dir: File) =
+        TaskDefinition.save(dir / filename, taskDef)
+    }
+
+    private object DefinedTasks {
+      def apply(prefix: String, tasks: Tasks): DefinedTasks = {
+        val requiredFiles =
+          // A wildcard for the directory in which each task file lives
+          tasks.filePatterns.map(f => (file(f).getParentFile() / "*").toString)
+
+        val taskDef = TaskDefinition.Format(
+          required_files = requiredFiles,
+          input_files = tasks.filePatterns,
+        )
+
+        new DefinedTasks(s"${prefix}-${tasks.name}.yml", taskDef, tasks)
+      }
+    }
+
     /** Benchmark runs derived from a set of commands and tasks */
-    case class Runs[State](
-        name: String,
-        cmds: Seq[Cmd],
-        tasks: Seq[Tasks],
-        timelimit: String = "none",
-        state: State = Specified())
+    class Runs[+State](
+        val name: String,
+        val cmds: Seq[Cmd],
+        tasks: Seq[DefinedTasks],
+        val timelimit: String = "none",
+        val state: State = Specified())
         extends T[State]
         with ToXml {
       def toXml =
@@ -99,7 +134,7 @@ object BenchExecDsl {
           {tasks.map(_.toXml)}
         </benchmark>
 
-      /** Save the XML representation of the runs definitions a file in `dir`
+      /** Save the XML and YAML representation of the definitions in `dir`
         *
         * The file's name is determined by the `name` of the runs
         */
@@ -107,25 +142,76 @@ object BenchExecDsl {
         assert(dir.isDirectory)
         val file = new File(dir, s"${name}.xml")
         BenchExecXml.save(file, BenchExecXml.DocType.benchmark, this.toXml)
-        this.copy(state = Defined(Seq(file)))
+        tasks.foreach(_.save(dir))
+        this.defined(Seq(file))
+      }
+
+      private def defined(files: Seq[File]): Runs[Defined] = {
+        new Runs(name, cmds, tasks, timelimit, state = Defined(files))
+      }
+
+      def executed(resultDir: File): Runs[Executed] = {
+        new Runs(name, cmds, tasks, timelimit, state = Executed(resultDir))
+      }
+
+      def addSuiteName(suiteName: String): Runs[Specified] = {
+        new Runs(
+          s"${suiteName}-${name}",
+          cmds,
+          tasks = tasks.map(_.addSuiteName(suiteName)),
+          timelimit,
+          state = Specified(),
+        )
+      }
+    }
+
+    object Runs {
+      def apply(
+          name: String,
+          cmds: Seq[Cmd],
+          tasks: Seq[Tasks],
+          timelimit: String = "none",
+        ): Runs[Specified] = {
+        val definedTasks = tasks.zipWithIndex.map { case (t, n) =>
+          DefinedTasks(f"${n + 1}%03d-${name}", t)
+        }
+        new Runs(name, cmds, definedTasks, timelimit)
       }
     }
 
     /** A suite of Runs each derived from possibly disjoint sets of commands and
       * tasks, but for which the resulting data is grouped as one set of results
       */
-    case class Suite[State](
-        name: String,
-        state: State = Specified(),
-        runs: Seq[Runs[State]])
+    class Suite[+State](
+        val name: String,
+        val runs: Seq[Runs[State]],
+        val state: State = Specified())
         extends T[State] {
+
       def save(dir: File): Suite[Defined] = {
         assert(dir.isDirectory)
         val savedRuns: Seq[Runs[Defined]] =
-          runs.map(r => r.copy(name = s"${name}-${r.name}").save(dir))
+          runs.map(_.save(dir))
         val xmlFiles: Seq[File] = savedRuns.flatMap(_.state.xmlFiles)
-        this.copy(state = Defined(xmlFiles), runs = savedRuns)
-        // this.copy(state = Defined(xmlFiles))
+        new Suite(name, runs = savedRuns, state = Defined(xmlFiles))
+      }
+
+      def executed(
+          resultDir: File,
+          executedRuns: Seq[Runs[Executed]],
+        ): Suite[Executed] = {
+        new Suite(name, executedRuns, state = Executed(resultDir))
+      }
+    }
+
+    object Suite {
+      def apply(
+          name: String,
+          runs: Seq[Runs[State]],
+          state: State = Specified(),
+        ): Suite[Specified] = {
+        val suiteRuns = runs.map(_.addSuiteName(name))
+        new Suite(name, suiteRuns, state = Specified())
       }
     }
 
@@ -153,7 +239,7 @@ object BenchExecDsl {
       val resultDir = workdir / s"${runs.name}.${timestamp}.results"
       IO.createDirectory(resultDir)
       Process(benchexecCmd(defFile, resultDir), workdir) ! log
-      runs.copy(state = Executed(resultDir))
+      runs.executed(resultDir)
     }
 
     /** Run all `Runs` of the `suite` with results to the same directory */
@@ -168,8 +254,8 @@ object BenchExecDsl {
       val resultDir = workdir / s"${suite.name}.${timestamp}.results"
       IO.createDirectory(resultDir)
       defFiles.foreach(f => Process(benchexecCmd(f, resultDir), workdir) ! log)
-      val executedRuns = suite.runs.map(_.copy(state = Executed(resultDir)))
-      suite.copy(state = Executed(resultDir), runs = executedRuns)
+      val executedRuns = suite.runs.map(_.executed(resultDir))
+      suite.executed(resultDir, executedRuns)
     }
   }
 }
