@@ -16,6 +16,9 @@ libraryDependencies ++= Seq(
   "org.scala-sbt" % "sbt" % "1.6.2",
 )
 
+// https://github.com/tototoshi/scala-csv
+libraryDependencies += "com.github.tototoshi" %% "scala-csv" % "1.3.10"
+
 lazy val sbt_benchexec = (project in file("."))
   .enablePlugins(SbtPlugin)
   .settings(
