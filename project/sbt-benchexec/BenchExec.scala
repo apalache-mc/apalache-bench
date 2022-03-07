@@ -46,6 +46,10 @@ object BenchExec extends AutoPlugin {
         "Update the index of reports to the `benchmarksIndex` file, if it has been set"
       )
 
+    lazy val benchmarksLongitudinalData =
+      taskKey[Option[File]](
+        "Update the data combining runs from different tool versions"
+      )
   }
 
   import autoImport._
@@ -248,6 +252,34 @@ h1 {
       }
     }
 
+  lazy val benchmarksLongitudinalDataImpl: Def.Initialize[Task[Option[File]]] =
+    Def.task {
+      val reportsDir = benchmarkReportsDir.value
+      val longReportsDir = reportsDir / "longitudinal"
+
+      // A map of all the latest reports organized by version and strategy:
+      // v1 -> (strategy0 -> latestResult, strategy1 -> latestResult)
+      // v2 -> (strategy0 -> latestResult, strategy1 -> latestResult)
+      // TODO Memoize on changes of report dir
+      val versionReports =
+        globPaths(reportsDir.toGlob / *)
+          .foldLeft(Map[String, List[(String, Path)]]()) { (m, versionDir) =>
+            val v = versionDir.getFileName().toString()
+            m ++ Map(
+              globPaths(versionDir.toGlob / *).map { strategy =>
+                val s = strategy.getFileName().toString()
+                val latestResult = globPaths(strategy.toGlob / "*.csv")
+                  .maxBy(_.toFile.lastModified)
+                s -> (v -> latestResult :: m.getOrElse(s, List()))
+              }: _*
+            )
+          }
+
+      println(versionReports)
+      // TODO
+      None
+    }
+
   override lazy val globalSettings = Seq(
     benchmarksIndexFile := None,
     benchmarkReportsDir := (ThisBuild / baseDirectory).value / "src" / "site" / "reports",
@@ -259,6 +291,7 @@ h1 {
     benchmarksRun := benchexecRun.value,
     benchmarksReport := benchexecReport.value,
     benchmarksIndexUpdate := benchmarksIndexUpdateImpl.value,
+    benchmarksLongitudinalData := benchmarksLongitudinalDataImpl.value,
     // Compile / compile := ((Compile / compile)
     //   .dependsOn(benchmarksDef))
     //   .value,
