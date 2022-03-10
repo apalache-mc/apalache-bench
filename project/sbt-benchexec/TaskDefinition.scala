@@ -6,31 +6,27 @@ import io.circe.parser._
 import io.circe.syntax._
 
 import sbt._
-/*
 
-{
-  "format_version": "2.0",
-  "input_files": ["foo/bar.tla", "fix/bix.tla"],
-  "required_files": ["foo/baraux.tla", "fix/bixaux.tla"]
-}
-
- * TODO
-properties:
-  - property_file: ../properties/unreach-call.prp
-    expected_verdict: true
-  - property_file: ../properties/valid-memsafety.prp
-    expected_verdict: false
-    subproperty: valid-memtrack
-
- * * */
+/* TaskDefinition.Format generates JSON that satisfies BenchExec's
+ * task-definition YAML formt
+ * It looks like this
+ *
+ *  {
+ *  "format_version": "2.0",
+ *  "input_files": ["foo/bar.tla", "fix/bix.tla"],
+ *  "required_files": ["foo/baraux.tla", "fix/bixaux.tla"]
+ *  }
+ *
+ * TODO add support for properties
+ *  properties:
+ *    - property_file: ../properties/unreach-call.prp
+ *      expected_verdict: true
+ *    - property_file: ../properties/valid-memsafety.prp
+ *      expected_verdict: false
+ *      subproperty: valid-memtrack
+ */
 
 object TaskDefinition {
-
-  // TODO In case we should take the files as Files
-  // implicit val encodeFIle: Encoder[File] = Encoder.instance { f: File =>
-  //   f.toString.asJson
-  // }
-
   case class Format(
       required_files: Seq[String],
       input_files: Seq[String],

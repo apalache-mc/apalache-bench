@@ -6,11 +6,13 @@ import java.util.Date
 import org.apache.commons.io.FilenameUtils
 import sbt.nio.file.{Glob, FileTreeView}
 import java.nio.file.Path
+import com.github.tototoshi.csv._
 
 import sbt._
 import Keys._
 
 object BenchExec extends AutoPlugin {
+  val Chart = LongitudinalChart
   object autoImport {
     val BenchExecDsl = systems.informal.sbt.benchexec.BenchExecDsl
 
@@ -46,8 +48,12 @@ object BenchExec extends AutoPlugin {
         "Update the index of reports to the `benchmarksIndex` file, if it has been set"
       )
 
+    lazy val benchmarksLongitudinalVersions = taskKey[Set[String]](
+      "The versions to include in the longitudinal performance reports"
+    )
+
     lazy val benchmarksLongitudinalData =
-      taskKey[Option[File]](
+      taskKey[Seq[File]](
         "Update the data combining runs from different tool versions"
       )
   }
@@ -252,36 +258,107 @@ h1 {
       }
     }
 
-  lazy val benchmarksLongitudinalDataImpl: Def.Initialize[Task[Option[File]]] =
+  // Use tab-separated CSV, as per benchexec
+  implicit object CSVDelimFormat extends DefaultCSVFormat {
+    override val delimiter = '\t'
+  }
+
+  private def parseResults(
+      experiment: String,
+      results: Map[String, Path],
+    ): List[Chart.Report] = {
+
+    val cputimeReport = Chart.Report("cputime")
+    val walltimeReport = Chart.Report("walltime")
+    val memoryReport = Chart.Report("memory")
+
+    for ((version, resultPath) <- results) {
+      CSVReader
+        .open(resultPath.toFile)
+        .all()
+        .drop(3)
+        .foreach {
+          case task :: id :: status :: cputime :: walltime :: memory :: Nil => {
+            cputimeReport.addResult(version, s"${task}:${id}", cputime.toDouble)
+            walltimeReport.addResult(
+              version,
+              s"${task}:${id}",
+              walltime.toDouble,
+            )
+            memoryReport.addResult(version, s"${task}:${id}", memory.toDouble)
+          }
+          case row =>
+            throw new RuntimeException(s"Invalid report data row: ${row}")
+        }
+    }
+
+    List(cputimeReport, walltimeReport, memoryReport)
+  }
+
+  lazy val benchmarksLongitudinalDataImpl: Def.Initialize[Task[Seq[File]]] =
     Def.task {
       val reportsDir = benchmarkReportsDir.value
       val longReportsDir = reportsDir / "longitudinal"
+      val versionsToInclude = benchmarksLongitudinalVersions.value
 
-      // A map of all the latest reports organized by version and strategy:
-      // v1 -> (strategy0 -> latestResult, strategy1 -> latestResult)
-      // v2 -> (strategy0 -> latestResult, strategy1 -> latestResult)
+      def shouldIncludeReport(p: Path): Boolean =
+        versionsToInclude.contains(p.getFileName().toString)
+
       // TODO Memoize on changes of report dir
-      val versionReports =
-        globPaths(reportsDir.toGlob / *)
-          .foldLeft(Map[String, List[(String, Path)]]()) { (m, versionDir) =>
+      val versionReports = {
+
+        // We always want to include the latest generated report
+        val latestReport +: olderReports =
+          globPaths(reportsDir.toGlob / *)
+            .sortBy(_.toFile().lastModified())
+            .reverse
+
+        val otherReportsToInclude = olderReports.filter(shouldIncludeReport)
+
+        // A map of all the latest reports organized by version and strategy:
+        // v1 -> (strategy0 -> latestResult, strategy1 -> latestResult)
+        // v2 -> (strategy0 -> latestResult, strategy1 -> latestResult)
+        val emptyMap: Map[String, Map[String, Path]] =
+          Map()
+        val reportsToInclude = latestReport +: otherReportsToInclude
+
+        val reportsByExperiment = reportsToInclude.foldLeft(emptyMap) {
+          (m, versionDir) =>
             val v = versionDir.getFileName().toString()
-            m ++ Map(
+            val results = {
               globPaths(versionDir.toGlob / *).map { strategy =>
                 val s = strategy.getFileName().toString()
-                val latestResult = globPaths(strategy.toGlob / "*.csv")
-                  .maxBy(_.toFile.lastModified)
-                s -> (v -> latestResult :: m.getOrElse(s, List()))
-              }: _*
-            )
-          }
+                val latestResult =
+                  globPaths(strategy.toGlob / "*.csv")
+                    .maxBy(_.toFile.lastModified)
+                val strategyResults =
+                  m.getOrElse(s, Map()) + (v -> latestResult)
+                s -> strategyResults
+              }
+            }
+            m ++ results
+        }
 
+        reportsByExperiment.map { case (experiment, results) =>
+          experiment -> parseResults(experiment, results).map(
+            _.asJson.toString
+          ),
+        }
+      }
+
+      // TODO Parse CSVs into Chart.js compatible JSON
+      // - [  ] Task + id: X axis labels
+      // TODO Create an HTML tempalte with the required Chart.js javascript
+      // TODO Fore each experiment, instantiate the template with the JSON data
+      // TODO Add entries to index.html pointing to each longitudinal report
+      // TODO Use https://www.chartjs.org/docs/latest/getting-started/ for rendering
       println(versionReports)
-      // TODO
-      None
+      Seq()
     }
 
   override lazy val globalSettings = Seq(
     benchmarksIndexFile := None,
+    benchmarksLongitudinalVersions := Set(),
     benchmarkReportsDir := (ThisBuild / baseDirectory).value / "src" / "site" / "reports",
   )
 
