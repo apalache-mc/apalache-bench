@@ -1,8 +1,29 @@
 on:
   # Every pull request
   pull_request:
+  workflow_dispatch:
+    # Allows manually triggering release
+    inputs:
+      release_version:
+        description: "Version/branch to benchmark. See README.md for syntax. (defaults to unstable branch)"
+        required: false
+        default: ""
+      # exp_strategy:
+      #   description: "Limit the benchmark runs to just the given strategy -- leave blank to run all default strategies (run with `arrays-encoding` or see the *STRATEGIES file for supported strategies)"
+      #   required: false
+      #   default: ""
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # Automatically run the benchmarks on unstable every Saturday
+    # See https://crontab.guru/#0_0_*_*_6
+    - cron: "0 0 * * 6"
 
 name: benchmarks
+
+env:
+  VERSION: ${{ github.event.inputs.release_version || '#unstable' }}
+  # STRATEGY: ${{ github.event.inputs.exp_strategy }}
+  # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   run-benchmars:
@@ -26,6 +47,6 @@ jobs:
         run: |
           # Ensure we have the needed dirs in PATH and PYTHONPATH
           source ./.envrc
-          sbt benchmarksReport
+          sbt 'set apalacheVersion := "${{ env.VERSION }}"; benchmarksReport'
       - name: Generate site
         run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
