@@ -13,6 +13,7 @@ import Keys._
 
 object BenchExec extends AutoPlugin {
   val Chart = LongitudinalChart
+
   object autoImport {
     val BenchExecDsl = systems.informal.sbt.benchexec.BenchExecDsl
 
@@ -91,18 +92,6 @@ object BenchExec extends AutoPlugin {
       }
     }
 
-  private def benchexecCmd(file: File, outdir: File): List[String] =
-    List(
-      "benchexec",
-      file.name,
-      "--output",
-      outdir.name,
-      "--read-only-dir",
-      "/",
-      "--overlay-dir",
-      "/home",
-    )
-
   private def timestamp() =
     new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date())
 
@@ -174,7 +163,7 @@ object BenchExec extends AutoPlugin {
           )
         log.info("Generating results tables")
         log.info(cmd.mkString(" "))
-        Process(cmd) ! log
+        Exec.succeed(cmd, log)
 
         reportDir
       }
@@ -211,6 +200,7 @@ object BenchExec extends AutoPlugin {
 
   lazy val benchmarksIndexUpdateImpl: Def.Initialize[Task[Unit]] =
     Def.task {
+      val log = streams.value.log
       benchmarksIndexFile.value.map { file =>
         val reportsDir = benchmarkReportsDir.value.toPath
         val longitudinalLinks =
@@ -276,6 +266,7 @@ h1 {
             </body>
         </html>
 
+        log.info(s"Saving updated site index to $file")
         BenchExecXml.save(file, BenchExecXml.DocType.html, page)
       }
     }

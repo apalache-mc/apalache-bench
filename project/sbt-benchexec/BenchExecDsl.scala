@@ -238,7 +238,7 @@ object BenchExecDsl {
       val defFile = runs.state.xmlFiles(0)
       val resultDir = workdir / s"${runs.name}.${timestamp}.results"
       IO.createDirectory(resultDir)
-      Process(benchexecCmd(defFile, resultDir), workdir) ! log
+      Exec.succeed(Process(benchexecCmd(defFile, resultDir), workdir), log)
       runs.executed(resultDir)
     }
 
@@ -253,7 +253,9 @@ object BenchExecDsl {
       val defFiles: Seq[File] = suite.state.xmlFiles
       val resultDir = workdir / s"${suite.name}.${timestamp}.results"
       IO.createDirectory(resultDir)
-      defFiles.foreach(f => Process(benchexecCmd(f, resultDir), workdir) ! log)
+      defFiles.foreach(f =>
+        Exec.succeed(Process(benchexecCmd(f, resultDir), workdir), log)
+      )
       val executedRuns = suite.runs.map(_.executed(resultDir))
       suite.executed(resultDir, executedRuns)
     }

@@ -1,4 +1,4 @@
-package system.informal.sbt.apalache
+package systems.informal.sbt.apalache
 
 import scala.sys.process.Process
 import sbt._
@@ -94,9 +94,12 @@ object Apalache extends AutoPlugin {
         IO.createDirectory(destDir)
         val destTar = destDir / "apalache.tgz"
         log.info(s"Fetching Apalache release version ${version} to ${destDir}")
-        Process(fetchByVersion(version, destTar)) ! log
+        Execute.succeed(Process(fetchByVersion(version, destTar)), log)
         log.info(s"Unpacking Apalache to ${destDir}")
-        Process(s"tar zxvf ${destTar} --strip-components=1 -C ${destDir}") ! log
+        Execute.succeed(
+          Process(s"tar zxvf ${destTar} --strip-components=1 -C ${destDir}"),
+          log,
+        )
       }
       case Version.Branch(version) => {
         if (destDir.exists()) {
@@ -105,10 +108,10 @@ object Apalache extends AutoPlugin {
         } else {
           IO.createDirectory(destDir)
           log.info(s"Fetching Apalache branch ${version} to ${destDir}")
-          Process(fetchByBranch(version, destDir)) ! log
+          Execute.succeed(Process(fetchByBranch(version, destDir)), log)
         }
         log.info("Building Apalache")
-        Process(s"make -C ${destDir} package") ! log
+        Execute.succeed(Process(s"make -C ${destDir} package"), log)
       }
     }
     destDir
@@ -122,7 +125,7 @@ object Apalache extends AutoPlugin {
     log.info(s"Symlinking ${symlink} -> ${executableDir}")
     val cmd = s"ln -sfn ${executableDir} ${symlink} "
     log.info(cmd)
-    Process(cmd) ! log
+    Execute.succeed(Process(cmd), log)
 
     val exec = symlink / "bin" / "apalache-mc"
     (Process(s"""${exec} version""") !! log).trim()
