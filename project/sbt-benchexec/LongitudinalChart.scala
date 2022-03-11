@@ -8,6 +8,7 @@ import io.circe._
 import io.circe.generic.auto._
 import io.circe.parser._
 import io.circe.syntax._
+import io.circe.generic.semiauto._
 
 import sbt._
 
@@ -78,7 +79,7 @@ object LongitudinalChart {
       results(version) += (taskId -> value)
     }
 
-    def asJson(): Json =
+    def toJson(): Json =
       ReportPayload(
         metric = metric,
         data = this.toData(),
@@ -86,42 +87,20 @@ object LongitudinalChart {
   }
 
   def chart(report: Report): xml.Elem = {
-    val script = xml.Unparsed("""
-const ctx = document.getElementById('myChart').getContext('2d');
-const myChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-        datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1
-        }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true,
-                title: {
-                    display: true,
-                    text:"TODO: Metric"
-                }
-            }
-        }
-    }
-});
-""")
+    val canvasId = s"${report.metric}-canvas"
+    val divId = s"${report.metric}-div"
     <div class="chart-section">
-        <h1>TODO: Title</h1>
-        <div class="chart-container">
-            <canvas id="chartID" width="400" height="400"></canvas>
+        <h2 class="metric-header">{report.metric}</h2>
+        <div id={divId} class="chart-container">
+            <canvas id={canvasId}></canvas>
         </div>
-        <script>
-            {script}
-        </script>
     </div>
   }
+
+  implicit val reportEncoder: Encoder[Report] =
+    new Encoder[Report] {
+      final def apply(r: Report): Json = r.toJson()
+    }
 
   /** A page that displays longitudinal results
     *
@@ -129,20 +108,71 @@ const myChart = new Chart(ctx, {
     *   map from version to result data
     */
   case class Page(
-      experimentName: String) {
+      experimentName: String,
+      reports: List[Report]) {
 
-    val page =
+    val data = xml.Unparsed(reports.asJson.toString)
+
+    val script = xml.Unparsed("""
+const reportData = JSON.parse(document.getElementById("report-data").innerHTML)
+for (const data of reportData) {
+    const ctx = document.getElementById(data.metric + '-canvas').getContext('2d');
+    new Chart(ctx, {
+            type: 'line',
+            data: data.data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: data.metric
+                        }
+                    }
+                }
+            }
+        }
+    )
+};
+""")
+
+    val style = xml.Unparsed("""
+body {
+  max-width: 80%;
+  padding: 10px;
+  margin: auto;
+}
+
+.metric-header {
+  text-align: center;
+}
+""")
+
+    val content =
       <html lang="en">
         <head>
-            <title>Longitudinal Results For {}</title>
+            <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+            <meta content="utf-8" http-equiv="encoding"/>
+            <title>Longitudinal Results For {experimentName}</title>
                 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
             </head>
         <body>
+            <style>
+                {style}
+            </style>
+            <script type="application/json" id="report-data">
+                {data}
+            </script>
+            <h1>Longitudinal Results For {experimentName}</h1>
+            {reports.map(chart)}
+            <script>
+                {script}
+            </script>
         </body>
       </html>
 
     def save(f: File): Unit = {
-      BenchExecXml.save(f, BenchExecXml.DocType.html, page)
+      BenchExecXml.save(f, BenchExecXml.DocType.html, content)
     }
   }
 }

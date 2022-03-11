@@ -32,6 +32,11 @@ object BenchExec extends AutoPlugin {
     lazy val benchmarksReport =
       taskKey[Seq[File]]("Reports from a benchmarking run")
 
+    lazy val benchmarksSiteDir =
+      settingKey[File](
+        "The site used to share and serve human-readible reports and charts"
+      )
+
     lazy val benchmarkReportsDir =
       settingKey[File]("The location to which generated reports are written")
 
@@ -263,10 +268,7 @@ h1 {
     override val delimiter = '\t'
   }
 
-  private def parseResults(
-      experiment: String,
-      results: Map[String, Path],
-    ): List[Chart.Report] = {
+  private def parseResults(results: Map[String, Path]): List[Chart.Report] = {
 
     val cputimeReport = Chart.Report("cputime")
     val walltimeReport = Chart.Report("walltime")
@@ -297,54 +299,55 @@ h1 {
 
   lazy val benchmarksLongitudinalDataImpl: Def.Initialize[Task[Seq[File]]] =
     Def.task {
+      val log = streams.value.log
       val reportsDir = benchmarkReportsDir.value
-      val longReportsDir = reportsDir / "longitudinal"
+      val longReportsDir = benchmarksSiteDir.value / "longitudinal"
       val versionsToInclude = benchmarksLongitudinalVersions.value
 
       def shouldIncludeReport(p: Path): Boolean =
         versionsToInclude.contains(p.getFileName().toString)
 
       // TODO Memoize on changes of report dir
-      val versionReports = {
+      // We always want to include the latest generated report
+      val latestReport +: olderReports =
+        globPaths(reportsDir.toGlob / *)
+          .sortBy(_.toFile().lastModified())
+          .reverse
 
-        // We always want to include the latest generated report
-        val latestReport +: olderReports =
-          globPaths(reportsDir.toGlob / *)
-            .sortBy(_.toFile().lastModified())
-            .reverse
+      val otherReportsToInclude = olderReports.filter(shouldIncludeReport)
 
-        val otherReportsToInclude = olderReports.filter(shouldIncludeReport)
+      // A map of all the latest reports organized by version and strategy:
+      // v1 -> (strategy0 -> latestResult, strategy1 -> latestResult)
+      // v2 -> (strategy0 -> latestResult, strategy1 -> latestResult)
+      val emptyMap: Map[String, Map[String, Path]] =
+        Map()
+      val reportsToInclude = latestReport +: otherReportsToInclude
 
-        // A map of all the latest reports organized by version and strategy:
-        // v1 -> (strategy0 -> latestResult, strategy1 -> latestResult)
-        // v2 -> (strategy0 -> latestResult, strategy1 -> latestResult)
-        val emptyMap: Map[String, Map[String, Path]] =
-          Map()
-        val reportsToInclude = latestReport +: otherReportsToInclude
-
-        val reportsByExperiment = reportsToInclude.foldLeft(emptyMap) {
-          (m, versionDir) =>
-            val v = versionDir.getFileName().toString()
-            val results = {
-              globPaths(versionDir.toGlob / *).map { strategy =>
-                val s = strategy.getFileName().toString()
-                val latestResult =
-                  globPaths(strategy.toGlob / "*.csv")
-                    .maxBy(_.toFile.lastModified)
-                val strategyResults =
-                  m.getOrElse(s, Map()) + (v -> latestResult)
-                s -> strategyResults
-              }
+      val reportsByExperiment = reportsToInclude.foldLeft(emptyMap) {
+        (m, versionDir) =>
+          val v = versionDir.getFileName().toString()
+          val versionExperiments = globPaths(versionDir.toGlob / *)
+          val results = {
+            versionExperiments.map { strategy =>
+              val s = strategy.getFileName().toString()
+              val latestResult =
+                globPaths(strategy.toGlob / "*.csv")
+                  .maxBy(_.toFile.lastModified)
+              val strategyResults =
+                m.getOrElse(s, Map()) + (v -> latestResult)
+              s -> strategyResults
             }
-            m ++ results
-        }
-
-        reportsByExperiment.map { case (experiment, results) =>
-          experiment -> parseResults(experiment, results).map(
-            _.asJson.toString
-          ),
-        }
+          }
+          // Add results
+          m ++ results
       }
+
+      reportsByExperiment.map { case (experiment, results) =>
+        val pageFile = longReportsDir / s"${experiment}.html"
+        log.info(s"Saving longitudinal report for ${experiment} to ${pageFile}")
+        Chart.Page(experiment, parseResults(results)).save(pageFile)
+        pageFile
+      }.toSeq
 
       // TODO Parse CSVs into Chart.js compatible JSON
       // - [  ] Task + id: X axis labels
@@ -352,14 +355,13 @@ h1 {
       // TODO Fore each experiment, instantiate the template with the JSON data
       // TODO Add entries to index.html pointing to each longitudinal report
       // TODO Use https://www.chartjs.org/docs/latest/getting-started/ for rendering
-      println(versionReports)
-      Seq()
     }
 
   override lazy val globalSettings = Seq(
     benchmarksIndexFile := None,
     benchmarksLongitudinalVersions := Set(),
-    benchmarkReportsDir := (ThisBuild / baseDirectory).value / "src" / "site" / "reports",
+    benchmarksSiteDir := (ThisBuild / baseDirectory).value / "src" / "site",
+    benchmarkReportsDir := benchmarksSiteDir.value / "reports",
   )
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
