@@ -11,6 +11,9 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-parser",
 ).map(_ % circeVersion)
 
+// https://github.com/tototoshi/scala-csv
+libraryDependencies += "com.github.tototoshi" %% "scala-csv" % "1.3.10"
+
 libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.11.0",
   "org.scala-sbt" % "sbt" % "1.6.2",

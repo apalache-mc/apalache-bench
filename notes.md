@@ -40,7 +40,7 @@ Ends up in the `results` dir in the working directory
     - [ ] Construct index for all benchmarks
 - [ ] Transfer over the existing benchmarks
 - [ ] Fix any missing results in output data
-  - [ ] Compare across different version wc
+- [ ] Compare across different version wc
 - [ ] Enable running individual suites
 - [ ] Enable running individual benchmarks in a suite?
 - [ ] Open source the benchexec sbt rules

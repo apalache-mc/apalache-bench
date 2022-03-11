@@ -7,6 +7,9 @@
 
 ## Running the benchmarks
 
+**NOTE:** The Apalache benchmarking framework is only compatible with Apalache
+\>= `v0.22.0`.
+
 ### For all projects
 
 ``` sh

@@ -6,11 +6,13 @@ import java.util.Date
 import org.apache.commons.io.FilenameUtils
 import sbt.nio.file.{Glob, FileTreeView}
 import java.nio.file.Path
+import com.github.tototoshi.csv._
 
 import sbt._
 import Keys._
 
 object BenchExec extends AutoPlugin {
+  val Chart = LongitudinalChart
   object autoImport {
     val BenchExecDsl = systems.informal.sbt.benchexec.BenchExecDsl
 
@@ -30,6 +32,11 @@ object BenchExec extends AutoPlugin {
     lazy val benchmarksReport =
       taskKey[Seq[File]]("Reports from a benchmarking run")
 
+    lazy val benchmarksSiteDir =
+      settingKey[File](
+        "The site used to share and serve human-readible reports and charts"
+      )
+
     lazy val benchmarkReportsDir =
       settingKey[File]("The location to which generated reports are written")
 
@@ -46,6 +53,14 @@ object BenchExec extends AutoPlugin {
         "Update the index of reports to the `benchmarksIndex` file, if it has been set"
       )
 
+    lazy val benchmarksLongitudinalVersions = taskKey[Set[String]](
+      "The versions to include in the longitudinal performance reports"
+    )
+
+    lazy val benchmarksLongitudinalUpdate =
+      taskKey[Seq[File]](
+        "Update the data combining runs from different tool versions"
+      )
   }
 
   import autoImport._
@@ -115,7 +130,7 @@ object BenchExec extends AutoPlugin {
     FileTreeView.default.list(glob).map(_._1)
 
   private def tableGeneratorConfigXml(results: Seq[String]): xml.Elem = {
-    val resultFiles = results.zipWithIndex.map { case (f, i) =>
+    val resultFiles = results.sorted.zipWithIndex.map { case (f, i) =>
       <result id={i.toString()} filename={f}/>
     }
     <table><union>{resultFiles}</union></table>
@@ -182,10 +197,24 @@ object BenchExec extends AutoPlugin {
     }
   }
 
+  private def longitudinalExperimentLinks(siteDir: Path): xml.Elem = {
+    val longReportsDir = siteDir / "longitudinal"
+    val items = globPaths(longReportsDir.toGlob / ** / "*.html").map { report =>
+      val name = report.getFileName.toString
+      val link = s"longitudinal/${name}"
+      <li><a href={link}>{name}</a></li>
+    }
+    <ul>
+      {items}
+    </ul>
+  }
+
   lazy val benchmarksIndexUpdateImpl: Def.Initialize[Task[Unit]] =
     Def.task {
       benchmarksIndexFile.value.map { file =>
         val reportsDir = benchmarkReportsDir.value.toPath
+        val longitudinalLinks =
+          longitudinalExperimentLinks(benchmarksSiteDir.value.toPath)
         val resultsData =
           globPaths(reportsDir.toGlob / ** / "*.html")
             .map { path =>
@@ -234,6 +263,9 @@ h1 {
             </head>
             <body>
               <h1>Apalache Benchmark Reports</h1>
+              <h2>Longitudinal Comparison of Experiments</h2>
+                {longitudinalLinks}
+              <h2>Individual Experiments</h2>
               <table id="results-table" class="table table-striped sampleTable">
                 <thead>{header}</thead>
                 <tbody>{rows}</tbody>
@@ -248,9 +280,97 @@ h1 {
       }
     }
 
+  // Use tab-separated CSV, as per benchexec
+  implicit object CSVDelimFormat extends DefaultCSVFormat {
+    override val delimiter = '\t'
+  }
+
+  private def parseResults(results: Map[String, Path]): List[Chart.Report] = {
+
+    val cputimeReport = Chart.Report("cputime")
+    val walltimeReport = Chart.Report("walltime")
+    val memoryReport = Chart.Report("memory")
+
+    for ((version, resultPath) <- results) {
+      CSVReader
+        .open(resultPath.toFile)
+        .all()
+        .drop(3)
+        .foreach {
+          case task :: id :: status :: cputime :: walltime :: memory :: Nil => {
+            cputimeReport.addResult(version, s"${task}:${id}", cputime.toDouble)
+            walltimeReport.addResult(
+              version,
+              s"${task}:${id}",
+              walltime.toDouble,
+            )
+            memoryReport.addResult(version, s"${task}:${id}", memory.toDouble)
+          }
+          case row =>
+            throw new RuntimeException(s"Invalid report data row: ${row}")
+        }
+    }
+
+    List(cputimeReport, walltimeReport, memoryReport)
+  }
+
+  lazy val benchmarksLongitudinalDataImpl: Def.Initialize[Task[Seq[File]]] =
+    Def.task {
+      val log = streams.value.log
+      val reportsDir = benchmarkReportsDir.value
+      val longReportsDir = benchmarksSiteDir.value / "longitudinal"
+      val versionsToInclude = benchmarksLongitudinalVersions.value
+
+      def shouldIncludeReport(p: Path): Boolean =
+        versionsToInclude.contains(p.getFileName().toString)
+
+      // TODO Memoize on changes of report dir
+      // We always want to include the latest generated report
+      val latestReport +: olderReports =
+        globPaths(reportsDir.toGlob / *)
+          .sortBy(_.toFile().lastModified())
+          .reverse
+
+      val otherReportsToInclude = olderReports.filter(shouldIncludeReport)
+
+      // A map of all the latest reports organized by version and strategy:
+      // v1 -> (strategy0 -> latestResult, strategy1 -> latestResult)
+      // v2 -> (strategy0 -> latestResult, strategy1 -> latestResult)
+      val emptyMap: Map[String, Map[String, Path]] = Map()
+      val reportsToInclude = latestReport +: otherReportsToInclude
+
+      val reportsByExperiment = reportsToInclude.foldLeft(emptyMap) {
+        (m, versionDir) =>
+          val v = versionDir.getFileName().toString()
+          val versionExperiments = globPaths(versionDir.toGlob / *)
+          val results = {
+            versionExperiments.map { strategy =>
+              val s = strategy.getFileName().toString()
+              val latestResult =
+                globPaths(strategy.toGlob / "*.csv")
+                  .maxBy(_.toFile.lastModified)
+              val strategyResults =
+                m.getOrElse(s, Map()) + (v -> latestResult)
+              s -> strategyResults
+            }
+          }
+          // Add results
+          m ++ results
+      }
+
+      reportsByExperiment.map { case (experiment, results) =>
+        val pageFile = longReportsDir / s"${experiment}.html"
+        log.info(s"Saving longitudinal report for ${experiment} to ${pageFile}")
+        Chart.Page(experiment, parseResults(results)).save(pageFile)
+        pageFile
+      }.toSeq
+    }
+
   override lazy val globalSettings = Seq(
     benchmarksIndexFile := None,
-    benchmarkReportsDir := (ThisBuild / baseDirectory).value / "src" / "site" / "reports",
+    benchmarksLongitudinalVersions := Set(),
+    benchmarksSiteDir := (ThisBuild / baseDirectory).value / "src" / "site",
+    benchmarkReportsDir := benchmarksSiteDir.value / "reports",
   )
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
@@ -259,6 +379,7 @@ h1 {
     benchmarksRun := benchexecRun.value,
     benchmarksReport := benchexecReport.value,
     benchmarksIndexUpdate := benchmarksIndexUpdateImpl.value,
+    benchmarksLongitudinalUpdate := benchmarksLongitudinalDataImpl.value,
     // Compile / compile := ((Compile / compile)
     //   .dependsOn(benchmarksDef))
     //   .value,
