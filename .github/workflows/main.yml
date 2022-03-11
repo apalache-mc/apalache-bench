@@ -17,6 +17,8 @@ jobs:
         run: |
           sudo add-apt-repository ppa:sosy-lab/benchmarking
           sudo apt install benchexec
+      - name: Set environment
+        run: source ./.envrc
       - name: Run benchmarks
         run: sbt benchmarksReport
       - name: Generate site
