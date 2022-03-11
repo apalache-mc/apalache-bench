@@ -70,3 +70,5 @@ site locally.
 ``` sh
 sbt makeSite ghpagesPushSite
 ```
+
+The site will be served at <https://informalsystems.github.io/apalache-bench/>.
