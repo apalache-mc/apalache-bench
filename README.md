@@ -4,6 +4,7 @@
 
 - [sbt](https://www.scala-sbt.org/1.x/docs/Setup.html)
 - [benchexec](https://github.com/sosy-lab/benchexec/blob/main/doc/INSTALL.md)
+- [direnv](https://direnv.net/) or run `source ./.envrc`
 
 ## Running the benchmarks
 
@@ -50,10 +51,10 @@ project, run:
 sbt performance/benchmarksReport
 ```
 
-## Updating the site index
+## Updating the site
 
-To generate the HTML file that indicates all of the reports, run
+To generate the site that presents the report data, run
 
 ``` sh
-sbt site/benchmarksIndexUpdate
+sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
 ```

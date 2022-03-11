@@ -17,11 +17,15 @@ jobs:
         run: |
           sudo add-apt-repository ppa:sosy-lab/benchmarking
           sudo apt install benchexec
+          # Workaround for inability to set persistant user groups
+          # across shells
+          sudo chmod o+wt /sys/fs/cgroup/blkio/system.slice/benchexec-cgroup.service /sys/fs/cgroup/cpu,cpuacct/system.slice/benchexec-cgroup.service /sys/fs/cgroup/cpuset/system.slice/benchexec-cgroup.service /sys/fs/cgroup/freezer/system.slice/benchexec-cgroup.service /sys/fs/cgroup/memory/system.slice/benchexec-cgroup.service
       - name: Check benchexec configuration
         run: python3 -m benchexec.check_cgroups
-      - name: Set environment
-        run: source ./.envrc
       - name: Run benchmarks
-        run: sbt benchmarksReport
+        run: |
+          # Ensure we have the needed dirs in PATH and PYTHONPATH
+          source ./.envrc
+          sbt benchmarksReport
       - name: Generate site
         run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
