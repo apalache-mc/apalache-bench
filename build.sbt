@@ -29,7 +29,10 @@ lazy val site = (project in file("src/site"))
   .settings(
     // Versions to include in the reports of performance accross versions
     benchmarksLongitudinalVersions := Set(
-      "0.22.1"
+      "0.22.0",
+      "0.22.1",
+      "0.22.2",
+      "v0.22.1-151-g3834a20d",
     ),
     benchmarksIndexFile := Some(baseDirectory.value / "index.html"),
   )

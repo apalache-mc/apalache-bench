@@ -57,7 +57,7 @@ object BenchExec extends AutoPlugin {
       "The versions to include in the longitudinal performance reports"
     )
 
-    lazy val benchmarksLongitudinalData =
+    lazy val benchmarksLongitudinalUpdate =
       taskKey[Seq[File]](
         "Update the data combining runs from different tool versions"
       )
@@ -130,7 +130,7 @@ object BenchExec extends AutoPlugin {
     FileTreeView.default.list(glob).map(_._1)
 
   private def tableGeneratorConfigXml(results: Seq[String]): xml.Elem = {
-    val resultFiles = results.zipWithIndex.map { case (f, i) =>
+    val resultFiles = results.sorted.zipWithIndex.map { case (f, i) =>
       <result id={i.toString()} filename={f}/>
     }
     <table><union>{resultFiles}</union></table>
@@ -197,10 +197,24 @@ object BenchExec extends AutoPlugin {
     }
   }
 
+  private def longitudinalExperimentLinks(siteDir: Path): xml.Elem = {
+    val longReportsDir = siteDir / "longitudinal"
+    val items = globPaths(longReportsDir.toGlob / ** / "*.html").map { report =>
+      val name = report.getFileName.toString
+      val link = s"longitudinal/${name}"
+      <li><a href={link}>{name}</a></li>
+    }
+    <ul>
+      {items}
+    </ul>
+  }
+
   lazy val benchmarksIndexUpdateImpl: Def.Initialize[Task[Unit]] =
     Def.task {
       benchmarksIndexFile.value.map { file =>
         val reportsDir = benchmarkReportsDir.value.toPath
+        val longitudinalLinks =
+          longitudinalExperimentLinks(benchmarksSiteDir.value.toPath)
         val resultsData =
           globPaths(reportsDir.toGlob / ** / "*.html")
             .map { path =>
@@ -249,6 +263,9 @@ h1 {
             </head>
             <body>
               <h1>Apalache Benchmark Reports</h1>
+              <h2>Longitudinal Comparison of Experiments</h2>
+                {longitudinalLinks}
+              <h2>Individual Experiments</h2>
               <table id="results-table" class="table table-striped sampleTable">
                 <thead>{header}</thead>
                 <tbody>{rows}</tbody>
@@ -319,8 +336,7 @@ h1 {
       // A map of all the latest reports organized by version and strategy:
       // v1 -> (strategy0 -> latestResult, strategy1 -> latestResult)
       // v2 -> (strategy0 -> latestResult, strategy1 -> latestResult)
-      val emptyMap: Map[String, Map[String, Path]] =
-        Map()
+      val emptyMap: Map[String, Map[String, Path]] = Map()
       val reportsToInclude = latestReport +: otherReportsToInclude
 
       val reportsByExperiment = reportsToInclude.foldLeft(emptyMap) {
@@ -348,13 +364,6 @@ h1 {
         Chart.Page(experiment, parseResults(results)).save(pageFile)
         pageFile
       }.toSeq
-
-      // TODO Parse CSVs into Chart.js compatible JSON
-      // - [  ] Task + id: X axis labels
-      // TODO Create an HTML tempalte with the required Chart.js javascript
-      // TODO Fore each experiment, instantiate the template with the JSON data
-      // TODO Add entries to index.html pointing to each longitudinal report
-      // TODO Use https://www.chartjs.org/docs/latest/getting-started/ for rendering
     }
 
   override lazy val globalSettings = Seq(
@@ -370,7 +379,7 @@ h1 {
     benchmarksRun := benchexecRun.value,
     benchmarksReport := benchexecReport.value,
     benchmarksIndexUpdate := benchmarksIndexUpdateImpl.value,
-    benchmarksLongitudinalData := benchmarksLongitudinalDataImpl.value,
+    benchmarksLongitudinalUpdate := benchmarksLongitudinalDataImpl.value,
     // Compile / compile := ((Compile / compile)
     //   .dependsOn(benchmarksDef))
     //   .value,
