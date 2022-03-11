@@ -1,0 +1,76 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<!-- NOTE: This file is generated. Edit the build.sbt instead. -->
+<html lang="en">
+  <head>
+    <title>Apalache Benchmark Reports</title>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <link 
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</link>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery.fancytable/dist/fancyTable.min.js"></script>
+    <style> body { margin: auto; width: 75%; padding: 5; } h1 { text-align: center; } </style>
+  </head>
+  <body>
+    <h1>Apalache Benchmark Reports</h1>
+    <h2>Longitudinal Comparison of Experiments</h2>
+    <ul>
+      <li>
+        <a href="longitudinal/010encoding-SetAdd.html">010encoding-SetAdd.html</a>
+      </li>
+    </ul>
+    <h2>Individual Experiments</h2>
+    <table id="results-table" class="table table-striped sampleTable">
+      <thead>
+        <tr>
+          <th>Version</th>
+          <th>Strategy</th>
+          <th>Results</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>0.22.0</td>
+          <td>010encoding-SetAdd</td>
+          <td>
+            <a 
+            href="reports/0.22.0/010encoding-SetAdd/result.2022-03-10T19-20-22.010encoding-SetAdd.table-generator.table.html">
+              2022-03-10T19-20-22
+</a>
+          </td>
+        </tr>
+        <tr>
+          <td>v0.22.1-151-g3834a20d</td>
+          <td>010encoding-SetAdd</td>
+          <td>
+            <a 
+            href="reports/v0.22.1-151-g3834a20d/010encoding-SetAdd/result.2022-03-10T19-19-56.010encoding-SetAdd.table-generator.table.html">
+              2022-03-10T19-19-56
+</a>
+          </td>
+        </tr>
+        <tr>
+          <td>0.22.1</td>
+          <td>010encoding-SetAdd</td>
+          <td>
+            <a 
+            href="reports/0.22.1/010encoding-SetAdd/result.2022-03-10T19-23-29.010encoding-SetAdd.table-generator.table.html">
+              2022-03-10T19-23-29
+</a>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <script>
+      $(document).ready(function() {
+                        $("#results-table").fancyTable({
+                            sortColumn:0,
+                            pagination: true,
+                            perPage:10,
+                            globalSearch:true
+                        });
+                });
+    </script>
+  </body>
+</html>
