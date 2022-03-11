@@ -24,6 +24,11 @@ lazy val root = (project in file("."))
     performance
   )
 
+// Configure GH pages site
+enablePlugins(GhpagesPlugin)
+git.remoteRepo := "git@github.com:informalsystems/apalache-bench.git"
+ghpagesNoJekyll := true
+
 lazy val site = (project in file("src/site"))
   .enablePlugins(BenchExec)
   .settings(

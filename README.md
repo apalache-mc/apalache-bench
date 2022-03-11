@@ -51,10 +51,22 @@ project, run:
 sbt performance/benchmarksReport
 ```
 
-## Updating the site
+## Generating reports and the website
 
-To generate the site that presents the report data, run
+### Updating the reports and site content
+
+To generate the site that gather and presents the report data, run
 
 ``` sh
 sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
+```
+
+This will update the files in [./src/site](./src/site). Open
+[./src/site/index.html](./src/site/index.html) in your browser to preview the
+site locally.
+
+### Publishing the site to gh-pages
+
+``` sh
+sbt makeSite ghpagesPushSite
 ```
