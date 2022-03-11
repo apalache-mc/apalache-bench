@@ -8,6 +8,7 @@ on:
         description: "Version/branch to benchmark. See README.md for syntax. (defaults to unstable branch)"
         required: false
         default: ""
+      # TODO: Once we've enabled running specific experiments
       # exp_strategy:
       #   description: "Limit the benchmark runs to just the given strategy -- leave blank to run all default strategies (run with `arrays-encoding` or see the *STRATEGIES file for supported strategies)"
       #   required: false
