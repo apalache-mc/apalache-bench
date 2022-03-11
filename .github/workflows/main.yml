@@ -17,6 +17,8 @@ jobs:
         run: |
           sudo add-apt-repository ppa:sosy-lab/benchmarking
           sudo apt install benchexec
+      - name: Check benchexec configuration
+        run: python3 -m benchexec.check_cgroups
       - name: Set environment
         run: source ./.envrc
       - name: Run benchmarks
