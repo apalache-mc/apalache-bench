@@ -55,9 +55,7 @@ jobs:
           sbt 'set apalacheVersion := "${{ env.VERSION }}"; benchmarksReport'
       - name: Generate site and report
         run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
-      - name: Commit report results and publish site
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit report results and generate site updates
         # ONLY RUN IF ON TRUNK
         # if:       - name: Build and publish website using Docusaurus
         run: |
@@ -67,4 +65,11 @@ jobs:
           git add -A
           git commit -m "[Bot] Adding reports from run of Apalache version ${{ env.VERSION }}"
           git push
-          sbt makeSite ghpagesPushSite
+          sbt makeSite
+      - name: Deploy updated site
+        # ONLY RUN IF ON TRUNK
+        # if:       - name: Build and publish website using Docusaurus
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./src/site
