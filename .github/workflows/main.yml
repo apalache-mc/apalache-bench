@@ -59,7 +59,7 @@ jobs:
         run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
       - name: Generate site updates and report results
         # ONLY RUN IF ON TRUNK
-        # if:       - name: Build and publish website using Docusaurus
+        if: github.ref == 'refs/heads/trunk'
         run: |
           sbt makeSite
           git config --global user.name 'apalache-bench-ci'
@@ -70,7 +70,7 @@ jobs:
           git push
       - name: Deploy updated site
         # ONLY RUN IF ON TRUNK
-        # if:       - name: Build and publish website using Docusaurus
+        if: github.ref == 'refs/heads/trunk'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
