@@ -39,6 +39,8 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Retrieve SBT Cache
+        uses: coursier/cache-action@v6
       - name: Install benchexec
         run: |
           sudo add-apt-repository ppa:sosy-lab/benchmarking
@@ -55,17 +57,17 @@ jobs:
           sbt 'set apalacheVersion := "${{ env.VERSION }}"; benchmarksReport'
       - name: Generate site and report
         run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
-      - name: Commit report results and generate site updates
+      - name: Generate site updates and report results
         # ONLY RUN IF ON TRUNK
         # if:       - name: Build and publish website using Docusaurus
         run: |
+          sbt makeSite
           git config --global user.name 'apalache-bench-ci'
           git config --global user.email 'apalache-bench-ci@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
           git add -A
           git commit -m "[Bot] Adding reports from run of Apalache version ${{ env.VERSION }}"
           git push
-          sbt makeSite
       - name: Deploy updated site
         # ONLY RUN IF ON TRUNK
         # if:       - name: Build and publish website using Docusaurus
