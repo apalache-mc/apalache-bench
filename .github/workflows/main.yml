@@ -27,7 +27,8 @@ env:
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  run-benchmars:
+  Run benchmarks:
+    if: github.ref != 'refs/heads/trunk'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -49,5 +50,14 @@ jobs:
           # Ensure we have the needed dirs in PATH and PYTHONPATH
           source ./.envrc
           sbt 'set apalacheVersion := "${{ env.VERSION }}"; benchmarksReport'
-      - name: Generate site
+      - name: Generate site and report
         run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
+      - name: Commit report results and publish site
+        # ONLY RUN IF ON TRUNK
+        # if: github.ref == 'refs/heads/trunk'
+        run: |
+          git config --global user.name 'apalache-bench-ci'
+          git config --global user.email 'apalache-bench-ci@users.noreply.github.com'
+          git commit -am "Adding reports from run of ${{ env.VERSION }}"
+          git push
+          sbt makeSite ghpagesPushSite
