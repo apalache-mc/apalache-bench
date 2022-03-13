@@ -61,6 +61,8 @@ jobs:
         run: |
           git config --global user.name 'apalache-bench-ci'
           git config --global user.email 'apalache-bench-ci@users.noreply.github.com'
-          git commit -am "Adding reports from run of ${{ env.VERSION }}"
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git add -A
+          git commit -m "[Bot] Adding reports from run of Apalache version ${{ env.VERSION }}"
           git push
           sbt makeSite ghpagesPushSite
