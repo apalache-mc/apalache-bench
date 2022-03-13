@@ -56,12 +56,11 @@ jobs:
           source ./.envrc
           sbt 'set apalacheVersion := "${{ env.VERSION }}"; benchmarksReport'
       - name: Generate site and report
-        run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
-      - name: Generate site updates and report results
+        run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate makeSite
+      - name: Commit updated results
         # ONLY RUN IF ON TRUNK
         if: github.ref == 'refs/heads/trunk'
         run: |
-          sbt makeSite
           git config --global user.name 'apalache-bench-ci'
           git config --global user.email 'apalache-bench-ci@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
