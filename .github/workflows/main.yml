@@ -56,8 +56,10 @@ jobs:
       - name: Generate site and report
         run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
       - name: Commit report results and publish site
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         # ONLY RUN IF ON TRUNK
-        # if: github.ref == 'refs/heads/trunk'
+        # if:       - name: Build and publish website using Docusaurus
         run: |
           git config --global user.name 'apalache-bench-ci'
           git config --global user.email 'apalache-bench-ci@users.noreply.github.com'
