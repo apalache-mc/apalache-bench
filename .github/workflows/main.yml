@@ -28,10 +28,13 @@ env:
 
 jobs:
   run-benchmarks:
-    if: github.ref != 'refs/heads/trunk'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          # Required to enable pushing report changes back to the branch
+          # See https://stackoverflow.com/a/58393457/1187277
+          ref: ${{ github.head_ref }}
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
