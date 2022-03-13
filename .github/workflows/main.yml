@@ -27,14 +27,20 @@ env:
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
-  run-benchmars:
+  run-benchmarks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          # Required to enable pushing report changes back to the branch
+          # See https://stackoverflow.com/a/58393457/1187277
+          ref: ${{ github.head_ref }}
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Retrieve SBT Cache
+        uses: coursier/cache-action@v6
       - name: Install benchexec
         run: |
           sudo add-apt-repository ppa:sosy-lab/benchmarking
@@ -49,5 +55,22 @@ jobs:
           # Ensure we have the needed dirs in PATH and PYTHONPATH
           source ./.envrc
           sbt 'set apalacheVersion := "${{ env.VERSION }}"; benchmarksReport'
-      - name: Generate site
-        run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
+      - name: Generate site and report
+        run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate makeSite
+      - name: Commit updated results
+        # ONLY RUN IF ON TRUNK
+        if: github.ref == 'refs/heads/trunk'
+        run: |
+          git config --global user.name 'apalache-bench-ci'
+          git config --global user.email 'apalache-bench-ci@users.noreply.github.com'
+          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git add -A
+          git commit -m "[Bot] Adding reports from run of Apalache version ${{ env.VERSION }}"
+          git push
+      - name: Deploy updated site
+        # ONLY RUN IF ON TRUNK
+        if: github.ref == 'refs/heads/trunk'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./src/site
