@@ -3,7 +3,7 @@ package systems.informal.sbt.benchexec
 import java.text.SimpleDateFormat
 import scala.sys.process.Process
 import java.util.Date
-import org.apache.commons.io.FilenameUtils
+import org.apache.commons.io.{FilenameUtils, FileUtils}
 import sbt.nio.file.{Glob, FileTreeView}
 import java.nio.file.Path
 import com.github.tototoshi.csv._
@@ -135,6 +135,9 @@ object BenchExec extends AutoPlugin {
           globPaths(executed.state.resultDir.toGlob / "*.xml.bz2")
             .map(_.toString)
 
+        val runFiles: Seq[Path] =
+          globPaths(executed.state.resultDir.toGlob / "*.files")
+
         // Create the table-generator XML config
         // We need to generate a custom table-generator config so we can
         // combine all results from a given suite run into the same columns.
@@ -149,6 +152,10 @@ object BenchExec extends AutoPlugin {
 
         val reportDir = benchmarkReportsDir.value / toolVersion / executed.name
         IO.createDirectory(reportDir)
+        runFiles.foreach { f =>
+          log.info(s"Copying run output for ${executed.name} to ${f}")
+          FileUtils.copyDirectory(f.toFile, reportDir / f.getFileName.toString)
+        }
 
         log.info(s"Generating report to ${reportDir}")
         // Generate the table using the benchexec table-generator CLI tool
