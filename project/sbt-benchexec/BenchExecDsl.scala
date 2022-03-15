@@ -215,7 +215,11 @@ object BenchExecDsl {
       }
     }
 
-    private def benchexecCmd(file: File, outdir: File): List[String] =
+    private def benchexecCmd(
+        file: File,
+        outdir: File,
+        debug: Boolean = true,
+      ): List[String] =
       List(
         "benchexec",
         file.name,
@@ -225,7 +229,11 @@ object BenchExecDsl {
         "/",
         "--overlay-dir",
         "/home",
-      )
+      ) ++ (if (debug) {
+              List("--debug")
+            } else {
+              List()
+            })
 
     def run(
         runs: Runs[Defined],
