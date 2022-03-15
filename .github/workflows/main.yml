@@ -43,8 +43,8 @@ jobs:
         uses: coursier/cache-action@v6
       - name: Install benchexec
         run: |
-          sudo add-apt-repository ppa:sosy-lab/benchmarking
-          sudo apt install benchexec
+          sudo add-apt-repository --yes ppa:sosy-lab/benchmarking
+          sudo apt install --yes benchexec
           # Workaround for inability to set persistant user groups
           # across shells
           sudo chmod o+wt /sys/fs/cgroup/blkio/system.slice/benchexec-cgroup.service /sys/fs/cgroup/cpu,cpuacct/system.slice/benchexec-cgroup.service /sys/fs/cgroup/cpuset/system.slice/benchexec-cgroup.service /sys/fs/cgroup/freezer/system.slice/benchexec-cgroup.service /sys/fs/cgroup/memory/system.slice/benchexec-cgroup.service
