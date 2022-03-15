@@ -152,6 +152,7 @@ object BenchExec extends AutoPlugin {
 
         val reportDir = benchmarkReportsDir.value / toolVersion / executed.name
         IO.createDirectory(reportDir)
+        log.info("Saving run outputs...")
         runFiles.foreach { f =>
           log.info(s"Copying run output for ${executed.name} to ${f}")
           FileUtils.copyDirectory(f.toFile, reportDir / f.getFileName.toString)
