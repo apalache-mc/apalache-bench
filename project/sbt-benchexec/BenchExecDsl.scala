@@ -253,7 +253,9 @@ object BenchExecDsl {
       val defFile = runs.state.xmlFiles(0)
       val resultDir = workdir / s"${runs.name}.${timestamp}.results"
       IO.createDirectory(resultDir)
-      Exec.succeed(Process(benchexecCmd(defFile, resultDir), workdir), log)
+      val cmd = Process(benchexecCmd(defFile, resultDir), workdir)
+      log.info(s"Running benchexec with command ${cmd}")
+      Exec.succeed(cmd, log)
       runs.executed(resultDir)
     }
 
