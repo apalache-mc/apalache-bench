@@ -51,6 +51,11 @@ jobs:
       - name: Check benchexec configuration
         run: python3 -m benchexec.check_cgroups
       - name: Run benchmarks
+        env:
+          # Cannot run benchexec in a container inside of github runners
+          BENCH_CONTAINER: false
+          # Set to `true` to enable debug output for benchexec
+          BENCH_DEBUG: true
         run: |
           # Ensure we have the needed dirs in PATH and PYTHONPATH
           source ./.envrc

@@ -215,25 +215,32 @@ object BenchExecDsl {
       }
     }
 
-    private def benchexecCmd(
-        file: File,
-        outdir: File,
-        debug: Boolean = true,
-      ): List[String] =
+    private def benchexecCmd(file: File, outdir: File): List[String] = {
+      val debug = if (sys.props.getOrElse("BENCH_DEBUG", "false").toBoolean) {
+        List("--debug")
+      } else {
+        List()
+      }
+
+      val container =
+        if (sys.props.getOrElse("BENCH_CONTAINER", "true").toBoolean) {
+          List(
+            "--read-only-dir",
+            "/",
+            "--overlay-dir",
+            "/home",
+          )
+        } else {
+          List("--no-container")
+        }
+
       List(
         "benchexec",
         file.name,
         "--output",
         outdir.name,
-        "--read-only-dir",
-        "/",
-        "--overlay-dir",
-        "/home",
-      ) ++ (if (debug) {
-              List("--debug")
-            } else {
-              List()
-            })
+      ) ++ container ++ debug
+    }
 
     def run(
         runs: Runs[Defined],

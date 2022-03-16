@@ -75,9 +75,21 @@ The site will be served at <https://informalsystems.github.io/apalache-bench/>.
 
 ## Debugging
 
+### Debugging tasks
+
 That apalache generated files for each run including the `detailed.log`, are
 saved into `site/reports/${verion}/${experiment}/${name}.files`, where
 
 - `version` is the version of Apalache that was benchmarked
 - `experiment` is the name of the experiment run
 - `name` is the name and timestamp of the particular set of tasks executed
+
+### Debugging benchexec
+
+Enable debug logging in benchexec by setting the environment variable
+
+```sh
+BENCH_DEBUG=true
+```
+
+`
