@@ -220,9 +220,9 @@ object BenchExecDsl {
         outdir: File,
         log: sbt.internal.util.ManagedLogger,
       ): List[String] = {
-      val runWithDebug = sys.props.getOrElse("BENCH_DEBUG", "false").toBoolean
+      val runWithDebug = sys.env.get("BENCH_DEBUG").getOrElse("false").toBoolean
       val runWithContainer =
-        sys.props.getOrElse("BENCH_CONTAINER", "true").toBoolean
+        sys.env.get("BENCH_CONTAINER").getOrElse("true").toBoolean
 
       log.info(s"BENCH_DEBUG is set to ${runWithDebug}")
       log.info(s"BENCH_CONTAINER is set to ${runWithContainer}")
