@@ -215,7 +215,12 @@ object BenchExecDsl {
       }
     }
 
-    private def benchexecCmd(file: File, outdir: File): List[String] = {
+    private def benchexecCmd(
+        file: File,
+        outdir: File,
+        log: sbt.internal.util.ManagedLogger,
+      ): List[String] = {
+
       val debug = if (sys.props.getOrElse("BENCH_DEBUG", "false").toBoolean) {
         List("--debug")
       } else {
@@ -234,12 +239,16 @@ object BenchExecDsl {
           List("--no-container")
         }
 
-      List(
+      val cmd = List(
         "benchexec",
         file.name,
         "--output",
         outdir.name,
       ) ++ container ++ debug
+
+      log.info(s"Benchexec command: ${cmd}")
+
+      cmd
     }
 
     def run(
@@ -253,8 +262,7 @@ object BenchExecDsl {
       val defFile = runs.state.xmlFiles(0)
       val resultDir = workdir / s"${runs.name}.${timestamp}.results"
       IO.createDirectory(resultDir)
-      val cmd = Process(benchexecCmd(defFile, resultDir), workdir)
-      log.info(s"Running benchexec with command ${cmd}")
+      val cmd = Process(benchexecCmd(defFile, resultDir, log), workdir)
       Exec.succeed(cmd, log)
       runs.executed(resultDir)
     }
@@ -270,9 +278,10 @@ object BenchExecDsl {
       val defFiles: Seq[File] = suite.state.xmlFiles
       val resultDir = workdir / s"${suite.name}.${timestamp}.results"
       IO.createDirectory(resultDir)
-      defFiles.foreach(f =>
-        Exec.succeed(Process(benchexecCmd(f, resultDir), workdir), log)
-      )
+      defFiles.foreach { f =>
+        val cmd = Process(benchexecCmd(f, resultDir, log), workdir)
+        Exec.succeed(cmd, log)
+      }
       val executedRuns = suite.runs.map(_.executed(resultDir))
       suite.executed(resultDir, executedRuns)
     }
