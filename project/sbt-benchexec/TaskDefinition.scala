@@ -26,10 +26,16 @@ import sbt._
  *      subproperty: valid-memtrack
  */
 
+// See https://gitlab.com/sosy-lab/benchmarking/task-definition-format
 object TaskDefinition {
+  case class Property(
+      property_file: String,
+      expected_verdict: Boolean = true)
+
   case class Format(
       required_files: Seq[String],
       input_files: Seq[String],
+      properties: Seq[Property],
       format_version: String = "2.0")
 
   def save(f: File, content: Format): Unit = {
