@@ -16,6 +16,12 @@ private object Constants {
 }
 
 object BenchExecDsl {
+
+  // Benchexec requires a property file (even if empty) if we want to determine
+  // what a correct and expected result is for a task.
+  // See https://github.com/sosy-lab/benchexec/issues/820
+  private val propertyFileName = "property-file.prp"
+
   trait ToXml {
     def toXml: xml.Elem
   }
@@ -40,21 +46,30 @@ object BenchExecDsl {
     *
     * Each command in the suite will be run on each task.
     *
+    * @param filePatterns
+    *   files on which the options are to be run
     * @param options
     *   additional CLI options to be supplied for this task, these will be added
     *   in addition to the options in the suite [[Cmd]]s
-    * @param filePatterns
-    *   files on which the options are to be run
+    * @param verdict
+    *   the expected verdict of the task. Wether or not the task is correct is
+    *   decided based on whether on the status of the task matches the verdict.
+    *   Defaults to "true".
     */
   case class Tasks(
       name: String,
       filePatterns: Seq[String],
-      options: Seq[Opt] = Nil)
+      options: Seq[Opt] = Nil,
+      verdict: String = "true")
       extends ToXml {
+
+    // Not used currently, this is the xml for a set of tasks that does not require
+    // a task-definition file.
     def toXml =
       <tasks name={name}>
         {filePatterns.map(f => <include>{f}</include>)}
         {options.map(_.toXml)}
+        <propertyfile expectedverdict={verdict}>{propertyFileName}</propertyfile>
       </tasks>
   }
 
@@ -84,6 +99,8 @@ object BenchExecDsl {
       def save(dir: File): T[Defined]
     }
 
+    // Tasks that use a task-definition file. This is neceessary for any tasks
+    // require supporting files.
     private class DefinedTasks(
         filename: String,
         taskDef: TaskDefinition.Format,
@@ -93,6 +110,7 @@ object BenchExecDsl {
         <tasks name={tasks.name}>
           <include>{filename}</include>
           {tasks.options.map(_.toXml)}
+          <propertyfile expectedverdict={tasks.verdict}>{propertyFileName}</propertyfile>
         </tasks>
 
       def addSuiteName(prefix: String): DefinedTasks = {
@@ -113,6 +131,7 @@ object BenchExecDsl {
         val taskDef = TaskDefinition.Format(
           required_files = requiredFiles,
           input_files = tasks.filePatterns,
+          properties = Seq(TaskDefinition.Property(propertyFileName)),
         )
 
         new DefinedTasks(s"${prefix}-${tasks.name}.yml", taskDef, tasks)
@@ -142,6 +161,7 @@ object BenchExecDsl {
         assert(dir.isDirectory)
         val file = new File(dir, s"${name}.xml")
         BenchExecXml.save(file, BenchExecXml.DocType.benchmark, this.toXml)
+        IO.touch(dir / propertyFileName)
         tasks.foreach(_.save(dir))
         this.defined(Seq(file))
       }
@@ -179,8 +199,9 @@ object BenchExecDsl {
       }
     }
 
-    /** A suite of Runs each derived from possibly disjoint sets of commands and
-      * tasks, but for which the resulting data is grouped as one set of results
+    /** A suite of Runs, each derived from (possibly) disjoint sets of commands
+      * and tasks, but for which the resulting data is grouped as one set of
+      * results
       */
     class Suite[+State](
         val name: String,
