@@ -38,6 +38,11 @@ object BenchExec extends AutoPlugin {
         "The site used to share and serve human-readible reports and charts"
       )
 
+    lazy val benchmarksFilterExperiments =
+      settingKey[Set[String]](
+        "If non-empty, only experiments matching the names in set"
+      )
+
     lazy val benchmarkReportsDir =
       settingKey[File]("The location to which generated reports are written")
 
@@ -101,7 +106,13 @@ object BenchExec extends AutoPlugin {
       val workdir = (Compile / resourceManaged).value
       val time = timestamp()
       val version = benchmarksToolVersion.value
-      benchmarksDef.value.map { bench =>
+
+      val includeBenchmark = (b: Bench.T[Bench.Defined]) => {
+        val filterSet = (ThisBuild / benchmarksFilterExperiments).value
+        (filterSet.isEmpty) || filterSet(b.name)
+      }
+
+      benchmarksDef.value.filter(includeBenchmark).map { bench =>
         log.info(
           s"Running benchmark ${bench.name} with tool version ${version} and results to ${workdir}"
         )
@@ -130,6 +141,7 @@ object BenchExec extends AutoPlugin {
       val log = streams.value.log
       val workdir = (Compile / resourceManaged).value
       val toolVersion = benchmarksToolVersion.value
+
       benchmarksRun.value.map { executed =>
         val results: Seq[String] =
           globPaths(executed.state.resultDir.toGlob / "*.xml.bz2")
@@ -370,6 +382,7 @@ h1 {
     benchmarksLongitudinalVersions := Set(),
     benchmarksSiteDir := (ThisBuild / baseDirectory).value / "src" / "site",
     benchmarkReportsDir := benchmarksSiteDir.value / "reports",
+    benchmarksFilterExperiments := Set(),
   )
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
