@@ -8,11 +8,10 @@ on:
         description: "Version/branch to benchmark. See README.md for syntax. (defaults to unstable branch)"
         required: false
         default: ""
-      # TODO: Once we've enabled running specific experiments
-      # exp_strategy:
-      #   description: "Limit the benchmark runs to just the given strategy -- leave blank to run all default strategies (run with `arrays-encoding` or see the *STRATEGIES file for supported strategies)"
-      #   required: false
-      #   default: ""
+      filter_experiments:
+        description: "Limit the benchmark runs to bench suites matching the comma separated names -- leave blank to run all defined experiments"
+        required: false
+        default: ""
   schedule:
     # * is a special character in YAML so you have to quote this string
     # Automatically run the benchmarks on unstable every Saturday
@@ -23,7 +22,7 @@ name: benchmarks
 
 env:
   VERSION: ${{ github.event.inputs.release_version || '#unstable' }}
-  # STRATEGY: ${{ github.event.inputs.exp_strategy }}
+  FILTER_EXPERIMENTS: ${{ github.event.inputs.filter_experiments }}
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
@@ -59,7 +58,7 @@ jobs:
         run: |
           # Ensure we have the needed dirs in PATH and PYTHONPATH
           source ./.envrc
-          sbt 'set apalacheVersion := "${{ env.VERSION }}"; benchmarksReport'
+          sbt 'set apalacheVersion := "${{ env.VERSION }}"; set ThisBuild/benchmarksFilterExperiments := Set(${{ env.FILTER_EXPERIMENTS }}); benchmarksReport'
       - name: Generate site and report
         run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate makeSite
       - name: Commit updated results
