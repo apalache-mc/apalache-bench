@@ -379,8 +379,5 @@ h1 {
     benchmarksReport := benchexecReport.value,
     benchmarksIndexUpdate := benchmarksIndexUpdateImpl.value,
     benchmarksLongitudinalUpdate := benchmarksLongitudinalDataImpl.value,
-    // Compile / compile := ((Compile / compile)
-    //   .dependsOn(benchmarksDef))
-    //   .value,
   )
 }
