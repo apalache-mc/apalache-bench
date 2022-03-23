@@ -29,7 +29,7 @@ sbt 'set apalacheVersion := "@v0.21.0"; benchmarksReport'
 
 #### For a branch or commit
 
-Prefix the branch name or commit ref with `#`:
+Prefix the branch name or commit ref with `#`. E.g.,
 
 ``` sh
 sbt 'set apalacheVersion := "#unstable"; benchmarksReport'
@@ -49,6 +49,17 @@ project, run:
 
 ``` sh
 sbt performance/benchmarksReport
+```
+
+### For a particular subset of bench suites
+
+You can limit the benchmarks run to specific bench suites by setting
+`ThisBuild/benchmarksFilterExperiments` to a set with the names of the
+experiments to run. E.g., to only run benchmark suites named "foo" and "bar",
+you can run:
+
+``` scala
+sbt set ThisBuild/benchmarksFilterExperiments := Set("foo", "bar"); performance/benchmarksReport
 ```
 
 ## Generating reports and the website
