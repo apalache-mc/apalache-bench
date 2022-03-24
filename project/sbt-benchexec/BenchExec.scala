@@ -6,10 +6,18 @@ import java.util.Date
 import org.apache.commons.io.{FilenameUtils, FileUtils}
 import sbt.nio.file.{Glob, FileTreeView}
 import java.nio.file.Path
+import org.apache.commons.compress.compressors.bzip2._
 import com.github.tototoshi.csv._
+
+// JSON Encoding
+import io.circe._
+import io.circe.generic.auto._
+import io.circe.parser._
+import io.circe.syntax._
 
 import sbt._
 import Keys._
+import java.io.InputStream
 
 object BenchExec extends AutoPlugin {
   val Chart = LongitudinalChart
@@ -136,6 +144,33 @@ object BenchExec extends AutoPlugin {
     <table><union>{resultFiles}</union></table>
   }
 
+  private def inputBz2(fileName: String): InputStream = {
+    new BZip2CompressorInputStream(
+      new java.io.BufferedInputStream(new java.io.FileInputStream(fileName))
+    )
+  }
+
+  private val incorrectColumn = (column: xml.NodeSeq) =>
+    (column \ "@title").text == "category" && (column \ "@value").text != "correct"
+
+  // Query the report XML to check for failed runs
+  // returns a option pair of the options provided and the task that was incorrect
+  private def findIncorrectRunsFromResult(
+      resultFile: String
+    ): Option[(String, Seq[String])] = {
+    val input = inputBz2(resultFile)
+    val result = xml.XML.load(input)
+    val incorrectRuns = (result \ "run")
+      .filter(run => (run \ "column").exists(incorrectColumn))
+      .map(n => (n \ "@name").text)
+    if (incorrectRuns.nonEmpty) {
+      val options = (result \ "@options").text
+      Some((options, incorrectRuns))
+    } else {
+      None
+    }
+  }
+
   lazy val benchexecReport: Def.Initialize[Task[Seq[File]]] =
     Def.task {
       val log = streams.value.log
@@ -150,12 +185,14 @@ object BenchExec extends AutoPlugin {
         val runFiles: Seq[Path] =
           globPaths(executed.state.resultDir.toGlob / "*.files")
 
+        val stamp = s"${timestamp()}.${executed.name}"
+
         // Create the table-generator XML config
         // We need to generate a custom table-generator config so we can
         // combine all results from a given suite run into the same columns.
         // See https://github.com/sosy-lab/benchexec/blob/main/doc/table-generator.md#complex-tables-with-custom-columns-or-combination-of-results
         val tableGenConfig =
-          executed.state.resultDir / s"result.${timestamp()}.${executed.name}.table-generator.xml"
+          executed.state.resultDir / s"result.${stamp}.table-generator.xml"
         BenchExecXml.save(
           tableGenConfig,
           BenchExecXml.DocType.trableGenerator,
@@ -163,6 +200,15 @@ object BenchExec extends AutoPlugin {
         )
 
         val reportDir = benchmarkReportsDir.value / toolVersion / executed.name
+
+        val incorrectResults = results.flatMap(findIncorrectRunsFromResult)
+        if (incorrectResults.nonEmpty) {
+          log.error(s"Some results were incorrect: ${incorrectResults}")
+          val errFile = executed.state.resultDir / s"ERRORS.${stamp}.json"
+          log.error(s"Error data saved to ${errFile}")
+          IO.append(errFile, incorrectResults.toMap.asJson.toString)
+        }
+
         IO.createDirectory(reportDir)
         log.info("Saving run outputs...")
         runFiles.foreach { f =>
