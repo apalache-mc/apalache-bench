@@ -59,6 +59,23 @@ jobs:
           # Ensure we have the needed dirs in PATH and PYTHONPATH
           source ./.envrc
           sbt 'set apalacheVersion := "${{ env.VERSION }}"; set ThisBuild/benchmarksFilterExperiments := Set(${{ env.FILTER_EXPERIMENTS }}); benchmarksReport'
+      - name: Report any errors
+        # TODO
+        # ONLY RUN IF ON TRUNK
+        # if: github.ref == 'refs/heads/trunk'
+        run: |
+          err_files=$(find -name 'ERRORS.*.json')
+          if [[ -n err_files ]]
+          then
+            hub issue create \
+              --message="Errors detected in benchmark run" \
+              --message='```' \
+              --message="""$(cat $err_files)""" \
+              --message='```' \
+              --assign=shonfeder
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate site and report
         run: sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate makeSite
       - name: Commit updated results

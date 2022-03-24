@@ -206,7 +206,8 @@ object BenchExec extends AutoPlugin {
           log.error(s"Some results were incorrect: ${incorrectResults}")
           val errFile = executed.state.resultDir / s"ERRORS.${stamp}.json"
           log.error(s"Error data saved to ${errFile}")
-          IO.append(errFile, incorrectResults.toMap.asJson.toString)
+          val errData = Map(stamp -> incorrectResults.toMap)
+          IO.append(errFile, errData.asJson.toString)
         }
 
         IO.createDirectory(reportDir)
