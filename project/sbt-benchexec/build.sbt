@@ -17,6 +17,8 @@ libraryDependencies += "com.github.tototoshi" %% "scala-csv" % "1.3.10"
 libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.11.0",
   "org.scala-sbt" % "sbt" % "1.6.2",
+  // Needed foor  bzip2 decompression
+  "org.apache.commons" % "commons-compress" % "1.21",
 )
 
 lazy val sbt_benchexec = (project in file("."))
