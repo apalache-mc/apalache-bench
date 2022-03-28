@@ -24,7 +24,7 @@ sbt benchmarksReport
 Prefix the tag corresponding to the version with `@`:
 
 ``` sh
-sbt 'set apalacheVersion := "@v0.21.0"; benchmarksReport'
+sbt 'set apalacheVersion := "@v0.22.0"; benchmarksReport'
 ```
 
 #### For a branch or commit
