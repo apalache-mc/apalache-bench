@@ -65,7 +65,7 @@ jobs:
         # if: github.ref == 'refs/heads/trunk'
         run: |
           err_files=$(find -name 'ERRORS.*.json')
-          if [[ -n err_files ]]
+          if [[ -n "$err_files" ]]
           then
             hub issue create \
               --message="Errors detected in benchmark run" \
