@@ -2,41 +2,45 @@ import BenchExecDsl._
 
 enablePlugins(BenchExec)
 
-benchmarks += {
-  def checkCmd(enc: String, len: Int) = {
+lazy val setAddSuite = {
+  val specs = Seq("array-encoding/SetAdd.tla")
+  // TODO: Set to 14
+  val maxLengh = 4
+  def checkCmd(encoding: String, length: Int) = {
     Cmd(
-      s"length:${len}",
+      s"${encoding}:length:${length}",
       Opt("check"),
       Opt("--init", "Init"),
       Opt("--inv", "Inv"),
       Opt("--next", "Next"),
-      Opt("--smt-encoding", enc),
-      Opt("--length", len),
-      Opt("--cinit", s"CInit$len"),
+      Opt("--smt-encoding", encoding),
+      Opt("--length", length),
+      Opt("--cinit", s"CInit${length}"),
     )
   }
-  val files = Seq("array-encoding/SetAdd.tla")
-  // TODO: Set to 14
-  val lengths = 0.to(4, 2)
+
+  def runsForEncoding(encoding: String) = {
+    val lengths = 0.to(maxLengh, 2)
+    Bench.Runs(
+      encoding,
+      timelimit = "2h",
+      tasks = Seq(Tasks(s"SetAdd", specs)),
+      cmds = lengths.map(checkCmd(encoding, _)),
+    )
+  }
+
   Bench.Suite(
     name = "010encoding-SetAdd",
-    // TODO Refactor with function to abstract over runs, just changing encoding
     runs = Seq(
-      Bench.Runs(
-        "Array",
-        timelimit = "2h",
-        tasks = Seq(Tasks("SetAdd", files)),
-        cmds = lengths.map(checkCmd("arrays", _)),
-      ),
-      Bench.Runs(
-        "OOPSLA19",
-        timelimit = "2h",
-        tasks = Seq(Tasks("SetAdd", files)),
-        cmds = lengths.map(checkCmd("oopsla19", _)),
-      ),
+      runsForEncoding("arrays"),
+      runsForEncoding("oopsla19"),
     ),
   )
+
 }
+
+benchmarks ++= Seq(setAddSuite)
+
 // benchmarks +=
 //   Bench.Suite(
 //     name = "001indinv-apalache",
