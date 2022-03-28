@@ -69,7 +69,7 @@ sbt set ThisBuild/benchmarksFilterExperiments := Set("foo", "bar"); performance/
 To generate the site that gather and presents the report data, run
 
 ``` sh
-sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
+sbt site/benchmarksLongitudinalUpdate site/benchmarksIndexUpdate
 ```
 
 This will update the files in [./src/site](./src/site). Open
