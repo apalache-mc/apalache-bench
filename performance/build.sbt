@@ -2,10 +2,20 @@ import BenchExecDsl._
 
 enablePlugins(BenchExec)
 
-lazy val setAddSuite = {
-  val specs = Seq("array-encoding/SetAdd.tla")
-  // TODO: Set to 14
-  val maxLengh = 4
+benchmarks ++= Seq(
+  indinvSuite,
+  suiteForEncoding("SetAdd", Seq("array-encoding/SetAdd.tla")),
+  suiteForEncoding("SetAddDel", Seq("array-encoding/SetAddDel.tla")),
+  suiteForEncoding("SetSndRcv", Seq("array-encoding/SetSndRcv.tla")),
+  suiteForEncoding(
+    "SetSndRcv_NoFullDrop",
+    Seq("array-encoding/SetSndRcv_NoFullDrop.tla"),
+  ),
+)
+
+def suiteForEncoding(name: String, specs: Seq[String]) = {
+  val maxLength = 4
+
   def checkCmd(encoding: String, length: Int) = {
     Cmd(
       s"${encoding}:length:${length}",
@@ -20,7 +30,7 @@ lazy val setAddSuite = {
   }
 
   def runsForEncoding(encoding: String) = {
-    val lengths = 0.to(maxLengh, 2)
+    val lengths = 0.to(maxLength, 2)
     Bench.Runs(
       encoding,
       timelimit = "2h",
@@ -30,110 +40,105 @@ lazy val setAddSuite = {
   }
 
   Bench.Suite(
-    name = "010encoding-SetAdd",
+    name = s"010encoding-${name}",
     runs = Seq(
       runsForEncoding("arrays"),
       runsForEncoding("oopsla19"),
     ),
   )
-
 }
 
-benchmarks ++= Seq(setAddSuite)
-
-// benchmarks +=
-//   Bench.Suite(
-//     name = "001indinv-apalache",
-//     runs = Seq(
-//       // Bench.Runs(
-//       //   "APABakery",
-//       //   timelimit = "1h",
-//       //   cmds = Seq(
-//       //     Cmd(
-//       //       "init with Init",
-//       //       Opt("check"),
-//       //       Opt("--init", "Init"),
-//       //       Opt("--inv", "Inv"),
-//       //       Opt("--length", 0),
-//       //     ),
-//       //     Cmd(
-//       //       "init with Inv",
-//       //       Opt("check"),
-//       //       Opt("--init", "Inv"),
-//       //       Opt("--inv", "Inv"),
-//       //       Opt("--length", 1),
-//       //     ),
-//       //   ),
-//       //   tasks = Seq(Tasks("APABakery", "Bakery-Boulangerie/APABakery.tla")),
-//       // ),
-//       // Bench.Runs(
-//       //   "APAEWD840",
-//       //   timelimit = "3h",
-//       //   cmds = Seq(
-//       //     Cmd(
-//       //       "without init",
-//       //       Opt("check"),
-//       //       Opt("--inv", "InvAndTypeOK"),
-//       //       Opt("--length", 0),
-//       //       Opt("--cinit", "ConstInit10"),
-//       //     ),
-//       //     Cmd(
-//       //       "with init",
-//       //       Opt("check"),
-//       //       Opt("--init", "InvAndTypeOK"),
-//       //       Opt("--inv", "InvAndTypeOK"),
-//       //       Opt("--length", 1),
-//       //       Opt("--cinit", "ConstInit10"),
-//       //     ),
-//       //   ),
-//       //   tasks = Seq(Tasks("APAEWD840.tla", "ewd840/APAEWD840.tla")),
-//       // ),
-//       Bench.Runs(
-//         "APAbcastByz",
-//         timelimit = "3h",
-//         cmds = Seq(
-//           Cmd(
-//             "init with InitNoBcast",
-//             Opt("check"),
-//             Opt("--init", "IndInv_Unforg_NoBcast"),
-//             Opt("--inv", "InitNoBcast"),
-//             Opt("--length", 0),
-//             Opt("--cinit", "ConstInit4"),
-//           ),
-//           Cmd(
-//             "with init IndInv_Unforg_NoBcast",
-//             Opt("check"),
-//             Opt("--init", "IndInv_Unforg_NoBcast"),
-//             Opt("--inv", "IndInv_Unforg_NoBcast"),
-//             Opt("--length", 1),
-//             Opt("--cinit", "ConstInit4"),
-//           ),
-//         ),
-//         tasks =
-//           Seq(Tasks("APAbcastByz.tla", Seq("bcastByz/APAbcastByz.tla"))),
-//       ),
-//       Bench.Runs(
-//         "APATwoPhase",
-//         timelimit = "23h",
-//         cmds = Seq(
-//           Cmd(
-//             "no init",
-//             Opt("check"),
-//             Opt("--inv", "Inv"),
-//             Opt("--length", 0),
-//             Opt("--cinit", "ConstInit7"),
-//           ),
-//           Cmd(
-//             "init with InitInv",
-//             Opt("check"),
-//             Opt("--init", "InitInv"),
-//             Opt("--inv", "Inv"),
-//             Opt("--length", 1),
-//             Opt("--cinit", "ConstInit7"),
-//           ),
-//         ),
-//         tasks =
-//           Seq(Tasks("APATwoPhase.tla", Seq("two-phase/APATwoPhase.tla"))),
-//       ),
-//     ),
-//   ),
+lazy val indinvSuite =
+  Bench.Suite(
+    name = "001indinv-apalache",
+    runs = Seq(
+      Bench.Runs(
+        "APAEWD840",
+        timelimit = "3h",
+        cmds = Seq(
+          Cmd(
+            "no init",
+            Opt("check"),
+            Opt("--inv", "InvAndTypeOK"),
+            Opt("--length", 0),
+            Opt("--cinit", "ConstInit10"),
+          ),
+          Cmd(
+            "--init=InvAndTypeOK",
+            Opt("check"),
+            Opt("--init", "InvAndTypeOK"),
+            Opt("--inv", "InvAndTypeOK"),
+            Opt("--length", 1),
+            Opt("--cinit", "ConstInit10"),
+          ),
+        ),
+        tasks = Seq(Tasks("APAEWD840", Seq("ewd840/APAEWD840.tla"))),
+      ),
+      Bench.Runs(
+        "APABakery",
+        timelimit = "3h",
+        cmds = Seq(
+          Cmd(
+            "--init=Init",
+            Opt("check"),
+            Opt("--init", "Init"),
+            Opt("--inv", "Inv"),
+            Opt("--length", 0),
+          ),
+          Cmd(
+            "--init=Inv",
+            Opt("check"),
+            Opt("--init", "Init"),
+            Opt("--inv", "Inv"),
+            Opt("--length", 1),
+          ),
+        ),
+        tasks = Seq(Tasks("APABakery", Seq("Bakery-Boulangerie/APABakery.tla"))),
+      ),
+      Bench.Runs(
+        "APAbcastByz",
+        timelimit = "3h",
+        cmds = Seq(
+          Cmd(
+            "--init=InitNoBcast",
+            Opt("check"),
+            Opt("--init", "IndInv_Unforg_NoBcast"),
+            Opt("--inv", "InitNoBcast"),
+            Opt("--length", 0),
+            Opt("--cinit", "ConstInit4"),
+          ),
+          Cmd(
+            "--init=IndInv_Unforg_NoBcast",
+            Opt("check"),
+            Opt("--init", "IndInv_Unforg_NoBcast"),
+            Opt("--inv", "IndInv_Unforg_NoBcast"),
+            Opt("--length", 1),
+            Opt("--cinit", "ConstInit4"),
+          ),
+        ),
+        tasks = Seq(Tasks("APAbcastByz.tla", Seq("bcastByz/APAbcastByz.tla"))),
+      ),
+      Bench.Runs(
+        "APATwoPhase",
+        timelimit = "23h",
+        cmds = Seq(
+          Cmd(
+            "no init",
+            Opt("check"),
+            Opt("--inv", "Inv"),
+            Opt("--length", 0),
+            Opt("--cinit", "ConstInit7"),
+          ),
+          Cmd(
+            "--init=InitInv",
+            Opt("check"),
+            Opt("--init", "InitInv"),
+            Opt("--inv", "Inv"),
+            Opt("--length", 1),
+            Opt("--cinit", "ConstInit7"),
+          ),
+        ),
+        tasks = Seq(Tasks("APATwoPhase.tla", Seq("two-phase/APATwoPhase.tla"))),
+      ),
+    ),
+  )
