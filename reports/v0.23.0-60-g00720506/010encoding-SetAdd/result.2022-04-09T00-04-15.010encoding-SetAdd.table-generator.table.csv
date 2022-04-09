@@ -1,0 +1,9 @@
+tool		Apalache v0.23.0-60-g00720506	Apalache v0.23.0-60-g00720506	Apalache v0.23.0-60-g00720506	Apalache v0.23.0-60-g00720506
+run set		[length:0.SetAdd; length:2.SetAdd; length:4.SetAdd]	[length:0.SetAdd; length:2.SetAdd; length:4.SetAdd]	[length:0.SetAdd; length:2.SetAdd; length:4.SetAdd]	[length:0.SetAdd; length:2.SetAdd; length:4.SetAdd]
+/home/runner/work/apalache-bench/apalache-bench/performance/target/scala-2.13/resource_managed/main/		status	cputime (s)	walltime (s)	memory (MB)
+010encoding-SetAdd-001-Array-SetAdd.yml	0	true	3.651919	2.411543378999994	199.720960
+010encoding-SetAdd-001-Array-SetAdd.yml	1	true	3.7322156	2.439277887000003	199.016448
+010encoding-SetAdd-001-Array-SetAdd.yml	2	true	3.7832887	2.4558557610000094	202.559488
+010encoding-SetAdd-001-OOPSLA19-SetAdd.yml	3	true	3.6419804	2.3720182410000064	199.979008
+010encoding-SetAdd-001-OOPSLA19-SetAdd.yml	4	true	3.7483575	2.4356283859999905	198.205440
+010encoding-SetAdd-001-OOPSLA19-SetAdd.yml	5	true	3.8083834	2.4599985549999985	198.242304
