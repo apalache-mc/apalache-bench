@@ -154,6 +154,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APATraffic",
+            Opt("check"),
             Opt("--length", 4),
           )
         ),
@@ -165,6 +166,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APAPrisoners",
+            Opt("check"),
             Opt("--inv", "SafetyInv"),
             Opt("--length", 15),
             Opt("--cinit=ConstInit"),
@@ -176,7 +178,12 @@ lazy val bmcSuite =
         "APABakery",
         timelimit = "10h",
         cmds = Seq(
-          Cmd("APABakery", Opt("--inv", "MutualExclusion"), Opt("--length", 8))
+          Cmd(
+            "APABakery",
+            Opt("check"),
+            Opt("--inv", "MutualExclusion"),
+            Opt("--length", 8),
+          )
         ),
         tasks = Seq(Tasks("APABakery", Seq("Bakery-Boulangerie/APABakery.tla"))),
       ),
@@ -186,6 +193,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APAEWD840",
+            Opt("check"),
             Opt("--inv", "Inv"),
             Opt("--length", 12),
             Opt("--cinit", "ConstInit4"),
@@ -199,6 +207,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APAEWD840",
+            Opt("check"),
             Opt("--inv", "Inv"),
             Opt("--length", 30),
             Opt("--cinit", "ConstInit10"),
@@ -212,6 +221,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APASimpleAllocator",
+            Opt("check"),
             Opt("--inv", "ResourceMutex"),
             Opt("--length", 7),
             Opt("--cinit", "ConstInit22"),
@@ -227,6 +237,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APASimpleAllocator",
+            Opt("check"),
             Opt("--inv", "ResourceMutex"),
             Opt("--length", 7),
             Opt("--cinit", "ConstInit53"),
@@ -242,6 +253,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APAbcastFolklore",
+            Opt("check"),
             Opt("--init", "Init"),
             Opt("--length", 10),
             Opt("--cinit", "ConstInit4"),
@@ -257,6 +269,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APAbcastFolklore",
+            Opt("check"),
             Opt("--init", "Init"),
             Opt("--length", 10),
             Opt("--cinit", "ConstInit20"),
@@ -272,6 +285,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APAbcastByz",
+            Opt("check"),
             Opt("--init", "Init"),
             Opt("--length", 10),
             Opt("--cinit", "ConstInit4"),
@@ -285,6 +299,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APAbcastByz",
+            Opt("check"),
             Opt("--init", "Init"),
             Opt("--length", 11),
             Opt("--cinit", "ConstInit6"),
@@ -298,6 +313,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APATwoPhase",
+            Opt("check"),
             Opt("--init", "TCConsistent"),
             Opt("--length", 11),
             Opt("--cinit", "ConstInit3"),
@@ -311,6 +327,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "APATwoPhase",
+            Opt("check"),
             Opt("--init", "TCConsistent"),
             Opt("--length", 10),
             Opt("--cinit", "ConstInit7"),
@@ -324,6 +341,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "Apa3Paxos",
+            Opt("check"),
             Opt("--init", "OneValuePerBallot"),
             Opt("--length", 13),
           )
@@ -336,6 +354,7 @@ lazy val bmcSuite =
         cmds = Seq(
           Cmd(
             "Apa5Paxos",
+            Opt("check"),
             Opt("--init", "OneValuePerBallot,"),
             Opt("--length", 14),
           )
@@ -345,8 +364,14 @@ lazy val bmcSuite =
       Bench.Runs(
         "APAraft",
         timelimit = "23h",
-        cmds =
-          Seq(Cmd("APAraft", Opt("--init", "OneLeader"), Opt("--length", 8))),
+        cmds = Seq(
+          Cmd(
+            "APAraft",
+            Opt("check"),
+            Opt("--init", "OneLeader"),
+            Opt("--length", 8),
+          )
+        ),
         tasks = Seq(Tasks("APAraft", Seq("raft/APAraft.tla"))),
       ),
     ),
