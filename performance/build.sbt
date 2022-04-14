@@ -173,12 +173,12 @@ lazy val bmcSuite =
         tasks = Seq(Tasks("APAPrisoners", Seq("Prisoners/APAPrisoners.tla"))),
       ),
       Bench.Runs(
-        "apabakery",
+        "APABakery",
         timelimit = "10h",
         cmds = Seq(
-          Cmd("apabakery", Opt("--inv", "MutualExclusion"), Opt("--length", 8))
+          Cmd("APABakery", Opt("--inv", "MutualExclusion"), Opt("--length", 8))
         ),
-        tasks = Seq(Tasks("apabakery", Seq("bakery-boulangerie/apabakery.tla"))),
+        tasks = Seq(Tasks("APABakery", Seq("Bakery-Boulangerie/APABakery.tla"))),
       ),
       Bench.Runs(
         "APAEWD840",
