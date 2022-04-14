@@ -142,3 +142,211 @@ lazy val indinvSuite =
       ),
     ),
   )
+
+lazy val bmcSuite =
+  Bench.Suite(
+    name = "002bmc-apalache",
+    runs = Seq(
+      Bench.Runs(
+        "APAtraffic",
+        timelimit = "1h",
+        cmds = Seq(
+          Cmd(
+            "APATraffic",
+            Opt("--length", 4),
+          )
+        ),
+        tasks = Seq(Tasks("APATraffic", Seq("traffic/APAtraffic.tla"))),
+      ),
+      Bench.Runs(
+        "APAPrisoners",
+        timelimit = "30m",
+        cmds = Seq(
+          Cmd(
+            "APAPrisoners",
+            Opt("--inv", "SafetyInv"),
+            Opt("--length", 15),
+            Opt("--cinit=ConstInit"),
+          )
+        ),
+        tasks = Seq(Tasks("APAPrisoners", Seq("Prisoners/APAPrisoners.tla"))),
+      ),
+      Bench.Runs(
+        "apabakery",
+        timelimit = "10h",
+        cmds = Seq(
+          Cmd("apabakery", Opt("--inv", "MutualExclusion"), Opt("--length", 8))
+        ),
+        tasks = Seq(Tasks("apabakery", Seq("bakery-boulangerie/apabakery.tla"))),
+      ),
+      Bench.Runs(
+        "APAEWD840",
+        timelimit = "1h",
+        cmds = Seq(
+          Cmd(
+            "APAEWD840",
+            Opt("--inv", "Inv"),
+            Opt("--length", 12),
+            Opt("--cinit", "ConstInit4"),
+          )
+        ),
+        tasks = Seq(Tasks("APAEWD840", Seq("ewd840/APAEWD840.tla"))),
+      ),
+      Bench.Runs(
+        "APAEWD840",
+        timelimit = "5h",
+        cmds = Seq(
+          Cmd(
+            "APAEWD840",
+            Opt("--inv", "Inv"),
+            Opt("--length", 30),
+            Opt("--cinit", "ConstInit10"),
+          )
+        ),
+        tasks = Seq(Tasks("APAEWD840", Seq("ewd840/APAEWD840.tla"))),
+      ),
+      Bench.Runs(
+        "APASimpleAllocator",
+        timelimit = "10h",
+        cmds = Seq(
+          Cmd(
+            "APASimpleAllocator",
+            Opt("--inv", "ResourceMutex"),
+            Opt("--length", 7),
+            Opt("--cinit", "ConstInit22"),
+          )
+        ),
+        tasks = Seq(
+          Tasks("APASimpleAllocator", Seq("allocator/APASimpleAllocator.tla"))
+        ),
+      ),
+      Bench.Runs(
+        "APASimpleAllocator",
+        timelimit = "23h",
+        cmds = Seq(
+          Cmd(
+            "APASimpleAllocator",
+            Opt("--inv", "ResourceMutex"),
+            Opt("--length", 7),
+            Opt("--cinit", "ConstInit53"),
+          )
+        ),
+        tasks = Seq(
+          Tasks("APASimpleAllocator", Seq("allocator/APASimpleAllocator.tla"))
+        ),
+      ),
+      Bench.Runs(
+        "APAbcastFolklore",
+        timelimit = "30m",
+        cmds = Seq(
+          Cmd(
+            "APAbcastFolklore",
+            Opt("--init", "Init"),
+            Opt("--length", 10),
+            Opt("--cinit", "ConstInit4"),
+          )
+        ),
+        tasks = Seq(
+          Tasks("APAbcastFolklore", Seq("bcastFolklore/APAbcastFolklore.tla"))
+        ),
+      ),
+      Bench.Runs(
+        "APAbcastFolklore",
+        timelimit = "30m",
+        cmds = Seq(
+          Cmd(
+            "APAbcastFolklore",
+            Opt("--init", "Init"),
+            Opt("--length", 10),
+            Opt("--cinit", "ConstInit20"),
+          )
+        ),
+        tasks = Seq(
+          Tasks("APAbcastFolklore", Seq("bcastFolklore/APAbcastFolklore.tla"))
+        ),
+      ),
+      Bench.Runs(
+        "APAbcastByz",
+        timelimit = "30m",
+        cmds = Seq(
+          Cmd(
+            "APAbcastByz",
+            Opt("--init", "Init"),
+            Opt("--length", 10),
+            Opt("--cinit", "ConstInit4"),
+          )
+        ),
+        tasks = Seq(Tasks("APAbcastByz", Seq("bcastByz/APAbcastByz.tla"))),
+      ),
+      Bench.Runs(
+        "APAbcastByz",
+        timelimit = "23h",
+        cmds = Seq(
+          Cmd(
+            "APAbcastByz",
+            Opt("--init", "Init"),
+            Opt("--length", 11),
+            Opt("--cinit", "ConstInit6"),
+          )
+        ),
+        tasks = Seq(Tasks("APAbcastByz", Seq("bcastByz/APAbcastByz.tla"))),
+      ),
+      Bench.Runs(
+        "APATwoPhase",
+        timelimit = "23h",
+        cmds = Seq(
+          Cmd(
+            "APATwoPhase",
+            Opt("--init", "TCConsistent"),
+            Opt("--length", 11),
+            Opt("--cinit", "ConstInit3"),
+          )
+        ),
+        tasks = Seq(Tasks("APATwoPhase", Seq("two-phase/APATwoPhase.tla"))),
+      ),
+      Bench.Runs(
+        "APATwoPhase",
+        timelimit = "23h",
+        cmds = Seq(
+          Cmd(
+            "APATwoPhase",
+            Opt("--init", "TCConsistent"),
+            Opt("--length", 10),
+            Opt("--cinit", "ConstInit7"),
+          )
+        ),
+        tasks = Seq(Tasks("APATwoPhase", Seq("two-phase/APATwoPhase.tla"))),
+      ),
+      Bench.Runs(
+        "Apa3Paxos",
+        timelimit = "23h",
+        cmds = Seq(
+          Cmd(
+            "Apa3Paxos",
+            Opt("--init", "OneValuePerBallot"),
+            Opt("--length", 13),
+          )
+        ),
+        tasks = Seq(Tasks("Apa3Paxos", Seq("paxos/Apa3Paxos.tla"))),
+      ),
+      Bench.Runs(
+        "Apa5Paxos",
+        timelimit = "23h",
+        cmds = Seq(
+          Cmd(
+            "Apa5Paxos",
+            Opt("--init", "OneValuePerBallot,"),
+            Opt("--length", 14),
+          )
+        ),
+        tasks = Seq(Tasks("Apa5Paxos", Seq("paxos/Apa5Paxos.tla"))),
+      ),
+      Bench.Runs(
+        "APAraft",
+        timelimit = "23h",
+        cmds =
+          Seq(Cmd("APAraft", Opt("--init", "OneLeader"), Opt("--length", 8))),
+        tasks = Seq(Tasks("APAraft", Seq("raft/APAraft.tla"))),
+      ),
+    ),
+  )
