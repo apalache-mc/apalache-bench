@@ -4,6 +4,7 @@ enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
   indinvSuite,
+  bmcSuite,
   suiteForEncoding("SetAdd", Seq("array-encoding/SetAdd.tla")),
   suiteForEncoding("SetAddDel", Seq("array-encoding/SetAddDel.tla")),
   suiteForEncoding("SetSndRcv", Seq("array-encoding/SetSndRcv.tla")),
