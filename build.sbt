@@ -1,9 +1,3 @@
-import org.apache.commons.io.FileUtils
-import java.text.SimpleDateFormat
-import scala.sys.process.Process
-import java.util.Date
-import org.apache.commons.io.FilenameUtils
-
 description := "The Apalache Benchmarking System"
 name := "apalache-bench"
 organizationHomepage := Some(url("https://apalache.informal.systems/"))
