@@ -339,7 +339,7 @@ lazy val bmcSuite =
           Cmd(
             "Apa5Paxos",
             Opt("check"),
-            Opt("--inv", "OneValuePerBallot,"),
+            Opt("--inv", "OneValuePerBallot"),
             Opt("--length", 14),
           )
         ),
