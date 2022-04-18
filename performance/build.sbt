@@ -179,7 +179,7 @@ lazy val bmcSuite =
         timelimit = "10h",
         cmds = Seq(
           Cmd(
-            "APABakery",
+            "MutualExlusion-invariant",
             Opt("check"),
             Opt("--inv", "MutualExclusion"),
             Opt("--length", 8),
@@ -192,7 +192,7 @@ lazy val bmcSuite =
         timelimit = "1h",
         cmds = Seq(
           Cmd(
-            "APAEWD840",
+            "length-12",
             Opt("check"),
             Opt("--inv", "Inv"),
             Opt("--length", 12),
@@ -206,7 +206,7 @@ lazy val bmcSuite =
         timelimit = "5h",
         cmds = Seq(
           Cmd(
-            "APAEWD840",
+            "length-30",
             Opt("check"),
             Opt("--inv", "Inv"),
             Opt("--length", 30),
@@ -252,28 +252,19 @@ lazy val bmcSuite =
         timelimit = "30m",
         cmds = Seq(
           Cmd(
-            "APAbcastFolklore",
+            "ConstInit4",
             Opt("check"),
             Opt("--init", "Init"),
             Opt("--length", 10),
             Opt("--cinit", "ConstInit4"),
-          )
-        ),
-        tasks = Seq(
-          Tasks("APAbcastFolklore", Seq("bcastFolklore/APAbcastFolklore.tla"))
-        ),
-      ),
-      Bench.Runs(
-        "APAbcastFolklore",
-        timelimit = "30m",
-        cmds = Seq(
+          ),
           Cmd(
-            "APAbcastFolklore",
+            "ConstInit20",
             Opt("check"),
             Opt("--init", "Init"),
             Opt("--length", 10),
             Opt("--cinit", "ConstInit20"),
-          )
+          ),
         ),
         tasks = Seq(
           Tasks("APAbcastFolklore", Seq("bcastFolklore/APAbcastFolklore.tla"))
@@ -284,7 +275,7 @@ lazy val bmcSuite =
         timelimit = "30m",
         cmds = Seq(
           Cmd(
-            "APAbcastByz",
+            "ConstInit4",
             Opt("check"),
             Opt("--init", "Init"),
             Opt("--length", 10),
@@ -298,7 +289,7 @@ lazy val bmcSuite =
         timelimit = "23h",
         cmds = Seq(
           Cmd(
-            "APAbcastByz",
+            "ConstInit6",
             Opt("check"),
             Opt("--init", "Init"),
             Opt("--length", 11),
@@ -312,26 +303,19 @@ lazy val bmcSuite =
         timelimit = "23h",
         cmds = Seq(
           Cmd(
-            "APATwoPhase",
+            "ConstInit3",
             Opt("check"),
-            Opt("--init", "TCConsistent"),
+            Opt("--inv", "TCConsistent"),
             Opt("--length", 11),
             Opt("--cinit", "ConstInit3"),
-          )
-        ),
-        tasks = Seq(Tasks("APATwoPhase", Seq("two-phase/APATwoPhase.tla"))),
-      ),
-      Bench.Runs(
-        "APATwoPhase",
-        timelimit = "23h",
-        cmds = Seq(
+          ),
           Cmd(
-            "APATwoPhase",
+            "ConstInit7",
             Opt("check"),
-            Opt("--init", "TCConsistent"),
+            Opt("--inv", "TCConsistent"),
             Opt("--length", 10),
             Opt("--cinit", "ConstInit7"),
-          )
+          ),
         ),
         tasks = Seq(Tasks("APATwoPhase", Seq("two-phase/APATwoPhase.tla"))),
       ),
@@ -342,7 +326,7 @@ lazy val bmcSuite =
           Cmd(
             "Apa3Paxos",
             Opt("check"),
-            Opt("--init", "OneValuePerBallot"),
+            Opt("--inv", "OneValuePerBallot"),
             Opt("--length", 13),
           )
         ),
@@ -355,7 +339,7 @@ lazy val bmcSuite =
           Cmd(
             "Apa5Paxos",
             Opt("check"),
-            Opt("--init", "OneValuePerBallot,"),
+            Opt("--inv", "OneValuePerBallot,"),
             Opt("--length", 14),
           )
         ),
@@ -368,7 +352,7 @@ lazy val bmcSuite =
           Cmd(
             "APAraft",
             Opt("check"),
-            Opt("--init", "OneLeader"),
+            Opt("--inv", "OneLeader"),
             Opt("--length", 8),
           )
         ),
