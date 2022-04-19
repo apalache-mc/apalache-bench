@@ -227,7 +227,7 @@ sbt set ThisBuild/benchmarksFilterExperiments := Set("foo", "bar"); performance/
 To generate the site that gather and presents the report data, run
 
 ``` sh
-sbt site/benchmarksLongitudinalUpdate site/benchmarksIndexUpdate
+sbt site/benchmarksLongitudinalUpdate site/benchmarksIndexUpdate makeSite
 ```
 
 This will update the files in [./src/site](./src/site). Open
@@ -236,11 +236,8 @@ site locally.
 
 #### Publishing the site to gh-pages
 
-``` sh
-sbt makeSite ghpagesPushSite
-```
-
-The site will be served at <https://informalsystems.github.io/apalache-bench/>.
+This is done via our GitHub workflow. See
+[.github/workflows/main.yml](.github/workflows/main.yml).
 
 ### Debugging
 
