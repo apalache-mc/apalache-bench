@@ -150,7 +150,7 @@ For a complete working example, see [performance/build.sbt](performance/build.sb
 - Navigate to https://github.com/informalsystems/apalache-bench/actions/workflows/main.yml
 - Select `Run workflow` and fill in the fields:
  
-  ![](benchmark-workflow-trigger.png)
+  ![](./benchmark-workflow-trigger.png)
 
   - To benchmark a released version, prefix the version tag with `@`. E.g., to
     benchmark version `0.24.0`, supply `@v0.24.0`.
