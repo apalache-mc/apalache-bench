@@ -11,7 +11,9 @@
     - [Benchmark Projects](#benchmark-projects)
     - [Reports](#reports)
     - [Configuration](#configuration)
+    - [Adding benchmarks](#adding-benchmarks)
 - [Running the benchmarks](#running-the-benchmarks)
+    - [Via command-line](#via-command-line)
     - [Via command-line](#via-command-line)
         - [For all projects](#for-all-projects)
         - [For a specific build of apalache](#for-a-specific-build-of-apalache)
@@ -141,6 +143,10 @@ benchmarks ++= Seq(
 For a complete working example, see [performance/build.sbt](performance/build.sbt).
 
 # Running the benchmarks
+
+The benchmarks run against the latest `unstable` branch every weekend, and the
+results are published. The following instructions are for if you want to
+manually run the benchmarks.
 
 **NOTE:** The Apalache benchmarking framework is only compatible with Apalache
 \>= `v0.22.0`.
