@@ -24,7 +24,7 @@ sbt benchmarksReport
 Prefix the tag corresponding to the version with `@`:
 
 ``` sh
-sbt 'set apalacheVersion := "@v0.21.0"; benchmarksReport'
+sbt 'set apalacheVersion := "@v0.22.0"; benchmarksReport'
 ```
 
 #### For a branch or commit
@@ -69,7 +69,7 @@ sbt set ThisBuild/benchmarksFilterExperiments := Set("foo", "bar"); performance/
 To generate the site that gather and presents the report data, run
 
 ``` sh
-sbt site/benchmarksIndexUpdate site/benchmarksLongitudinalUpdate
+sbt site/benchmarksLongitudinalUpdate site/benchmarksIndexUpdate
 ```
 
 This will update the files in [./src/site](./src/site). Open

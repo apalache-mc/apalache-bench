@@ -1,9 +1,0 @@
-tool		Apalache 0.22.2	Apalache 0.22.2	Apalache 0.22.2	Apalache 0.22.2
-run set		[length:0.SetAdd; length:2.SetAdd; length:4.SetAdd]	[length:0.SetAdd; length:2.SetAdd; length:4.SetAdd]	[length:0.SetAdd; length:2.SetAdd; length:4.SetAdd]	[length:0.SetAdd; length:2.SetAdd; length:4.SetAdd]
-/home/runner/work/apalache-bench/apalache-bench/performance/target/scala-2.13/resource_managed/main/		status	cputime (s)	walltime (s)	memory (MB)
-010encoding-SetAdd-001-Array-SetAdd.yml	0	ERROR (1)	1.3610899	0.9534958369999913	87.531520
-010encoding-SetAdd-001-Array-SetAdd.yml	1	ERROR (1)	1.3229081	0.9071273440000027	87.519232
-010encoding-SetAdd-001-Array-SetAdd.yml	2	ERROR (1)	1.3297563	0.9231050449999998	87.564288
-010encoding-SetAdd-001-OOPSLA19-SetAdd.yml	3	ERROR (1)	1.353476	0.9440678779999985	96.022528
-010encoding-SetAdd-001-OOPSLA19-SetAdd.yml	4	ERROR (1)	1.3779342	0.952031427999998	98.070528
-010encoding-SetAdd-001-OOPSLA19-SetAdd.yml	5	ERROR (1)	1.3457851	0.9457842880000271	87.576576
