@@ -1,0 +1,153 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<!-- NOTE: This file is generated. Edit the build.sbt instead. -->
+<html lang="en">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="utf-8" http-equiv="encoding"/>
+    <title>Longitudinal Results For 010encoding-SetAdd</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <style>
+      body {
+  max-width: 80%;
+  padding: 10px;
+  margin: auto;
+}
+
+.metric-header {
+  text-align: center;
+}
+    </style>
+    <script type="application/json" id="report-data">
+      [
+  {
+    "metric" : "cputime",
+    "data" : {
+      "labels" : [
+        "010encoding-SetAdd-001-arrays-SetAdd.yml:0",
+        "010encoding-SetAdd-001-arrays-SetAdd.yml:1",
+        "010encoding-SetAdd-001-arrays-SetAdd.yml:2",
+        "010encoding-SetAdd-001-oopsla19-SetAdd.yml:3",
+        "010encoding-SetAdd-001-oopsla19-SetAdd.yml:4",
+        "010encoding-SetAdd-001-oopsla19-SetAdd.yml:5"
+      ],
+      "datasets" : [
+        {
+          "label" : "v0.24.0-22-g43d1c3f6",
+          "data" : [
+            3.5986704,
+            3.6279013,
+            3.7552046,
+            3.5600007,
+            3.6895941,
+            3.8128249
+          ],
+          "borderColor" : "#bf4971",
+          "tension" : 0.1
+        }
+      ]
+    }
+  },
+  {
+    "metric" : "walltime",
+    "data" : {
+      "labels" : [
+        "010encoding-SetAdd-001-arrays-SetAdd.yml:0",
+        "010encoding-SetAdd-001-arrays-SetAdd.yml:1",
+        "010encoding-SetAdd-001-arrays-SetAdd.yml:2",
+        "010encoding-SetAdd-001-oopsla19-SetAdd.yml:3",
+        "010encoding-SetAdd-001-oopsla19-SetAdd.yml:4",
+        "010encoding-SetAdd-001-oopsla19-SetAdd.yml:5"
+      ],
+      "datasets" : [
+        {
+          "label" : "v0.24.0-22-g43d1c3f6",
+          "data" : [
+            2.359665918000246,
+            2.3681381210008112,
+            2.4203400980004517,
+            2.351013800001965,
+            2.392567203998624,
+            2.4312476289996994
+          ],
+          "borderColor" : "#bf4971",
+          "tension" : 0.1
+        }
+      ]
+    }
+  },
+  {
+    "metric" : "memory",
+    "data" : {
+      "labels" : [
+        "010encoding-SetAdd-001-arrays-SetAdd.yml:0",
+        "010encoding-SetAdd-001-arrays-SetAdd.yml:1",
+        "010encoding-SetAdd-001-arrays-SetAdd.yml:2",
+        "010encoding-SetAdd-001-oopsla19-SetAdd.yml:3",
+        "010encoding-SetAdd-001-oopsla19-SetAdd.yml:4",
+        "010encoding-SetAdd-001-oopsla19-SetAdd.yml:5"
+      ],
+      "datasets" : [
+        {
+          "label" : "v0.24.0-22-g43d1c3f6",
+          "data" : [
+            199.061504,
+            200.900608,
+            202.928128,
+            199.421952,
+            201.838592,
+            204.529664
+          ],
+          "borderColor" : "#bf4971",
+          "tension" : 0.1
+        }
+      ]
+    }
+  }
+]
+    </script>
+    <h1>Longitudinal Results For 010encoding-SetAdd</h1>
+    <div class="chart-section">
+      <h2 class="metric-header">cputime</h2>
+      <div id="cputime-div" class="chart-container">
+        <canvas id="cputime-canvas"></canvas>
+      </div>
+    </div>
+    <div class="chart-section">
+      <h2 class="metric-header">walltime</h2>
+      <div id="walltime-div" class="chart-container">
+        <canvas id="walltime-canvas"></canvas>
+      </div>
+    </div>
+    <div class="chart-section">
+      <h2 class="metric-header">memory</h2>
+      <div id="memory-div" class="chart-container">
+        <canvas id="memory-canvas"></canvas>
+      </div>
+    </div>
+    <script>
+      const reportData = JSON.parse(document.getElementById("report-data").innerHTML)
+for (const data of reportData) {
+    const ctx = document.getElementById(data.metric + '-canvas').getContext('2d');
+    new Chart(ctx, {
+            type: 'line',
+            data: data.data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: data.metric
+                        }
+                    }
+                }
+            }
+        }
+    )
+};
+    </script>
+  </body>
+</html>
