@@ -1,0 +1,11 @@
+tool		Apalache 0.23.0	Apalache 0.23.0	Apalache 0.23.0	Apalache 0.23.0
+run set		[--init=Init.APABakery; --init=Inv.APABakery; --init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla]	[--init=Init.APABakery; --init=Inv.APABakery; --init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla]	[--init=Init.APABakery; --init=Inv.APABakery; --init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla]	[--init=Init.APABakery; --init=Inv.APABakery; --init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla]
+/home/runner/work/apalache-bench/apalache-bench/performance/target/scala-2.13/resource_managed/main/		status	cputime (s)	walltime (s)	memory (MB)
+001indinv-apalache-001-APABakery-APABakery.yml	0	true	13.9844837	9.366892298999971	533.716992
+001indinv-apalache-001-APABakery-APABakery.yml	1	true	14.2912093	9.332826963000002	513.007616
+001indinv-apalache-001-APAEWD840-APAEWD840.yml	2	true	11.2037491	6.4756015520000005	344.555520
+001indinv-apalache-001-APAEWD840-APAEWD840.yml	3	true	7.3126771	4.355754209999986	255.614976
+001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml	4	true	15.0331874	9.093914782999946	447.516672
+001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml	5	true	8.3021762	4.929506697000022	290.455552
+001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml	6	true	8.7829496	5.264420986999994	307.572736
+001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml	7	false	8.7408571	5.11079670700002	310.022144
