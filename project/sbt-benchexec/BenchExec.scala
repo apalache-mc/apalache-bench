@@ -193,9 +193,10 @@ object BenchExec extends AutoPlugin {
         // See https://github.com/sosy-lab/benchexec/blob/main/doc/table-generator.md#complex-tables-with-custom-columns-or-combination-of-results
         val tableGenConfig =
           executed.state.resultDir / s"result.${stamp}.table-generator.xml"
+
         BenchExecXml.save(
           tableGenConfig,
-          BenchExecXml.DocType.trableGenerator,
+          BenchExecXml.DocType.tableGenerator,
           tableGeneratorConfigXml(results),
         )
 
