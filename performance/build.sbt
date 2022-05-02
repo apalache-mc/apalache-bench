@@ -35,7 +35,7 @@ def suiteForEncoding(name: String, specs: Seq[String]) = {
     Bench.Runs(
       encoding,
       timelimit = "2h",
-      tasks = Seq(Tasks(s"SetAdd", specs)),
+      tasks = Seq(Tasks(s"${suite}-${encoding}", specs)),
       cmds = lengths.map(checkCmd(encoding, _)),
     )
   }
