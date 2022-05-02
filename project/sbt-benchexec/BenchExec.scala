@@ -106,7 +106,7 @@ object BenchExec extends AutoPlugin {
     }
 
   private def timestamp() =
-    new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date())
+    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date())
 
   lazy val benchexecRun: Def.Initialize[Task[Seq[Bench.T[Bench.Executed]]]] =
     Def.task {
