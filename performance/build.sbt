@@ -15,7 +15,7 @@ benchmarks ++= Seq(
 )
 
 def suiteForEncoding(name: String, specs: Seq[String]) = {
-  val maxLength = 4
+  val maxLength = sys.env.getOrElse("ARRAY_MAX_LENGTH", "14").toInt
 
   def checkCmd(encoding: String, length: Int) = {
     Cmd(
@@ -35,7 +35,7 @@ def suiteForEncoding(name: String, specs: Seq[String]) = {
     Bench.Runs(
       encoding,
       timelimit = "2h",
-      tasks = Seq(Tasks(s"${suite}-${encoding}", specs)),
+      tasks = Seq(Tasks(s"${name}-${encoding}", specs)),
       cmds = lengths.map(checkCmd(encoding, _)),
     )
   }
