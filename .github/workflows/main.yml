@@ -15,7 +15,7 @@ on:
       array_max_length:
         description: "Set length of array encoding runs (defaults to 14)"
         required: false
-        default: "14"
+        default: ""
   schedule:
     # * is a special character in YAML so you have to quote this string
     # Automatically run the benchmarks on unstable every Saturday
@@ -27,7 +27,7 @@ name: benchmarks
 env:
   VERSION: ${{ github.event.inputs.release_version || '#unstable' }}
   FILTER_EXPERIMENTS: ${{ github.event.inputs.filter_experiments }}
-  ARRAY_MAX_LENGTH: ${{ github.event.inputs.array_max_length }}
+  ARRAY_MAX_LENGTH: ${{ github.event.inputs.array_max_length || '14' }}
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
