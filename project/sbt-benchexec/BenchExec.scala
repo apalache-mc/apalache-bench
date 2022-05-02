@@ -141,7 +141,11 @@ object BenchExec extends AutoPlugin {
     val resultFiles = results.sorted.zipWithIndex.map { case (f, i) =>
       <result id={i.toString()} filename={f}/>
     }
-    <table><union>{resultFiles}</union></table>
+    <table>
+      <union>
+        {resultFiles}
+      </union>
+    </table>
   }
 
   private def inputBz2(fileName: String): InputStream = {
