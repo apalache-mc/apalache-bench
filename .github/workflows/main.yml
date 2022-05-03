@@ -27,7 +27,7 @@ name: benchmarks
 env:
   VERSION: ${{ github.event.inputs.release_version || '#unstable' }}
   FILTER_EXPERIMENTS: ${{ github.event.inputs.filter_experiments }}
-  ARRAY_MAX_LENGTH: ${{ github.event.inputs.encoding_comparison_max_length || '14' }}
+  ENCODING_COMPARISON_MAX_LENGTH: ${{ github.event.inputs.encoding_comparison_max_length || '14' }}
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
