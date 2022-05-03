@@ -15,7 +15,8 @@ benchmarks ++= Seq(
 )
 
 def suiteForEncoding(name: String, specs: Seq[String]) = {
-  val maxLength = sys.env.getOrElse("ARRAY_MAX_LENGTH", "14").toInt
+  val maxLength =
+    sys.env.getOrElse("ENCODING_COMPARISON_MAX_LENGTH", "14").toInt
 
   def checkCmd(encoding: String, length: Int) = {
     Cmd(

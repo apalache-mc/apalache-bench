@@ -12,8 +12,8 @@ on:
         description: "Limit the benchmark runs to bench suites matching the comma separated names -- leave blank to run all defined experiments"
         required: false
         default: ""
-      array_max_length:
-        description: "Set length of array encoding runs (defaults to 14)"
+      encoding_comparison_max_length:
+        description: "Set checking length for encoding comparison benchmarks (defaults to 14)"
         required: false
         default: ""
   schedule:
@@ -27,7 +27,7 @@ name: benchmarks
 env:
   VERSION: ${{ github.event.inputs.release_version || '#unstable' }}
   FILTER_EXPERIMENTS: ${{ github.event.inputs.filter_experiments }}
-  ARRAY_MAX_LENGTH: ${{ github.event.inputs.array_max_length || '14' }}
+  ARRAY_MAX_LENGTH: ${{ github.event.inputs.encoding_comparison_max_length || '14' }}
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
