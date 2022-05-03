@@ -13,7 +13,7 @@ on:
         required: false
         default: ""
       encoding_comparison_max_length:
-        description: "Set checking length for encoding comparison benchmarks (defaults to 14)"
+        description: "Set checking length for encoding comparison benchmarks (defaults to 8)"
         required: false
         default: ""
   schedule:
@@ -27,7 +27,7 @@ name: benchmarks
 env:
   VERSION: ${{ github.event.inputs.release_version || '#unstable' }}
   FILTER_EXPERIMENTS: ${{ github.event.inputs.filter_experiments }}
-  ENCODING_COMPARISON_MAX_LENGTH: ${{ github.event.inputs.encoding_comparison_max_length || '14' }}
+  ENCODING_COMPARISON_MAX_LENGTH: ${{ github.event.inputs.encoding_comparison_max_length }}
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
