@@ -106,7 +106,7 @@ object BenchExec extends AutoPlugin {
     }
 
   private def timestamp() =
-    new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss").format(new Date())
+    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date())
 
   lazy val benchexecRun: Def.Initialize[Task[Seq[Bench.T[Bench.Executed]]]] =
     Def.task {
@@ -141,7 +141,11 @@ object BenchExec extends AutoPlugin {
     val resultFiles = results.sorted.zipWithIndex.map { case (f, i) =>
       <result id={i.toString()} filename={f}/>
     }
-    <table><union>{resultFiles}</union></table>
+    <table>
+      <union>
+        {resultFiles}
+      </union>
+    </table>
   }
 
   private def inputBz2(fileName: String): InputStream = {
@@ -193,9 +197,10 @@ object BenchExec extends AutoPlugin {
         // See https://github.com/sosy-lab/benchexec/blob/main/doc/table-generator.md#complex-tables-with-custom-columns-or-combination-of-results
         val tableGenConfig =
           executed.state.resultDir / s"result.${stamp}.table-generator.xml"
+
         BenchExecXml.save(
           tableGenConfig,
-          BenchExecXml.DocType.trableGenerator,
+          BenchExecXml.DocType.tableGenerator,
           tableGeneratorConfigXml(results),
         )
 

@@ -31,7 +31,7 @@ object BenchExecXml {
       * See
       * https://github.com/sosy-lab/benchexec/blob/bbf9bc961023b1ccbf4d4645db14b7c8af006456/doc/table-generator.xml
       */
-    val trableGenerator = xml.dtd.DocType(
+    val tableGenerator = xml.dtd.DocType(
       "table",
       xml.dtd.PublicID(
         "+//IDN sosy-lab.org//DTD BenchExec table 1.10//EN",

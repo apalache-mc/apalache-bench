@@ -15,7 +15,15 @@ benchmarks ++= Seq(
 )
 
 def suiteForEncoding(name: String, specs: Seq[String]) = {
-  val maxLength = 4
+  val defaultMaxLength = 8
+  val maxLength =
+    // We default to the empty string for fallback so that we
+    // can gracefuly the case when the variable is set environment
+    // but not assigned a value in the
+    sys.env.getOrElse("ENCODING_COMPARISON_MAX_LENGTH", "") match {
+      case "" => defaultMaxLength
+      case i  => i.toInt
+    }
 
   def checkCmd(encoding: String, length: Int) = {
     Cmd(
@@ -35,7 +43,7 @@ def suiteForEncoding(name: String, specs: Seq[String]) = {
     Bench.Runs(
       encoding,
       timelimit = "2h",
-      tasks = Seq(Tasks(s"SetAdd", specs)),
+      tasks = Seq(Tasks(s"${name}-${encoding}", specs)),
       cmds = lengths.map(checkCmd(encoding, _)),
     )
   }
