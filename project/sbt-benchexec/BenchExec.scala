@@ -144,7 +144,6 @@ object BenchExec extends AutoPlugin {
       case (group, results) =>
         results.sorted.zipWithIndex.map { case (f, i) =>
           val id = s"${group}-${i}"
-          println(s">>>> ID: ${id}")
           <result id={id} filename={f}/>
         }
     }
