@@ -380,18 +380,26 @@ h1 {
         .open(resultPath.toFile)
         .all()
         .drop(3)
-        .foreach {
-          case task :: id :: status :: cputime :: walltime :: memory :: Nil => {
-            cputimeReport.addResult(version, s"${task}:${id}", cputime.toDouble)
-            walltimeReport.addResult(
-              version,
-              s"${task}:${id}",
-              walltime.toDouble,
-            )
-            memoryReport.addResult(version, s"${task}:${id}", memory.toDouble)
+        .foreach { row =>
+          // We drop any empty cells, to cope with benchexec's strange way of reporting
+          // its data in CSVs. See https://github.com/sosy-lab/benchexec/issues/827
+          row.filter(_ != "") match {
+            case task :: id :: status :: cputime :: walltime :: memory :: Nil => {
+              cputimeReport.addResult(
+                version,
+                s"${task}:${id}",
+                cputime.toDouble,
+              )
+              walltimeReport.addResult(
+                version,
+                s"${task}:${id}",
+                walltime.toDouble,
+              )
+              memoryReport.addResult(version, s"${task}:${id}", memory.toDouble)
+            }
+            case row =>
+              throw new RuntimeException(s"Invalid report data row: ${row}")
           }
-          case row =>
-            throw new RuntimeException(s"Invalid report data row: ${row}")
         }
     }
 
