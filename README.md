@@ -136,6 +136,9 @@ benchmarks ++= Seq(
         ),
         // The set of file to run each command on
         tasks = Seq(Tasks("APAEWD840", Seq("ewd840/APAEWD840.tla"))),
+        // Optional group ID used to group results into disjoint sets
+        // in reports. Most benchmarks can simply ommit the group id.
+        group = Some("group-id")
       ),
 )
 ```
