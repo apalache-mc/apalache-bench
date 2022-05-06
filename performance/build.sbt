@@ -15,7 +15,7 @@ benchmarks ++= Seq(
 )
 
 def suiteForEncoding(name: String, specs: Seq[String]) = {
-  val defaultMaxLength = 4
+  val defaultMaxLength = 8
   val maxLength =
     // We default to the empty string for fallback so that we
     // can gracefuly the case when the variable is set environment
