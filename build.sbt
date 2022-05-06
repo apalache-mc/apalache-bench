@@ -32,6 +32,7 @@ lazy val site = (project in file("src/site"))
       "0.22.0",
       "0.23.0",
       "0.24.0",
+      "0.25.0",
     ),
     benchmarksIndexFile := Some(baseDirectory.value / "index.html"),
   )

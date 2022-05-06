@@ -95,7 +95,11 @@ object BenchExecDsl {
       val state: State
       val name: String
 
-      // Saves the benchmark in the given `dir`, returned a Defined benchmark
+      /** All the groups assigned to runs */
+      def groups(): Seq[String]
+
+      /** Saves the benchmark in the given `dir`, returned a Defined benchmark
+        */
       def save(dir: File): T[Defined]
     }
 
@@ -138,12 +142,17 @@ object BenchExecDsl {
       }
     }
 
-    /** Benchmark runs derived from a set of commands and tasks */
+    /** Benchmark runs derived from a set of commands and tasks
+      *
+      *   - `group` is an optional group ID that allows results to be gathered
+      *     together in reports
+      */
     class Runs[+State](
         val name: String,
         val cmds: Seq[Cmd],
         tasks: Seq[DefinedTasks],
         val timelimit: String = "none",
+        val group: Option[String] = None,
         val state: State = Specified())
         extends T[State]
         with ToXml {
@@ -159,7 +168,8 @@ object BenchExecDsl {
         */
       def save(dir: File): Runs[Defined] = {
         assert(dir.isDirectory)
-        val file = new File(dir, s"${name}.xml")
+        val groupSuffix = group.map(i => s"-group:${i}").getOrElse("")
+        val file = new File(dir, s"${name}${groupSuffix}.xml")
         BenchExecXml.save(file, BenchExecXml.DocType.benchmark, this.toXml)
         IO.touch(dir / propertyFileName)
         tasks.foreach(_.save(dir))
@@ -167,11 +177,27 @@ object BenchExecDsl {
       }
 
       private def defined(files: Seq[File]): Runs[Defined] = {
-        new Runs(name, cmds, tasks, timelimit, state = Defined(files))
+        new Runs(
+          name,
+          cmds,
+          tasks,
+          timelimit,
+          state = Defined(files),
+          group = group,
+        )
       }
 
+      def groups(): Seq[String] = group.toSeq
+
       def executed(resultDir: File): Runs[Executed] = {
-        new Runs(name, cmds, tasks, timelimit, state = Executed(resultDir))
+        new Runs(
+          name,
+          cmds,
+          tasks,
+          timelimit,
+          state = Executed(resultDir),
+          group = group,
+        )
       }
 
       def addSuiteName(suiteName: String): Runs[Specified] = {
@@ -181,6 +207,7 @@ object BenchExecDsl {
           tasks = tasks.map(_.addSuiteName(suiteName)),
           timelimit,
           state = Specified(),
+          group = group,
         )
       }
     }
@@ -191,11 +218,12 @@ object BenchExecDsl {
           cmds: Seq[Cmd],
           tasks: Seq[Tasks],
           timelimit: String = "none",
+          group: Option[String] = None,
         ): Runs[Specified] = {
         val definedTasks = tasks.zipWithIndex.map { case (t, n) =>
           DefinedTasks(f"${n + 1}%03d-${name}", t)
         }
-        new Runs(name, cmds, definedTasks, timelimit)
+        new Runs(name, cmds, definedTasks, timelimit, group = group)
       }
     }
 
@@ -222,6 +250,10 @@ object BenchExecDsl {
           executedRuns: Seq[Runs[Executed]],
         ): Suite[Executed] = {
         new Suite(name, executedRuns, state = Executed(resultDir))
+      }
+
+      def groups(): Seq[String] = {
+        runs.flatMap(_.group)
       }
     }
 

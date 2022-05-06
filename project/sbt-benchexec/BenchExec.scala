@@ -137,14 +137,25 @@ object BenchExec extends AutoPlugin {
   private def globPaths(glob: Glob): Seq[Path] =
     FileTreeView.default.list(glob).map(_._1)
 
-  private def tableGeneratorConfigXml(results: Seq[String]): xml.Elem = {
-    val resultFiles = results.sorted.zipWithIndex.map { case (f, i) =>
-      <result id={i.toString()} filename={f}/>
+  private def tableGeneratorConfigXml(
+      results: Map[String, Seq[String]]
+    ): xml.Elem = {
+    val resultFiles: ((String, Seq[String])) => Seq[xml.Elem] = {
+      case (group, results) =>
+        results.sorted.zipWithIndex.map { case (f, i) =>
+          val id = s"${group}-${i}"
+          <result id={id} filename={f}/>
+        }
     }
-    <table>
+
+    val unions = results.map { group =>
       <union>
-        {resultFiles}
+        {resultFiles(group)}
       </union>
+    }
+
+    <table>
+      {unions}
     </table>
   }
 
@@ -182,9 +193,18 @@ object BenchExec extends AutoPlugin {
       val toolVersion = benchmarksToolVersion.value
 
       benchmarksRun.value.map { executed =>
+        val groups = executed.groups
         val results: Seq[String] =
           globPaths(executed.state.resultDir.toGlob / "*.xml.bz2")
             .map(_.toString)
+
+        val resultsByGroup: Map[String, Seq[String]] =
+          results
+            .groupBy { r =>
+              // Group either by a group that appears in the file name
+              // or else just the empty string
+              groups.find(g => r.contains(g)).getOrElse("")
+            }
 
         val runFiles: Seq[Path] =
           globPaths(executed.state.resultDir.toGlob / "*.files")
@@ -201,7 +221,7 @@ object BenchExec extends AutoPlugin {
         BenchExecXml.save(
           tableGenConfig,
           BenchExecXml.DocType.tableGenerator,
-          tableGeneratorConfigXml(results),
+          tableGeneratorConfigXml(resultsByGroup),
         )
 
         val reportDir = benchmarkReportsDir.value / toolVersion / executed.name
@@ -359,18 +379,26 @@ h1 {
         .open(resultPath.toFile)
         .all()
         .drop(3)
-        .foreach {
-          case task :: id :: status :: cputime :: walltime :: memory :: Nil => {
-            cputimeReport.addResult(version, s"${task}:${id}", cputime.toDouble)
-            walltimeReport.addResult(
-              version,
-              s"${task}:${id}",
-              walltime.toDouble,
-            )
-            memoryReport.addResult(version, s"${task}:${id}", memory.toDouble)
+        .foreach { row =>
+          // We drop any empty cells, to cope with benchexec's strange way of reporting
+          // its data in CSVs. See https://github.com/sosy-lab/benchexec/issues/827
+          row.filter(_ != "") match {
+            case task :: id :: status :: cputime :: walltime :: memory :: Nil => {
+              cputimeReport.addResult(
+                version,
+                s"${task}:${id}",
+                cputime.toDouble,
+              )
+              walltimeReport.addResult(
+                version,
+                s"${task}:${id}",
+                walltime.toDouble,
+              )
+              memoryReport.addResult(version, s"${task}:${id}", memory.toDouble)
+            }
+            case row =>
+              throw new RuntimeException(s"Invalid report data row: ${row}")
           }
-          case row =>
-            throw new RuntimeException(s"Invalid report data row: ${row}")
         }
     }
 

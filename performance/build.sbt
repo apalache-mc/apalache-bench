@@ -45,6 +45,7 @@ def suiteForEncoding(name: String, specs: Seq[String]) = {
       timelimit = "2h",
       tasks = Seq(Tasks(s"${name}-${encoding}", specs)),
       cmds = lengths.map(checkCmd(encoding, _)),
+      group = Some(encoding),
     )
   }
 
