@@ -56,7 +56,7 @@ The Apalache benchmarking framework is written as two
 - `sbt-benchexec` is defined in [`project/sbt-benchexec`](project/sbt-benchexec)
   and provides an eDSL for generating benchexec definitions and sbt tasks for
   running benchexec and generating reports from the results.
-- `sbt-apalche` is defined in [`project/sbt-apalache`](project/sbt-apalache) and
+- `sbt-apalache` is defined in [`project/sbt-apalache`](project/sbt-apalache) and
   provides tasks for fetching and installing released apalche, either from its
   releases or by building from source.
 
