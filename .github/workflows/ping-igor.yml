@@ -1,0 +1,24 @@
+# Igor said he thought it would be cool to get weekly pings asking him
+# if he wanted to add benchmarks :)
+on:
+  workflow_dispatch:
+    # Allows manually triggering release
+    inputs: []
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # Automatically run the benchmarks on unstable every Saturday
+    # See https://crontab.guru/#0_0_*_*_6
+    - cron: "0 0 * * 6"
+jobs:
+  run-benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping igor about adding benchmarks
+        run: |
+          hub issue create \
+            --message="Do you want to add a benchmark this week?" \
+            --message="""- [ ] Yes""" \
+            --message="""- [ ] No""" \
+            --assign=konnov
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
