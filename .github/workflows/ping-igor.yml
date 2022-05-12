@@ -1,9 +1,8 @@
 # Igor said he thought it would be cool to get weekly pings asking him
 # if he wanted to add benchmarks :)
 on:
+  # Allows manually triggering release
   workflow_dispatch:
-    # Allows manually triggering release
-    inputs: []
   schedule:
     # * is a special character in YAML so you have to quote this string
     # Automatically run the benchmarks on unstable every Saturday
