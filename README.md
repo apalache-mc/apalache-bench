@@ -1,5 +1,6 @@
 # Apalache Benchtests
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
 - [Apalache Benchtests](#apalache-benchtests)
@@ -7,26 +8,29 @@
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
     - [Organization](#organization)
-    - [Apalache benchmarking framework](#apalache-benchmarking-framework)
-    - [Benchmark Projects](#benchmark-projects)
-    - [Reports](#reports)
-    - [Configuration](#configuration)
-    - [Adding benchmarks](#adding-benchmarks)
+        - [Apalache benchmarking framework](#apalache-benchmarking-framework)
+        - [Benchmark Projects](#benchmark-projects)
+        - [Reports](#reports)
+        - [Configuration](#configuration)
+- [Adding benchmarks](#adding-benchmarks)
 - [Running the benchmarks](#running-the-benchmarks)
-    - [Via command-line](#via-command-line)
+    - [Via GitHub actions](#via-github-actions)
     - [Via command-line](#via-command-line)
         - [For all projects](#for-all-projects)
         - [For a specific build of apalache](#for-a-specific-build-of-apalache)
-        - [For a released version](#for-a-released-version)
-        - [For a branch or commit](#for-a-branch-or-commit)
+            - [For a released version](#for-a-released-version)
+            - [For a branch or commit](#for-a-branch-or-commit)
         - [For a specific project](#for-a-specific-project)
         - [For a particular subset of bench suites](#for-a-particular-subset-of-bench-suites)
-    - [Generating reports and the website](#generating-reports-and-the-website)
-        - [Updating the reports and site content](#updating-the-reports-and-site-content)
-        - [Publishing the site to gh-pages](#publishing-the-site-to-gh-pages)
-    - [Debugging](#debugging)
-        - [Debugging tasks](#debugging-tasks)
-        - [Debugging benchexec](#debugging-benchexec)
+        - [Generating reports and the website](#generating-reports-and-the-website)
+            - [Updating the reports and site content](#updating-the-reports-and-site-content)
+            - [Publishing the site to gh-pages](#publishing-the-site-to-gh-pages)
+        - [Debugging](#debugging)
+            - [Debugging tasks](#debugging-tasks)
+            - [Debugging benchexec](#debugging-benchexec)
+
+<!-- markdown-toc end -->
+  
 
 # Installation and development
 
