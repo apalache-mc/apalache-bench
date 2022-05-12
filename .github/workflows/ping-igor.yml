@@ -9,6 +9,9 @@ on:
     # Automatically run the benchmarks on unstable every Saturday
     # See https://crontab.guru/#0_0_*_*_6
     - cron: "0 0 * * 6"
+
+name: ping igor
+
 jobs:
   run-benchmarks:
     runs-on: ubuntu-latest
