@@ -1,9 +1,0 @@
-tool		Apalache v0.24.0-22-g43d1c3f6	Apalache v0.24.0-22-g43d1c3f6	Apalache v0.24.0-22-g43d1c3f6	Apalache v0.24.0-22-g43d1c3f6
-run set		[arrays:length:0.SetAdd; arrays:length:2.SetAdd; arrays:length:4.SetAdd; oopsla19:length:0.SetAdd; oopsla19:length:2.SetAdd; oopsla19:length:4.SetAdd]	[arrays:length:0.SetAdd; arrays:length:2.SetAdd; arrays:length:4.SetAdd; oopsla19:length:0.SetAdd; oopsla19:length:2.SetAdd; oopsla19:length:4.SetAdd]	[arrays:length:0.SetAdd; arrays:length:2.SetAdd; arrays:length:4.SetAdd; oopsla19:length:0.SetAdd; oopsla19:length:2.SetAdd; oopsla19:length:4.SetAdd]	[arrays:length:0.SetAdd; arrays:length:2.SetAdd; arrays:length:4.SetAdd; oopsla19:length:0.SetAdd; oopsla19:length:2.SetAdd; oopsla19:length:4.SetAdd]
-/home/runner/work/apalache-bench/apalache-bench/performance/target/scala-2.13/resource_managed/main/		status	cputime (s)	walltime (s)	memory (MB)
-010encoding-SetAdd-001-arrays-SetAdd.yml	0	true	3.5986704	2.359665918000246	199.061504
-010encoding-SetAdd-001-arrays-SetAdd.yml	1	true	3.6279013	2.3681381210008112	200.900608
-010encoding-SetAdd-001-arrays-SetAdd.yml	2	true	3.7552046	2.4203400980004517	202.928128
-010encoding-SetAdd-001-oopsla19-SetAdd.yml	3	true	3.5600007	2.351013800001965	199.421952
-010encoding-SetAdd-001-oopsla19-SetAdd.yml	4	true	3.6895941	2.392567203998624	201.838592
-010encoding-SetAdd-001-oopsla19-SetAdd.yml	5	true	3.8128249	2.4312476289996994	204.529664
