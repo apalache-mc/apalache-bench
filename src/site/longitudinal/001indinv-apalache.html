@@ -1,0 +1,165 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<!-- NOTE: This file is generated. Edit the build.sbt instead. -->
+<html lang="en">
+  <head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+    <meta content="utf-8" http-equiv="encoding"/>
+    <title>Longitudinal Results For 001indinv-apalache</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  </head>
+  <body>
+    <style>
+      body {
+  max-width: 80%;
+  padding: 10px;
+  margin: auto;
+}
+
+.metric-header {
+  text-align: center;
+}
+    </style>
+    <script type="application/json" id="report-data">
+      [
+  {
+    "metric" : "cputime",
+    "data" : {
+      "labels" : [
+        "001indinv-apalache-001-APABakery-APABakery.yml:-0",
+        "001indinv-apalache-001-APABakery-APABakery.yml:-1",
+        "001indinv-apalache-001-APAEWD840-APAEWD840.yml:-2",
+        "001indinv-apalache-001-APAEWD840-APAEWD840.yml:-3",
+        "001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml:-4",
+        "001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml:-5",
+        "001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml:-6",
+        "001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml:-7"
+      ],
+      "datasets" : [
+        {
+          "label" : "v0.25.1-91-gb3656d03",
+          "data" : [
+            10.5163922,
+            11.7947851,
+            9.3490797,
+            6.0834242,
+            11.7582956,
+            7.030845,
+            6.8441865,
+            6.8511916
+          ],
+          "borderColor" : "#30fef6",
+          "tension" : 0.1
+        }
+      ]
+    }
+  },
+  {
+    "metric" : "walltime",
+    "data" : {
+      "labels" : [
+        "001indinv-apalache-001-APABakery-APABakery.yml:-0",
+        "001indinv-apalache-001-APABakery-APABakery.yml:-1",
+        "001indinv-apalache-001-APAEWD840-APAEWD840.yml:-2",
+        "001indinv-apalache-001-APAEWD840-APAEWD840.yml:-3",
+        "001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml:-4",
+        "001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml:-5",
+        "001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml:-6",
+        "001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml:-7"
+      ],
+      "datasets" : [
+        {
+          "label" : "v0.25.1-91-gb3656d03",
+          "data" : [
+            6.857383904000017,
+            7.6082231390000175,
+            5.239515568000002,
+            3.5410134470000116,
+            6.911801996000008,
+            3.8943221319999566,
+            3.957248153000023,
+            3.9567397280000023
+          ],
+          "borderColor" : "#30fef6",
+          "tension" : 0.1
+        }
+      ]
+    }
+  },
+  {
+    "metric" : "memory",
+    "data" : {
+      "labels" : [
+        "001indinv-apalache-001-APABakery-APABakery.yml:-0",
+        "001indinv-apalache-001-APABakery-APABakery.yml:-1",
+        "001indinv-apalache-001-APAEWD840-APAEWD840.yml:-2",
+        "001indinv-apalache-001-APAEWD840-APAEWD840.yml:-3",
+        "001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml:-4",
+        "001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml:-5",
+        "001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml:-6",
+        "001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml:-7"
+      ],
+      "datasets" : [
+        {
+          "label" : "v0.25.1-91-gb3656d03",
+          "data" : [
+            532.078592,
+            518.131712,
+            342.392832,
+            300.261376,
+            500.75648,
+            329.437184,
+            354.521088,
+            317.239296
+          ],
+          "borderColor" : "#30fef6",
+          "tension" : 0.1
+        }
+      ]
+    }
+  }
+]
+    </script>
+    <h1>Longitudinal Results For 001indinv-apalache</h1>
+    <div class="chart-section">
+      <h2 class="metric-header">cputime</h2>
+      <div id="cputime-div" class="chart-container">
+        <canvas id="cputime-canvas"></canvas>
+      </div>
+    </div>
+    <div class="chart-section">
+      <h2 class="metric-header">walltime</h2>
+      <div id="walltime-div" class="chart-container">
+        <canvas id="walltime-canvas"></canvas>
+      </div>
+    </div>
+    <div class="chart-section">
+      <h2 class="metric-header">memory</h2>
+      <div id="memory-div" class="chart-container">
+        <canvas id="memory-canvas"></canvas>
+      </div>
+    </div>
+    <script>
+      const reportData = JSON.parse(document.getElementById("report-data").innerHTML)
+for (const data of reportData) {
+    const ctx = document.getElementById(data.metric + '-canvas').getContext('2d');
+    new Chart(ctx, {
+            type: 'line',
+            data: data.data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: data.metric
+                        }
+                    }
+                }
+            }
+        }
+    )
+};
+    </script>
+  </body>
+</html>
