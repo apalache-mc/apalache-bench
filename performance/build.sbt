@@ -150,6 +150,52 @@ lazy val indinvSuite =
         ),
         tasks = Seq(Tasks("APATwoPhase.tla", Seq("two-phase/APATwoPhase.tla"))),
       ),
+      Bench.Runs(
+        "ewd998",
+        timelimit = "1h",
+        cmds = Seq(
+          Cmd(
+            "inductive base",
+            Opt("check"),
+            Opt("--init", "Init"),
+            Opt("--config", "ewd998/MC4_EWD998.cfg"),
+            Opt("--inv", "TypedInv"),
+            Opt("--length", 0),
+          ),
+          Cmd(
+            "inductive step",
+            Opt("check"),
+            Opt("--init", "TypedInv"),
+            Opt("--config", "ewd998/MC4_EWD998.cfg"),
+            Opt("--inv", "TypedInv"),
+            Opt("--length", 1),
+          ),
+        ),
+        tasks = Seq(Tasks("ewd998", Seq("ewd998/EWD998.tla"))),
+      ),
+      Bench.Runs(
+        "ewd998-atd",
+        timelimit = "1h",
+        cmds = Seq(
+          Cmd(
+            "inductive base",
+            Opt("check"),
+            Opt("--init", "Init"),
+            Opt("--config", "ewd998/ATD.cfg"),
+            Opt("--inv", "IndInv"),
+            Opt("--length", 0),
+          ),
+          Cmd(
+            "inductive step",
+            Opt("check"),
+            Opt("--init", "IndInv"),
+            Opt("--config", "ewd998/ATD.cfg"),
+            Opt("--inv", "IndInv"),
+            Opt("--length", 1),
+          ),
+        ),
+        tasks = Seq(Tasks("ewd998", Seq("ewd998/AsyncTerminationDetection.tla"))),
+      ),
     ),
   )
 
@@ -366,6 +412,33 @@ lazy val bmcSuite =
           )
         ),
         tasks = Seq(Tasks("APAraft", Seq("raft/APAraft.tla"))),
+      ),
+      Bench.Runs(
+        "ewd998-atd",
+        timelimit = "3h",
+        cmds = Seq(
+          Cmd(
+            "ewd998-atd",
+            Opt("check"),
+            Opt("--config", "ewd998/ATD.cfg"),
+            Opt("--length", 10),
+          )
+        ),
+        tasks = Seq(Tasks("ewd998-atd", Seq("ewd998/AsyncTerminationDetection.tla"))),
+      ),
+      Bench.Runs(
+        "ewd998",
+        timelimit = "3h",
+        cmds = Seq(
+          Cmd(
+            "ewd998",
+            Opt("check"),
+            Opt("--config", "ewd998/MC4_EWD998.cfg"),
+            Opt("--inv", "TerminationDetection"),
+            Opt("--length", 10),
+          )
+        ),
+        tasks = Seq(Tasks("ewd998", Seq("ewd998/EWD998.tla"))),
       ),
     ),
   )
