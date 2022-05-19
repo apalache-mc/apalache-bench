@@ -2,6 +2,7 @@
 .idea
 *.log
 tmp/
+_apalache-out
 
 # Tooling configuration
 .bloop/

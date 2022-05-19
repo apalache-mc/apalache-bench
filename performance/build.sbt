@@ -85,7 +85,7 @@ lazy val indinvSuite =
         tasks = Seq(Tasks("APAEWD840", Seq("ewd840/APAEWD840.tla"))),
       ),
       Bench.Runs(
-        "APABakery",
+        "Bakery",
         timelimit = "3h",
         cmds = Seq(
           Cmd(
@@ -103,7 +103,7 @@ lazy val indinvSuite =
             Opt("--length", 1),
           ),
         ),
-        tasks = Seq(Tasks("APABakery", Seq("Bakery-Boulangerie/APABakery.tla"))),
+        tasks = Seq(Tasks("Bakery", Seq("Bakery-Boulangerie/MC5_Bakery.tla"))),
       ),
       Bench.Runs(
         "APAbcastByz",
@@ -230,7 +230,7 @@ lazy val bmcSuite =
         tasks = Seq(Tasks("APAPrisoners", Seq("Prisoners/APAPrisoners.tla"))),
       ),
       Bench.Runs(
-        "APABakery",
+        "Bakery",
         timelimit = "10h",
         cmds = Seq(
           Cmd(
@@ -240,7 +240,7 @@ lazy val bmcSuite =
             Opt("--length", 8),
           )
         ),
-        tasks = Seq(Tasks("APABakery", Seq("Bakery-Boulangerie/APABakery.tla"))),
+        tasks = Seq(Tasks("Bakery", Seq("Bakery-Boulangerie/MC5_Bakery.tla"))),
       ),
       Bench.Runs(
         "APAEWD840",
