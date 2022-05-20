@@ -224,7 +224,7 @@ experiments to run. E.g., to only run benchmark suites named "foo" and "bar",
 you can run:
 
 ``` scala
-sbt set ThisBuild/benchmarksFilterExperiments := Set("foo", "bar"); performance/benchmarksReport
+sbt 'set ThisBuild/benchmarksFilterExperiments := Set("foo", "bar")' performance/benchmarksReport
 ```
 
 ### Generating reports and the website
