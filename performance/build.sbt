@@ -2,24 +2,51 @@ import BenchExecDsl._
 
 enablePlugins(BenchExec)
 
+val endiveSpecs = Seq(
+  ("endive/MC3_Consensus.tla", "Inv", "before"),
+  /*
+  ("endive/MC3_Simple.tla", "Inv", "before"),
+  ("endive/MC3_SimpleRegular.tla", "Inv", "before"),
+  ("endive/MC3_TCConsistent.tla", "Inv", "before"),
+  ("endive/MC3_TwoPhase.tla", "TCConsistent", "after"),
+  ("endive/MC3_client_server_ae.tla", "Safety", "after"),
+  ("endive/MC3_consensus_epr.tla", "Safety", "after"),
+  ("endive/MC3_consensus_forall.tla", "Safety", "after"),
+  ("endive/MC3_consensus_wo_decide.tla", "Safety", "after"),
+  ("endive/MC3_learning_switch.tla", "Safety", "before"),
+  ("endive/MC3_lockserv.tla", "Mutex", "before"),
+  ("endive/MC3_lockserv_automaton.tla", "Mutex", "before"),
+  ("endive/MC3_lockserver.tla", "Inv", "before"),
+  ("endive/MC3_majorityset_leader_election.tla", "Safety", "before"),
+  ("endive/MC3_naive_consensus.tla", "Safety", "before"),
+  ("endive/MC3_quorum_leader_election.tla", "Safety", "before"),
+  ("endive/MC3_sharded_kv.tla", "Safety", "before"),
+  ("endive/MC3_sharded_kv_no_lost_keys.tla", "Safety", "before"),
+  ("endive/MC3_simple_decentralized_lock.tla", "Inv", "before"),
+  ("endive/MC3_toy_consensus.tla", "Inv", "before"),
+  ("endive/MC3_toy_consensus_epr.tla", "Safety", "before"),
+  ("endive/MC3_toy_consensus_forall.tla", "Inv", "before"),
+  ("endive/MC3_two_phase_commit.tla", "Safety", "before"),
+  ("endive/MC3_MongoLoglessDynamicRaft.tla", "Safety", "before"),
+   */
+)
+
 benchmarks ++= Seq(
-  indinvSuite,
-  bmcSuite,
+  //indinvSuite,
+  //bmcSuite,
   suiteForEncoding("SetAdd", Seq("array-encoding/SetAdd.tla")),
-  suiteForEncoding("SetAddDel", Seq("array-encoding/SetAddDel.tla")),
-  suiteForEncoding("SetSndRcv", Seq("array-encoding/SetSndRcv.tla")),
-  suiteForEncoding(
-    "SetSndRcv_NoFullDrop",
-    Seq("array-encoding/SetSndRcv_NoFullDrop.tla"),
-  ),
+  //suiteForEncoding("SetAddDel", Seq("array-encoding/SetAddDel.tla")),
+  //suiteForEncoding("SetSndRcv", Seq("array-encoding/SetSndRcv.tla")),
+  //suiteForEncoding("SetSndRcv_NoFullDrop", Seq("array-encoding/SetSndRcv_NoFullDrop.tla")),
+  suiteForEncoding_endive(endiveSpecs),
 )
 
 def suiteForEncoding(name: String, specs: Seq[String]) = {
   val defaultMaxLength = 8
   val maxLength =
     // We default to the empty string for fallback so that we
-    // can gracefuly the case when the variable is set environment
-    // but not assigned a value in the
+    // can gracefully deal with the case when the environment
+    // variable is not assigned a value
     sys.env.getOrElse("ENCODING_COMPARISON_MAX_LENGTH", "") match {
       case "" => defaultMaxLength
       case i  => i.toInt
@@ -55,6 +82,43 @@ def suiteForEncoding(name: String, specs: Seq[String]) = {
       runsForEncoding("arrays"),
       runsForEncoding("oopsla19"),
     ),
+  )
+}
+
+def suiteForEncoding_endive(specs: Seq[(String, String, String)]) = {
+  val endiveTimeLimit = "10s"
+
+  def checkCmd(encoding: String, inv: String, searchInvMode: String) = {
+    Cmd(
+      encoding,
+      Opt("check"),
+      Opt("--no-deadlock"),
+      Opt("--init", "Init"),
+      Opt("--inv", inv),
+      Opt("--next", "Next"),
+      Opt("--smt-encoding", encoding),
+      Opt("--tuning-options", s"search.invariant.mode=$searchInvMode")
+    )
+  }
+
+  def runsForSpec(spec: (String, String, String)) = {
+    val name = spec._1
+    val inv = spec._2
+    val searchInvMode = spec._3
+
+    Bench.Runs(
+      name,
+      timelimit = "10s",
+      tasks = Seq(Tasks(s"endive-$name", Seq(name))),
+      cmds = Seq(checkCmd("arrays", inv, searchInvMode), checkCmd("oopsla19", inv, searchInvMode)),
+      group = Some(name),
+    )
+  }
+
+  Bench.Suite(
+    name = s"011endive",
+    //runs = specs.map(runsForSpec)
+    runs = Seq(runsForSpec(specs.head))
   )
 }
 
