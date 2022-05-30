@@ -9,6 +9,7 @@ _apalache-out
 .bsp/
 .metals/
 .history
+*/metals.sbt
 
 # Artifact generation locations
 results/
