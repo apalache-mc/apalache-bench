@@ -3,12 +3,12 @@ import BenchExecDsl._
 enablePlugins(BenchExec)
 
 val endiveSpecs = Seq(
-  ("MC3_Consensus.tla", "Inv", "before")
+  //("MC3_Consensus.tla", "Inv", "before"),
+  //("MC3_Simple.tla", "Inv", "before"),
+  //("MC3_SimpleRegular.tla", "Inv", "before"),
+  //("MC3_TCConsistent.tla", "Inv", "before"), // missing spec
+  ("MC3_TwoPhase.tla", "TCConsistent", "after")
   /*
-  ("MC3_Simple.tla", "Inv", "before"),
-  ("MC3_SimpleRegular.tla", "Inv", "before"),
-  ("MC3_TCConsistent.tla", "Inv", "before"),
-  ("MC3_TwoPhase.tla", "TCConsistent", "after"),
   ("MC3_client_server_ae.tla", "Safety", "after"),
   ("MC3_consensus_epr.tla", "Safety", "after"),
   ("MC3_consensus_forall.tla", "Safety", "after"),
@@ -28,13 +28,13 @@ val endiveSpecs = Seq(
   ("MC3_toy_consensus_forall.tla", "Inv", "before"),
   ("MC3_two_phase_commit.tla", "Safety", "before"),
   ("MC3_MongoLoglessDynamicRaft.tla", "Safety", "before"),
-   */
+     */
 )
 
 benchmarks ++= Seq(
   //indinvSuite,
   //bmcSuite,
-  // suiteForEncoding("SetAdd", Seq("array-encoding/SetAdd.tla"))
+  //suiteForEncoding("SetAdd", Seq("array-encoding/SetAdd.tla")),
   //suiteForEncoding("SetAddDel", Seq("array-encoding/SetAddDel.tla")),
   //suiteForEncoding("SetSndRcv", Seq("array-encoding/SetSndRcv.tla")),
   //suiteForEncoding("SetSndRcv_NoFullDrop", Seq("array-encoding/SetSndRcv_NoFullDrop.tla")),
@@ -106,19 +106,16 @@ def suiteForEncoding_endive(specs: Seq[(String, String, String)]) = {
     val specFile = s"endive/${name}"
 
     Bench.Runs(
-      name,
-      timelimit = "10s",
-      tasks = Seq(Tasks(s"endive-$name", Seq(name))),
+      s"run-${name}",
+      timelimit = "invalidTimelimit",
       cmds = Seq(checkCmd("arrays", inv, searchInvMode), checkCmd("oopsla19", inv, searchInvMode)),
-      tasks = Seq(Tasks(s"endive-$name", Seq(specFile))),
-      group = Some(name),
+      tasks = Seq(Tasks(s"task-$name", Seq(specFile))),
     )
   }
 
   Bench.Suite(
     name = s"011endive",
-    //runs = specs.map(runsForSpec)
-    runs = Seq(runsForSpec(specs.head))
+    runs = specs.map(runsForSpec)
   )
 }
 
