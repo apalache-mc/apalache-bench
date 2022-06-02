@@ -3,12 +3,10 @@ import BenchExecDsl._
 enablePlugins(BenchExec)
 
 val endiveSpecs = Seq(
-  //("MC3_Consensus.tla", "Inv", "before"),
-  //("MC3_Simple.tla", "Inv", "before"),
-  //("MC3_SimpleRegular.tla", "Inv", "before"),
-  //("MC3_TCConsistent.tla", "Inv", "before"), // missing spec
-  ("MC3_TwoPhase.tla", "TCConsistent", "after")
-  /*
+  ("MC3_Consensus.tla", "Inv", "before"),
+  ("MC3_Simple.tla", "Inv", "before"),
+  ("MC3_SimpleRegular.tla", "Inv", "before"),
+  ("MC3_TwoPhase.tla", "TCConsistent", "after"),
   ("MC3_client_server_ae.tla", "Safety", "after"),
   ("MC3_consensus_epr.tla", "Safety", "after"),
   ("MC3_consensus_forall.tla", "Safety", "after"),
@@ -27,17 +25,16 @@ val endiveSpecs = Seq(
   ("MC3_toy_consensus_epr.tla", "Safety", "before"),
   ("MC3_toy_consensus_forall.tla", "Inv", "before"),
   ("MC3_two_phase_commit.tla", "Safety", "before"),
-  ("MC3_MongoLoglessDynamicRaft.tla", "Safety", "before"),
-     */
+  ("MC3_MongoLoglessDynamicRaft.tla", "Safety", "before")
 )
 
 benchmarks ++= Seq(
-  //indinvSuite,
-  //bmcSuite,
-  //suiteForEncoding("SetAdd", Seq("array-encoding/SetAdd.tla")),
-  //suiteForEncoding("SetAddDel", Seq("array-encoding/SetAddDel.tla")),
-  //suiteForEncoding("SetSndRcv", Seq("array-encoding/SetSndRcv.tla")),
-  //suiteForEncoding("SetSndRcv_NoFullDrop", Seq("array-encoding/SetSndRcv_NoFullDrop.tla")),
+  indinvSuite,
+  bmcSuite,
+  suiteForEncoding("SetAdd", Seq("array-encoding/SetAdd.tla")),
+  suiteForEncoding("SetAddDel", Seq("array-encoding/SetAddDel.tla")),
+  suiteForEncoding("SetSndRcv", Seq("array-encoding/SetSndRcv.tla")),
+  suiteForEncoding("SetSndRcv_NoFullDrop", Seq("array-encoding/SetSndRcv_NoFullDrop.tla")),
   suiteForEncoding_endive(endiveSpecs)
 )
 
@@ -86,18 +83,19 @@ def suiteForEncoding(name: String, specs: Seq[String]) = {
 }
 
 def suiteForEncoding_endive(specs: Seq[(String, String, String)]) = {
-  val endiveTimeLimit = "10s"
+  val endiveTimeLimit = "30s"
 
-  def checkCmd(encoding: String, inv: String, searchInvMode: String) = {
+  def checkCmd(encoding: String, inv: String, searchInvMode: String, discardDisabled: String) = {
     Cmd(
-      encoding,
+      s"$encoding-$discardDisabled",
       Opt("check"),
       Opt("--no-deadlock"),
       Opt("--init", "Init"),
       Opt("--inv", inv),
       Opt("--next", "Next"),
       Opt("--smt-encoding", encoding),
-      Opt("--tuning-options", s"search.invariant.mode=$searchInvMode")
+      Opt("--tuning-options", s"search.invariant.mode=$searchInvMode"),
+      Opt("--discard-disabled", discardDisabled)
     )
   }
 
@@ -107,8 +105,11 @@ def suiteForEncoding_endive(specs: Seq[(String, String, String)]) = {
 
     Bench.Runs(
       s"run-${name}",
-      timelimit = "invalidTimelimit",
-      cmds = Seq(checkCmd("arrays", inv, searchInvMode), checkCmd("oopsla19", inv, searchInvMode)),
+      timelimit = endiveTimeLimit,
+      cmds = Seq(checkCmd("arrays", inv, searchInvMode, "true"),
+        checkCmd("oopsla19", inv, searchInvMode, "true"),
+        checkCmd("arrays", inv, searchInvMode, "false"),
+        checkCmd("oopsla19", inv, searchInvMode, "false")),
       tasks = Seq(Tasks(s"task-$name", Seq(specFile))),
     )
   }
