@@ -2,32 +2,6 @@ import BenchExecDsl._
 
 enablePlugins(BenchExec)
 
-val endiveSpecs = Seq(
-  ("MC3_Consensus.tla", "Inv", "before"),
-  ("MC3_Simple.tla", "Inv", "before"),
-  ("MC3_SimpleRegular.tla", "Inv", "before"),
-  ("MC3_TwoPhase.tla", "TCConsistent", "after"),
-  ("MC3_client_server_ae.tla", "Safety", "after"),
-  ("MC3_consensus_epr.tla", "Safety", "after"),
-  ("MC3_consensus_forall.tla", "Safety", "after"),
-  ("MC3_consensus_wo_decide.tla", "Safety", "after"),
-  ("MC3_learning_switch.tla", "Safety", "before"),
-  ("MC3_lockserv.tla", "Mutex", "before"),
-  ("MC3_lockserv_automaton.tla", "Mutex", "before"),
-  ("MC3_lockserver.tla", "Inv", "before"),
-  ("MC3_majorityset_leader_election.tla", "Safety", "before"),
-  ("MC3_naive_consensus.tla", "Safety", "before"),
-  ("MC3_quorum_leader_election.tla", "Safety", "before"),
-  ("MC3_sharded_kv.tla", "Safety", "before"),
-  ("MC3_sharded_kv_no_lost_keys.tla", "Safety", "before"),
-  ("MC3_simple_decentralized_lock.tla", "Inv", "before"),
-  ("MC3_toy_consensus.tla", "Inv", "before"),
-  ("MC3_toy_consensus_epr.tla", "Safety", "before"),
-  ("MC3_toy_consensus_forall.tla", "Inv", "before"),
-  ("MC3_two_phase_commit.tla", "Safety", "before"),
-  ("MC3_MongoLoglessDynamicRaft.tla", "Safety", "before")
-)
-
 benchmarks ++= Seq(
   indinvSuite,
   bmcSuite,
@@ -83,7 +57,7 @@ def suiteForEncoding(name: String, specs: Seq[String]) = {
 }
 
 def suiteForEncoding_endive(specs: Seq[(String, String, String)]) = {
-  val endiveTimeLimit = "30s"
+  val endiveTimeLimit = "2h"
 
   def checkCmd(encoding: String, inv: String, searchInvMode: String, discardDisabled: String) = {
     Cmd(
@@ -119,6 +93,32 @@ def suiteForEncoding_endive(specs: Seq[(String, String, String)]) = {
     runs = specs.map(runsForSpec)
   )
 }
+
+lazy val endiveSpecs = Seq(
+  ("MC3_Consensus.tla", "Inv", "before"),
+  ("MC3_Simple.tla", "Inv", "before"),
+  ("MC3_SimpleRegular.tla", "Inv", "before"),
+  ("MC3_TwoPhase.tla", "TCConsistent", "after"),
+  ("MC3_client_server_ae.tla", "Safety", "after"),
+  ("MC3_consensus_epr.tla", "Safety", "after"),
+  ("MC3_consensus_forall.tla", "Safety", "after"),
+  ("MC3_consensus_wo_decide.tla", "Safety", "after"),
+  ("MC3_learning_switch.tla", "Safety", "before"),
+  ("MC3_lockserv.tla", "Mutex", "before"),
+  ("MC3_lockserv_automaton.tla", "Mutex", "before"),
+  ("MC3_lockserver.tla", "Inv", "before"),
+  ("MC3_majorityset_leader_election.tla", "Safety", "before"),
+  ("MC3_naive_consensus.tla", "Safety", "before"),
+  ("MC3_quorum_leader_election.tla", "Safety", "before"),
+  ("MC3_sharded_kv.tla", "Safety", "before"),
+  ("MC3_sharded_kv_no_lost_keys.tla", "Safety", "before"),
+  ("MC3_simple_decentralized_lock.tla", "Inv", "before"),
+  ("MC3_toy_consensus.tla", "Inv", "before"),
+  ("MC3_toy_consensus_epr.tla", "Safety", "before"),
+  ("MC3_toy_consensus_forall.tla", "Inv", "before"),
+  ("MC3_two_phase_commit.tla", "Safety", "before"),
+  ("MC3_MongoLoglessDynamicRaft.tla", "Safety", "before")
+)
 
 lazy val indinvSuite =
   Bench.Suite(
