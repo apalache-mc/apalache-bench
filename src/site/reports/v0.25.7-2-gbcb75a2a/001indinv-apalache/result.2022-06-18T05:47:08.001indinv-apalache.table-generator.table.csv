@@ -1,0 +1,15 @@
+tool		Apalache v0.25.7-2-gbcb75a2a	Apalache v0.25.7-2-gbcb75a2a	Apalache v0.25.7-2-gbcb75a2a	Apalache v0.25.7-2-gbcb75a2a
+run set		[--init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla; --init=Init.Bakery; --init=Inv.Bakery; inductive base.ewd998; inductive step.ewd998]	[--init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla; --init=Init.Bakery; --init=Inv.Bakery; inductive base.ewd998; inductive step.ewd998]	[--init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla; --init=Init.Bakery; --init=Inv.Bakery; inductive base.ewd998; inductive step.ewd998]	[--init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla; --init=Init.Bakery; --init=Inv.Bakery; inductive base.ewd998; inductive step.ewd998]
+/home/runner/work/apalache-bench/apalache-bench/performance/target/scala-2.13/resource_managed/main/		status	cputime (s)	walltime (s)	memory (MB)
+001indinv-apalache-001-APAEWD840-APAEWD840.yml	-0	true	13.1683267	7.375373551999985	367.779840
+001indinv-apalache-001-APAEWD840-APAEWD840.yml	-1	true	8.6175593	4.934882027000015	301.678592
+001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml	-2	true	14.2053097	8.492815208000025	482.377728
+001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml	-3	true	8.6869347	5.0483202880000135	322.433024
+001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml	-4	true	9.71813	5.582693827000014	341.655552
+001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml	-5	false	8.2823072	4.945749539000019	311.369728
+001indinv-apalache-001-Bakery-Bakery.yml	-6	true	13.6264008	8.76749160700001	555.286528
+001indinv-apalache-001-Bakery-Bakery.yml	-7	true	14.4408024	8.997590848000016	548.638720
+001indinv-apalache-001-ewd998-atd-ewd998.yml	-8	true	6.6093435	3.961263616999986	284.803072
+001indinv-apalache-001-ewd998-atd-ewd998.yml	-9	true	7.4726956	4.450768917000005	285.106176
+001indinv-apalache-001-ewd998-ewd998.yml	-10	true	12.1893236	6.832656021999981	434.290688
+001indinv-apalache-001-ewd998-ewd998.yml	-11	true	14.8415081	8.444703688999994	612.818944
