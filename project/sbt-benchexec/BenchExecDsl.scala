@@ -157,7 +157,8 @@ object BenchExecDsl {
         extends T[State]
         with ToXml {
       def toXml =
-        <benchmark tool={Constants.toolName} displayName={name}>
+        <benchmark tool={Constants.toolName} displayName={name}
+            timelimit={timelimit}>
           {cmds.map(_.toXml)}
           {tasks.map(_.toXml)}
         </benchmark>
