@@ -279,7 +279,7 @@ lazy val bmcSuite =
       ),
       Bench.Runs(
         "APAPrisoners",
-        timelimit = "30m",
+        timelimit = "30min",
         cmds = Seq(
           Cmd(
             "APAPrisoners",
@@ -366,7 +366,7 @@ lazy val bmcSuite =
       ),
       Bench.Runs(
         "APAbcastFolklore",
-        timelimit = "30m",
+        timelimit = "30min",
         cmds = Seq(
           Cmd(
             "ConstInit4",
@@ -389,7 +389,7 @@ lazy val bmcSuite =
       ),
       Bench.Runs(
         "APAbcastByz",
-        timelimit = "30m",
+        timelimit = "30min",
         cmds = Seq(
           Cmd(
             "ConstInit4",
