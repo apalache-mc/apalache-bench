@@ -11,12 +11,16 @@ ThisBuild / apalacheVersion := "#unstable"
 ThisBuild / benchmarksToolVersion := apalacheEnableVersion.value
 
 lazy val performance = (project in file("performance"))
+lazy val parametric = (project in file("parametric"))
+lazy val endive = (project in file("endive"))
 
 lazy val root = (project in file("."))
   .enablePlugins(Apalache)
   .aggregate(
     // Should aggregate every project that can run reports
-    performance
+    performance,
+    parametric,
+    endive
   )
 
 // Configure GH pages site
