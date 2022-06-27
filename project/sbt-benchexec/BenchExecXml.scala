@@ -72,7 +72,7 @@ object BenchExecXml {
         "<!-- NOTE: This file is generated. Edit the build.sbt instead. -->\n"
       )
       // Then write the pretty printed XML payload
-      w.append(content.toString)
+      w.append(contentStr)
     }
   }
 }
