@@ -67,7 +67,7 @@ def suiteForEncoding_endive(specs: Seq[(String, String, String)]) = {
   }
 
   Bench.Suite(
-    name = s"003endive-apalache",
+    name = s"004endive-apalache",
     runs = specs.map(runsForSpec)
   )
 }

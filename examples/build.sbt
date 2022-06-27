@@ -3,21 +3,19 @@ import BenchExecDsl._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteForEncoding_2PCwithBTM(TwoPCwithBTMSpecs)
+  suiteForEncoding_examples(TwoPCwithBTMSpecs)
 )
 
 lazy val TwoPCwithBTMSpecs = Seq(
-  ("MC4_FALSE_FALSE.tla", "Consistency")
-    /*
+  ("MC4_FALSE_FALSE.tla", "Consistency"),
   ("MC4_TRUE_TRUE.tla", "Consistency"),
   ("MC10_FALSE_FALSE.tla", "Consistency"),
   ("MC10_TRUE_TRUE.tla", "Consistency"),
   ("MC20_FALSE_FALSE.tla", "Consistency"),
   ("MC20_TRUE_TRUE.tla", "Consistency")
-     */
 )
 
-def suiteForEncoding_2PCwithBTM(specs: Seq[(String, String)]) = {
+def suiteForEncoding_examples(specs: Seq[(String, String)]) = {
   val suiteTimeLimit = "1h"
 
   def checkCmd(encoding: String, inv: String, searchInvMode: String, discardDisabled: String) = {
@@ -33,7 +31,7 @@ def suiteForEncoding_2PCwithBTM(specs: Seq[(String, String)]) = {
 
   def runsForSpec(spec: (String, String)) = {
     val (name, inv) = spec
-    val specFile = s"TwoPCwithBTM/${name}"
+    val specFile = s"2PCwithBTM/${name}"
 
     Bench.Runs(
       s"run-${name}",
@@ -53,7 +51,7 @@ def suiteForEncoding_2PCwithBTM(specs: Seq[(String, String)]) = {
   }
 
   Bench.Suite(
-    name = s"005TwoPCwithBTMSuite-apalache",
+    name = s"005examples-apalache",
     runs = specs.map(runsForSpec)
   )
 }
