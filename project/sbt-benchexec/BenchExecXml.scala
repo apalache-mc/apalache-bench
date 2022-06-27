@@ -41,7 +41,7 @@ object BenchExecXml {
     )
   }
 
-  /** Save pretty-printed xml to a file
+  /** Save the xml to a file
     *
     * @param file
     *   the file inwhich to write the XML content
@@ -51,8 +51,14 @@ object BenchExecXml {
     *   the XML content to write to the file
     */
   def save(file: File, doctype: xml.dtd.DocType, content: xml.Elem): Unit = {
-    val pp = new xml.PrettyPrinter(100, 2)
-    val formatted = pp.format(content)
+    // You can uncomment and use the pretty-printed content to help with debugging
+    // val pp = new xml.PrettyPrinter(100, 2)
+    // val contentStr = pp.format(content)
+
+    // We cannot use pretty-printing in general, because new in xml values will
+    // break file names for benchexec
+    // See https://github.com/informalsystems/apalache-bench/pull/54#issuecomment-1166634666
+    val contentStr = content.toString
     IO.writer(file, "", charset = IO.defaultCharset) { w =>
       // First write the encoding and doctype
       xml.XML.write(
@@ -66,7 +72,7 @@ object BenchExecXml {
         "<!-- NOTE: This file is generated. Edit the build.sbt instead. -->\n"
       )
       // Then write the pretty printed XML payload
-      w.append(formatted)
+      w.append(contentStr)
     }
   }
 }
