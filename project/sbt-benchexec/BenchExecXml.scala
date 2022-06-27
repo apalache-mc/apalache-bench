@@ -51,7 +51,7 @@ object BenchExecXml {
     *   the XML content to write to the file
     */
   def save(file: File, doctype: xml.dtd.DocType, content: xml.Elem): Unit = {
-    // You can uncomment and use the pretty-printed content to help with debuggin
+    // You can uncomment and use the pretty-printed content to help with debugging
     // val pp = new xml.PrettyPrinter(100, 2)
     // val contentStr = pp.format(content)
 
