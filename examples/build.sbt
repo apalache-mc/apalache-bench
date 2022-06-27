@@ -3,10 +3,10 @@ import BenchExecDsl._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteForEncoding_examples(TwoPCwithBTMSpecs)
+  suiteForEncoding_examples(examplesSpecs)
 )
 
-lazy val TwoPCwithBTMSpecs = Seq(
+lazy val examplesSpecs = Seq(
   ("MC4_FALSE_FALSE.tla", "Consistency"),
   ("MC4_TRUE_TRUE.tla", "Consistency"),
   ("MC10_FALSE_FALSE.tla", "Consistency"),
