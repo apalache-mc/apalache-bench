@@ -22,7 +22,8 @@ lazy val examplesSpecs = Seq(
   ("bakery", "MC3.tla", "Inv", "Inv", "1"),
   ("changRoberts", "MC4.tla", "Init", "Correctness", "10"),
   ("changRoberts", "MC10.tla", "Init", "Correctness", "10"),
-  ("changRoberts", "MC20.tla", "Init", "Correctness", "10")
+  ("changRoberts", "MC20.tla", "Init", "Correctness", "10"),
+  ("paxos", "MC3.tla", "Init", "OneValuePerBallot", "13")
 )
 
 def suiteForEncoding_examples(specs: Seq[(String, String, String, String, String)]) = {
