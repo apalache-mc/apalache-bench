@@ -7,15 +7,18 @@ benchmarks ++= Seq(
 )
 
 lazy val examplesSpecs = Seq(
-  ("MC4_FALSE_FALSE.tla", "Consistency"),
-  ("MC4_TRUE_TRUE.tla", "Consistency"),
-  ("MC10_FALSE_FALSE.tla", "Consistency"),
-  ("MC10_TRUE_TRUE.tla", "Consistency"),
-  ("MC20_FALSE_FALSE.tla", "Consistency"),
-  ("MC20_TRUE_TRUE.tla", "Consistency")
+  ("2PCwithBTM", "MC4_FALSE_FALSE.tla", "Consistency"),
+  ("2PCwithBTM", "MC4_TRUE_TRUE.tla", "Consistency"),
+  ("2PCwithBTM", "MC10_FALSE_FALSE.tla", "Consistency"),
+  ("2PCwithBTM", "MC10_TRUE_TRUE.tla", "Consistency"),
+  ("2PCwithBTM", "MC20_FALSE_FALSE.tla", "Consistency"),
+  ("2PCwithBTM", "MC20_TRUE_TRUE.tla", "Consistency"),
+  ("aba_asyn_byz", "MC4.tla", ""),
+  ("aba_asyn_byz", "MC10.tla", ""),
+  ("aba_asyn_byz", "MC20.tla", "")
 )
 
-def suiteForEncoding_examples(specs: Seq[(String, String)]) = {
+def suiteForEncoding_examples(specs: Seq[(String, String, String)]) = {
   val suiteTimeLimit = "1h"
 
   def checkCmd(encoding: String, inv: String, searchInvMode: String, discardDisabled: String) = {
@@ -29,12 +32,12 @@ def suiteForEncoding_examples(specs: Seq[(String, String)]) = {
     )
   }
 
-  def runsForSpec(spec: (String, String)) = {
-    val (name, inv) = spec
-    val specFile = s"2PCwithBTM/${name}"
+  def runsForSpec(spec: (String, String, String)) = {
+    val (folder, fileName, inv) = spec
+    val filePath = s"${folder}/${fileName}"
 
     Bench.Runs(
-      s"run-${name}",
+      s"run-${folder}-${fileName}",
       timelimit = suiteTimeLimit,
       cmds = Seq(
         checkCmd("arrays", inv, "before", "true"),
@@ -46,7 +49,7 @@ def suiteForEncoding_examples(specs: Seq[(String, String)]) = {
         checkCmd("oopsla19", inv, "after", "true"),
         checkCmd("oopsla19", inv, "after", "false"),
       ),
-      tasks = Seq(Tasks(s"task-$name", Seq(specFile))),
+      tasks = Seq(Tasks(s"task-$fileName", Seq(filePath))),
     )
   }
 
