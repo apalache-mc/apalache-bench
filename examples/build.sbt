@@ -19,7 +19,10 @@ lazy val examplesSpecs = Seq(
   ("aba_asyn_byz", "MC20.tla", "Init", "", "10"),
   ("bakery", "MC3.tla", "Init", "MutualExclusion", "10"),
   ("bakery", "MC3.tla", "Init", "Inv", "0"),
-  ("bakery", "MC3.tla", "Inv", "Inv", "1")
+  ("bakery", "MC3.tla", "Inv", "Inv", "1"),
+  ("changRoberts", "MC4.tla", "Init", "Correctness", "10"),
+  ("changRoberts", "MC10.tla", "Init", "Correctness", "10"),
+  ("changRoberts", "MC20.tla", "Init", "Correctness", "10")
 )
 
 def suiteForEncoding_examples(specs: Seq[(String, String, String, String, String)]) = {
