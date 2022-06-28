@@ -17,10 +17,13 @@ AddOne ==
     \E x \in (Values \ set) : set' = set \union {x}
 
 Membership ==
-    \E x \in Values : x \in set
+    /\ \E x \in Values : x \in set
+    /\ UNCHANGED << set >>
 
 Next ==
     \/ AddOne
     \/ Membership
+
+Inv == TRUE
 
 =============================================================================

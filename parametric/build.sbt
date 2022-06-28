@@ -8,7 +8,6 @@ benchmarks ++= Seq(
   suiteForEncoding("SetAddDel", Seq("parametric-specs/SetAddDel.tla")),
   suiteForEncoding("SetMembership", Seq("parametric-specs/SetMembership.tla")),
   suiteForEncoding("Subset", Seq("parametric-specs/Subset.tla")),
-  suiteForEncoding("Subset", Seq("parametric-specs/Subset.tla")),
   suiteForEncoding("SetFilter", Seq("parametric-specs/SetFilter.tla")),
   suiteForEncoding("SetMap", Seq("parametric-specs/SetMap.tla")),
   suiteForEncoding("SetSndRcv", Seq("parametric-specs/SetSndRcv.tla")),
@@ -19,7 +18,7 @@ benchmarks ++= Seq(
 def suiteForEncoding(name: String, specs: Seq[String]) = {
   val suiteTimeLimit = "1h"
 
-  val defaultMaxLength = 20
+  val defaultMaxLength = 30
   val maxLength =
     // We default to the empty string for fallback so that we
     // can gracefully deal with the case when the environment
