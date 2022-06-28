@@ -10,25 +10,25 @@
 EXTENDS FiniteSets, Constants
 
 CONSTANT
-  \* @type: Set(Int);
-  Values
+    \* @type: Set(Int);
+    Values
 
 VARIABLE
-  \* @type: Set(Int);
-  set
+    \* @type: Set(Int);
+    set
 
 Init ==
-  set = {}
+    set = {}
 
 AddOne ==
-  \E x \in (Values \ set) : set' = set \union {x}
+    \E x \in (Values \ set) : set' = set \union {x}
 
 DelOne ==
-  \E x \in set : set' = set \ {x}
+    \E x \in set : set' = set \ {x}
 
 Next ==
- \/ AddOne
- \/ DelOne
+    \/ AddOne
+    \/ DelOne
 
 Inv == set /= Values
 
