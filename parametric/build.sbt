@@ -4,7 +4,13 @@ enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
   suiteForEncoding("SetAdd", Seq("parametric-specs/SetAdd.tla")),
+  suiteForEncoding("SetDel", Seq("parametric-specs/SetDel.tla")),
   suiteForEncoding("SetAddDel", Seq("parametric-specs/SetAddDel.tla")),
+  suiteForEncoding("SetMembership", Seq("parametric-specs/SetMembership.tla")),
+  suiteForEncoding("Subset", Seq("parametric-specs/Subset.tla")),
+  suiteForEncoding("Subset", Seq("parametric-specs/Subset.tla")),
+  suiteForEncoding("SetFilter", Seq("parametric-specs/SetFilter.tla")),
+  suiteForEncoding("SetMap", Seq("parametric-specs/SetMap.tla")),
   suiteForEncoding("SetSndRcv", Seq("parametric-specs/SetSndRcv.tla")),
   suiteForEncoding("SetSndRcv_NoFullDrop", Seq("parametric-specs/SetSndRcv_NoFullDrop.tla"))
 )
