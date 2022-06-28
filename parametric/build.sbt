@@ -12,13 +12,14 @@ benchmarks ++= Seq(
   suiteForEncoding("SetFilter", Seq("parametric-specs/SetFilter.tla")),
   suiteForEncoding("SetMap", Seq("parametric-specs/SetMap.tla")),
   suiteForEncoding("SetSndRcv", Seq("parametric-specs/SetSndRcv.tla")),
-  suiteForEncoding("SetSndRcv_NoFullDrop", Seq("parametric-specs/SetSndRcv_NoFullDrop.tla"))
+  suiteForEncoding("SetSndRcv_NoFullDrop", Seq("parametric-specs/SetSndRcv_NoFullDrop.tla")),
+  suiteForEncoding("FunUse", Seq("parametric-specs/FunUse.tla"))
 )
 
 def suiteForEncoding(name: String, specs: Seq[String]) = {
   val suiteTimeLimit = "1h"
 
-  val defaultMaxLength = 14
+  val defaultMaxLength = 20
   val maxLength =
     // We default to the empty string for fallback so that we
     // can gracefully deal with the case when the environment
