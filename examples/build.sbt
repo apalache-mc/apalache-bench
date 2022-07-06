@@ -1,5 +1,5 @@
 import BenchExecDsl._
-import ExamplesProjectUtils._
+import ProjectUtils._
 
 enablePlugins(BenchExec)
 
@@ -7,81 +7,62 @@ benchmarks ++= Seq(
   suiteForEncoding_examples(examplesSpecs)
 )
 
-lazy val examplesSpecsExampleWithSpec: Seq[Spec] = Seq(
-  Spec(
-    folder = "2PCwithBTM",
-    file = "MC4_FALSE_FALSE.tla",
-    inv = "Consistency",
-    length = 10,
-  )
-)
-
-// (folder, spec, init, inv, length)
 lazy val examplesSpecs = Seq(
-  ("2PCwithBTM", "MC4_FALSE_FALSE.tla", "Init", "Consistency", "10"),
-  ("2PCwithBTM", "MC4_TRUE_TRUE.tla", "Init", "Consistency", "10"),
-  ("2PCwithBTM", "MC10_FALSE_FALSE.tla", "Init", "Consistency", "10"),
-  ("2PCwithBTM", "MC10_TRUE_TRUE.tla", "Init", "Consistency", "10"),
-  ("2PCwithBTM", "MC20_FALSE_FALSE.tla", "Init", "Consistency", "10"),
-  ("2PCwithBTM", "MC20_TRUE_TRUE.tla", "Init", "Consistency", "10"),
-  ("aba_asyn_byz", "MC4.tla", "Init", "", "10"),
-  ("aba_asyn_byz", "MC10.tla", "Init", "", "10"),
-  ("aba_asyn_byz", "MC20.tla", "Init", "", "10"),
-  ("bakery", "MC3.tla", "Init", "MutualExclusion", "10"),
-  ("bakery", "MC3.tla", "Init", "Inv", "0"),
-  ("bakery", "MC3.tla", "Inv", "Inv", "1"),
-  ("changRoberts", "MC4.tla", "Init", "Correctness", "10"),
-  ("changRoberts", "MC10.tla", "Init", "Correctness", "10"),
-  ("changRoberts", "MC20.tla", "Init", "Correctness", "10"),
-  ("paxos", "MC3.tla", "Init", "V!OneValuePerBallot", "13"),
-  ("readersWriters", "MC4.tla", "Init", "Safety", "10"),
-  ("readersWriters", "MC10.tla", "Init", "Safety", "10"),
-  ("readersWriters", "MC20.tla", "Init", "Safety", "10"),
+  Spec("2PCwithBTM", "MC4_FALSE_FALSE.tla", 10, inv = "Consistency"),
+  Spec("2PCwithBTM", "MC4_TRUE_TRUE.tla", 10, inv = "Consistency"),
+  Spec("2PCwithBTM", "MC10_FALSE_FALSE.tla", 10, inv = "Consistency"),
+  Spec("2PCwithBTM", "MC10_TRUE_TRUE.tla", 10, inv = "Consistency"),
+  Spec("2PCwithBTM", "MC20_FALSE_FALSE.tla", 10, inv = "Consistency"),
+  Spec("2PCwithBTM", "MC20_TRUE_TRUE.tla", 10, inv = "Consistency"),
+  Spec("aba_asyn_byz", "MC4.tla", 10),
+  Spec("aba_asyn_byz", "MC10.tla", 10),
+  Spec("aba_asyn_byz", "MC20.tla", 10),
+  Spec("bakery", "MC3.tla", 10, inv = "MutualExclusion"),
+  Spec("bakery", "MC3.tla", 0, inv = "Inv"),
+  Spec("bakery", "MC3.tla", 1, init = "Inv", inv = "Inv"),
+  Spec("changRoberts", "MC4.tla", 10, inv = "Correctness"),
+  Spec("changRoberts", "MC10.tla", 10, inv = "Correctness"),
+  Spec("changRoberts", "MC20.tla", 10, inv = "Correctness"),
+  Spec("paxos", "MC3.tla", 13, inv = "V!OneValuePerBallot"),
+  Spec("readersWriters", "MC4.tla", 10, inv = "Safety"),
+  Spec("readersWriters", "MC10.tla", 10, inv = "Safety"),
+  Spec("readersWriters", "MC20.tla", 10, inv = "Safety")
 )
 
-def suiteForEncoding_examples(
-    specs: Seq[(String, String, String, String, String)]
-  ) = {
+def suiteForEncoding_examples(specs: Seq[Spec]) = {
   val suiteTimeLimit = "1h"
 
-  def checkCmd(
-      init: String,
-      inv: String,
-      length: String,
-      encoding: String,
-      searchInvMode: String,
-      discardDisabled: String,
-    ) = {
+  def checkCmd(cmdPar: CmdPar) = {
     Cmd(
-      s"${encoding}-${discardDisabled}-${searchInvMode}",
+      s"${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
       Opt("check"),
-      Opt("--init", init),
-      Opt("--inv", inv),
-      Opt("--length", length),
-      Opt("--smt-encoding", encoding),
-      Opt("--tuning-options", s"search.invariant.mode=$searchInvMode"),
-      Opt("--discard-disabled", discardDisabled),
+      Opt("--init", cmdPar.init),
+      Opt("--inv", cmdPar.inv),
+      Opt("--length", cmdPar.length),
+      Opt("--smt-encoding", cmdPar.encoding),
+      Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
+      Opt("--discard-disabled", cmdPar.discardDisabled),
     )
   }
 
-  def runsForSpec(spec: (String, String, String, String, String)) = {
-    val (folder, fileName, init, inv, length) = spec
-    val filePath = s"${folder}/${fileName}"
+  def runsForSpec(spec: Spec) = {
+    val filePath = s"${spec.folder}/${spec.file}"
+    val commands = Seq(
+      CmdPar(spec.init, spec.inv, spec.length, "arrays", "before", "true"),
+      CmdPar(spec.init, spec.inv, spec.length, "arrays", "before", "false"),
+      CmdPar(spec.init, spec.inv, spec.length, "arrays", "after", "true"),
+      CmdPar(spec.init, spec.inv, spec.length, "arrays", "after", "false"),
+      CmdPar(spec.init, spec.inv, spec.length, "oopsla19", "before", "true"),
+      CmdPar(spec.init, spec.inv, spec.length, "oopsla19", "before", "false"),
+      CmdPar(spec.init, spec.inv, spec.length, "oopsla19", "after", "true"),
+      CmdPar(spec.init, spec.inv, spec.length, "oopsla19", "after", "false"),
+    )
 
     Bench.Runs(
-      s"run-${folder}-${fileName}",
+      s"run-${spec.folder}-${spec.file}",
       timelimit = suiteTimeLimit,
-      cmds = Seq(
-        checkCmd(init, inv, length, "arrays", "before", "true"),
-        checkCmd(init, inv, length, "arrays", "before", "false"),
-        checkCmd(init, inv, length, "arrays", "after", "true"),
-        checkCmd(init, inv, length, "arrays", "after", "false"),
-        checkCmd(init, inv, length, "oopsla19", "before", "true"),
-        checkCmd(init, inv, length, "oopsla19", "before", "false"),
-        checkCmd(init, inv, length, "oopsla19", "after", "true"),
-        checkCmd(init, inv, length, "oopsla19", "after", "false"),
-      ),
-      tasks = Seq(Tasks(s"task-$fileName", Seq(filePath))),
+      cmds = commands.map(checkCmd),
+      tasks = Seq(Tasks(s"task-${spec.file}", Seq(filePath))),
     )
   }
 
