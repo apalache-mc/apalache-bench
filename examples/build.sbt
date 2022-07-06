@@ -1,9 +1,19 @@
 import BenchExecDsl._
+import ExamplesProjectUtils._
 
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
   suiteForEncoding_examples(examplesSpecs)
+)
+
+lazy val examplesSpecsExampleWithSpec: Seq[Spec] = Seq(
+  Spec(
+    folder = "2PCwithBTM",
+    file = "MC4_FALSE_FALSE.tla",
+    inv = "Consistency",
+    length = 10,
+  )
 )
 
 // (folder, spec, init, inv, length)
@@ -26,13 +36,22 @@ lazy val examplesSpecs = Seq(
   ("paxos", "MC3.tla", "Init", "V!OneValuePerBallot", "13"),
   ("readersWriters", "MC4.tla", "Init", "Safety", "10"),
   ("readersWriters", "MC10.tla", "Init", "Safety", "10"),
-  ("readersWriters", "MC20.tla", "Init", "Safety", "10")
+  ("readersWriters", "MC20.tla", "Init", "Safety", "10"),
 )
 
-def suiteForEncoding_examples(specs: Seq[(String, String, String, String, String)]) = {
+def suiteForEncoding_examples(
+    specs: Seq[(String, String, String, String, String)]
+  ) = {
   val suiteTimeLimit = "1h"
 
-  def checkCmd(init: String, inv: String, length: String, encoding: String, searchInvMode: String, discardDisabled: String) = {
+  def checkCmd(
+      init: String,
+      inv: String,
+      length: String,
+      encoding: String,
+      searchInvMode: String,
+      discardDisabled: String,
+    ) = {
     Cmd(
       s"${encoding}-${discardDisabled}-${searchInvMode}",
       Opt("check"),
@@ -41,7 +60,7 @@ def suiteForEncoding_examples(specs: Seq[(String, String, String, String, String
       Opt("--length", length),
       Opt("--smt-encoding", encoding),
       Opt("--tuning-options", s"search.invariant.mode=$searchInvMode"),
-      Opt("--discard-disabled", discardDisabled)
+      Opt("--discard-disabled", discardDisabled),
     )
   }
 
@@ -68,6 +87,6 @@ def suiteForEncoding_examples(specs: Seq[(String, String, String, String, String
 
   Bench.Suite(
     name = s"005examples-apalache",
-    runs = specs.map(runsForSpec)
+    runs = specs.map(runsForSpec),
   )
 }
