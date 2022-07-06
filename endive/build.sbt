@@ -36,7 +36,7 @@ lazy val endiveSpecs = Seq(
   ("MC3_naive_consensus.tla", "Safety", "before"),
   ("MC10_naive_consensus.tla", "Safety", "before"),
   ("MC3_quorum_leader_election.tla", "Inv", "before"),
-  ("MC10_quorum_leader_election.tla", "Safety", "before"),
+  ("MC10_quorum_leader_election.tla", "Inv", "before"),
   ("MC3_sharded_kv.tla", "Safety", "before"),
   ("MC10_sharded_kv.tla", "Safety", "before"),
   ("MC3_sharded_kv_no_lost_keys.tla", "Safety", "before"),
