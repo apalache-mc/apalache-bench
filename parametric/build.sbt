@@ -46,7 +46,7 @@ def suiteForEncoding(name: String, specs: Seq[String]) = {
   }
 
   Bench.Suite(
-    name = s"004parametric-${name}",
+    name = s"003parametric-${name}",
     runs = Seq(
       runsForEncoding("arrays"),
       runsForEncoding("oopsla19"),
