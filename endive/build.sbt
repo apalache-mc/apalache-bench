@@ -1,4 +1,5 @@
 import BenchExecDsl._
+import ProjectUtils._
 
 enablePlugins(BenchExec)
 
@@ -7,62 +8,65 @@ benchmarks ++= Seq(
 )
 
 lazy val endiveSpecs = Seq(
-  ("MC3_Consensus.tla", "Inv", "before"),
-  ("MC3_Simple.tla", "Inv", "before"),
-  ("MC3_SimpleRegular.tla", "Inv", "before"),
-  ("MC3_TwoPhase.tla", "TCConsistent", "after"),
-  ("MC3_client_server_ae.tla", "Safety", "after"),
-  ("MC3_consensus_epr.tla", "Safety", "after"),
-  ("MC3_consensus_forall.tla", "Safety", "after"),
-  ("MC3_consensus_wo_decide.tla", "Safety", "after"),
-  ("MC3_learning_switch.tla", "Safety", "before"),
-  ("MC3_lockserv.tla", "Mutex", "before"),
-  ("MC3_lockserv_automaton.tla", "Mutex", "before"),
-  ("MC3_lockserver.tla", "Inv", "before"),
-  ("MC3_majorityset_leader_election.tla", "Safety", "before"),
-  ("MC3_naive_consensus.tla", "Safety", "before"),
-  ("MC3_quorum_leader_election.tla", "Safety", "before"),
-  ("MC3_sharded_kv.tla", "Safety", "before"),
-  ("MC3_sharded_kv_no_lost_keys.tla", "Safety", "before"),
-  ("MC3_simple_decentralized_lock.tla", "Inv", "before"),
-  ("MC3_toy_consensus.tla", "Inv", "before"),
-  ("MC3_toy_consensus_epr.tla", "Safety", "before"),
-  ("MC3_toy_consensus_forall.tla", "Inv", "before"),
-  ("MC3_two_phase_commit.tla", "Safety", "before"),
-  ("MC3_MongoLoglessDynamicRaft.tla", "Safety", "before")
+  Spec("endive-specs","MC3_Consensus.tla", 10, inv = "Inv"),
+  Spec("endive-specs","MC3_Simple.tla", 10, inv = "Inv"),
+  Spec("endive-specs","MC3_SimpleRegular.tla", 10, inv = "Inv"),
+  Spec("endive-specs","MC3_TwoPhase.tla", 10, inv = "TCConsistent"),
+  Spec("endive-specs","MC3_client_server_ae.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_consensus_epr.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_consensus_forall.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_consensus_wo_decide.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_learning_switch.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_lockserv.tla", 10, inv = "Mutex"),
+  Spec("endive-specs","MC3_lockserv_automaton.tla", 10, inv = "Mutex"),
+  Spec("endive-specs","MC3_lockserver.tla", 10, inv = "Inv"),
+  Spec("endive-specs","MC3_majorityset_leader_election.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_naive_consensus.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_quorum_leader_election.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_sharded_kv.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_sharded_kv_no_lost_keys.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_simple_decentralized_lock.tla", 10, inv = "Inv"),
+  Spec("endive-specs","MC3_toy_consensus.tla", 10, inv = "Inv"),
+  Spec("endive-specs","MC3_toy_consensus_epr.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_toy_consensus_forall.tla", 10, inv = "Inv"),
+  Spec("endive-specs","MC3_two_phase_commit.tla", 10, inv = "Safety"),
+  Spec("endive-specs","MC3_MongoLoglessDynamicRaft.tla", 10, inv = "Safety")
 )
 
-def suiteForEncoding_endive(specs: Seq[(String, String, String)]) = {
+def suiteForEncoding_endive(specs: Seq[Spec]) = {
   val suiteTimeLimit = "1h"
 
-  def checkCmd(encoding: String, inv: String, searchInvMode: String, discardDisabled: String) = {
+  def checkCmd(cmdPar: CmdPar) = {
     Cmd(
-      s"${encoding}-${discardDisabled}",
+      s"${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
       Opt("check"),
-      Opt("--no-deadlock"),
-      Opt("--init", "Init"),
-      Opt("--inv", inv),
-      Opt("--next", "Next"),
-      Opt("--smt-encoding", encoding),
-      Opt("--tuning-options", s"search.invariant.mode=$searchInvMode"),
-      Opt("--discard-disabled", discardDisabled)
+      Opt("--init", cmdPar.init),
+      Opt("--inv", cmdPar.inv),
+      Opt("--length", cmdPar.length),
+      Opt("--smt-encoding", cmdPar.encoding),
+      Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
+      Opt("--discard-disabled", cmdPar.discardDisabled),
     )
   }
 
-  def runsForSpec(spec: (String, String, String)) = {
-    val (name, inv, searchInvMode) = spec
-    val specFile = s"endive-specs/${name}"
+  def runsForSpec(spec: Spec) = {
+    val filePath = s"${spec.folder}/${spec.file}"
+    val commands = Seq(
+      CmdPar(spec.init, spec.inv, spec.length, "arrays", "before", "true"),
+      CmdPar(spec.init, spec.inv, spec.length, "arrays", "before", "false"),
+      CmdPar(spec.init, spec.inv, spec.length, "arrays", "after", "true"),
+      CmdPar(spec.init, spec.inv, spec.length, "arrays", "after", "false"),
+      CmdPar(spec.init, spec.inv, spec.length, "oopsla19", "before", "true"),
+      CmdPar(spec.init, spec.inv, spec.length, "oopsla19", "before", "false"),
+      CmdPar(spec.init, spec.inv, spec.length, "oopsla19", "after", "true"),
+      CmdPar(spec.init, spec.inv, spec.length, "oopsla19", "after", "false"),
+    )
 
     Bench.Runs(
-      s"run-${name}",
+      s"run-${spec.folder}-${spec.file}",
       timelimit = suiteTimeLimit,
-      cmds = Seq(
-        checkCmd("arrays", inv, searchInvMode, "true"),
-        checkCmd("arrays", inv, searchInvMode, "false"),
-        checkCmd("oopsla19", inv, searchInvMode, "true"),
-        checkCmd("oopsla19", inv, searchInvMode, "false")
-      ),
-      tasks = Seq(Tasks(s"task-$name", Seq(specFile))),
+      cmds = commands.map(checkCmd),
+      tasks = Seq(Tasks(s"task-${spec.file}", Seq(filePath))),
     )
   }
 
