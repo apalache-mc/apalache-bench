@@ -1,4 +1,3 @@
-import BenchExecDsl._
 import ProjectUtils._
 
 enablePlugins(BenchExec)
