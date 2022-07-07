@@ -5,7 +5,7 @@ object ProjectUtils {
   case class Spec(
     folder: String,
     file: String,
-    length: Int,
+    length: Int = 10,
     init: String = "Init",
     inv: String = "")
 
