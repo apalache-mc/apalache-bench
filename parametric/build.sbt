@@ -31,9 +31,9 @@ def cmdGenGen() = {
 def parametricCheckCmdGen(length: Int) = {
   (spec: Spec, cmdPar: CmdPar) =>
     Cmd(
-      s"$Cmd-CInit${length}-{cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
+      s"$Cmd-CInit${length}-${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
       Opt("check"),
-      Opt("--length", spec.length),
+      Opt("--length", length), // Parametric length
       Opt("--init", spec.init),
       Opt("--next", spec.next),
       Opt("--cinit", s"CInit${length}"), // Parametric cinit

@@ -48,7 +48,7 @@ object ProjectUtils {
 
       Bench.Runs(
         s"run-${spec.folder}-${spec.file}",
-        timelimit = "10s", // Time units are "s", "min", and "h"
+        timelimit = "1h", // Time units are "s", "min", and "h"
         cmds = cmdGens.flatMap(cmdsForCmdGen),
         tasks = Seq(Tasks(s"task-${spec.file}", Seq(filePath))),
       )
@@ -62,7 +62,7 @@ object ProjectUtils {
 
   def defaultCheckCmdGen(spec: Spec, cmdPar: CmdPar): Cmd = {
     Cmd(
-      s"$Cmd-{cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
+      s"$Cmd-${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
       Opt("check"),
       Opt("--length", spec.length),
       Opt("--init", spec.init),
