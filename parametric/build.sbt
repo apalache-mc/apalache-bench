@@ -14,7 +14,7 @@ lazy val parametricSpecs = Seq(
   Spec("parametric-specs", "SetSndRcv_NoFullDrop.tla", inv = "Inv"),
 )
 
-def cmdGenGen() = {
+lazy val cmds =
   val defaultMaxLength = 14
   val maxLength = sys.env.getOrElse("ENCODING_COMPARISON_MAX_LENGTH", "") match {
     // We default to the empty string for fallback so that we
