@@ -69,7 +69,7 @@ The Apalache benchmarking framework is written as two
 The benchmarks can be organized into sbt sub-projects. Each project consists of
 a directory holding a `build.sbt` file and the source code used to define the
 specs to be run in the benchmarks. For an example of a working project, see the
-[performance](peformance) directory.
+[performance](performance) directory.
 
 ### Reports
 
