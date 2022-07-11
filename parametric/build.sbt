@@ -4,7 +4,7 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("003parametric-apalache", parametricSpecs, cmdGenGen())
+  suiteGen("003parametric-apalache", parametricSpecs, cmdGenGen)
 )
 
 lazy val parametricSpecs = Seq(
@@ -14,7 +14,8 @@ lazy val parametricSpecs = Seq(
   Spec("parametric-specs", "SetSndRcv_NoFullDrop.tla", inv = "Inv"),
 )
 
-lazy val cmds =
+// Here we generate a sequence of generators, one for each length
+lazy val cmdGenGen = {
   val defaultMaxLength = 14
   val maxLength = sys.env.getOrElse("ENCODING_COMPARISON_MAX_LENGTH", "") match {
     // We default to the empty string for fallback so that we
