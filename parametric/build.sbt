@@ -9,9 +9,15 @@ benchmarks ++= Seq(
 
 lazy val parametricSpecs = Seq(
   Spec("parametric-specs", "SetAdd.tla", inv = "Inv"),
+  Spec("parametric-specs", "SetDel.tla", inv = "Inv"),
   Spec("parametric-specs", "SetAddDel.tla", inv = "Inv"),
+  Spec("parametric-specs", "SetMembership.tla", inv = "Inv"),
+  Spec("parametric-specs", "Subset.tla", inv = "Inv"),
+  Spec("parametric-specs", "SetFilter.tla", inv = "Inv"),
+  Spec("parametric-specs", "SetMap.tla", inv = "Inv"),
   Spec("parametric-specs", "SetSndRcv.tla", inv = "Inv"),
   Spec("parametric-specs", "SetSndRcv_NoFullDrop.tla", inv = "Inv"),
+  Spec("parametric-specs", "FunUse.tla", inv = "Inv"),
 )
 
 // Here we generate a sequence of generators, one for each length
