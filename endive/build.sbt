@@ -1,96 +1,33 @@
-import BenchExecDsl._
+import ProjectUtils._
 
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteForEncoding_endive(endiveSpecs)
+  suiteGen("004endive-apalache", endiveSpecs)
 )
 
 lazy val endiveSpecs = Seq(
-  ("MC3_Consensus.tla", "Inv", "before"),
-  ("MC10_Consensus.tla", "Inv", "before"),
-  ("MC3_Simple.tla", "Inv", "before"),
-  ("MC10_Simple.tla", "Inv", "before"),
-  ("MC3_SimpleRegular.tla", "Inv", "before"),
-  ("MC10_SimpleRegular.tla", "Inv", "before"),
-  ("MC3_TwoPhase.tla", "TCConsistent", "after"),
-  ("MC10_TwoPhase.tla", "TCConsistent", "after"),
-  ("MC3_client_server_ae.tla", "Safety", "after"),
-  ("MC10_client_server_ae.tla", "Safety", "after"),
-  ("MC3_consensus_epr.tla", "Safety", "after"),
-  ("MC10_consensus_epr.tla", "Safety", "after"),
-  ("MC3_consensus_forall.tla", "Safety", "after"),
-  ("MC10_consensus_forall.tla", "Safety", "after"),
-  ("MC3_consensus_wo_decide.tla", "Safety", "after"),
-  ("MC10_consensus_wo_decide.tla", "Safety", "after"),
-  ("MC3_learning_switch.tla", "Safety", "before"),
-  ("MC10_learning_switch.tla", "Safety", "before"),
-  ("MC3_lockserv.tla", "Mutex", "before"),
-  ("MC10_lockserv.tla", "Mutex", "before"),
-  ("MC3_lockserv_automaton.tla", "Mutex", "before"),
-  ("MC10_lockserv_automaton.tla", "Mutex", "before"),
-  ("MC3_lockserver.tla", "Inv", "before"),
-  ("MC10_lockserver.tla", "Inv", "before"),
-  ("MC3_majorityset_leader_election.tla", "Safety", "before"),
-  ("MC10_majorityset_leader_election.tla", "Safety", "before"),
-  ("MC3_naive_consensus.tla", "Safety", "before"),
-  ("MC10_naive_consensus.tla", "Safety", "before"),
-  ("MC3_quorum_leader_election.tla", "Inv", "before"),
-  ("MC10_quorum_leader_election.tla", "Inv", "before"),
-  ("MC3_sharded_kv.tla", "Safety", "before"),
-  ("MC10_sharded_kv.tla", "Safety", "before"),
-  ("MC3_sharded_kv_no_lost_keys.tla", "Safety", "before"),
-  ("MC10_sharded_kv_no_lost_keys.tla", "Safety", "before"),
-  ("MC3_simple_decentralized_lock.tla", "Inv", "before"),
-  ("MC10_simple_decentralized_lock.tla", "Inv", "before"),
-  ("MC3_toy_consensus.tla", "Inv", "before"),
-  ("MC10_toy_consensus.tla", "Inv", "before"),
-  ("MC3_toy_consensus_epr.tla", "Safety", "before"),
-  ("MC10_toy_consensus_epr.tla", "Safety", "before"),
-  ("MC3_toy_consensus_forall.tla", "Inv", "before"),
-  ("MC10_toy_consensus_forall.tla", "Inv", "before"),
-  ("MC3_two_phase_commit.tla", "Safety", "before"),
-  ("MC10_two_phase_commit.tla", "Safety", "before"),
-  ("MC3_MongoLoglessDynamicRaft.tla", "Safety", "before"),
-  ("MC10_MongoLoglessDynamicRaft.tla", "Safety", "before")
+  Spec("endive-specs","MC3_Consensus.tla", inv = "Inv"),
+  Spec("endive-specs","MC3_Simple.tla", inv = "Inv"),
+  Spec("endive-specs","MC3_SimpleRegular.tla", inv = "Inv"),
+  Spec("endive-specs","MC3_TwoPhase.tla", inv = "TCConsistent"),
+  Spec("endive-specs","MC3_client_server_ae.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_consensus_epr.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_consensus_forall.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_consensus_wo_decide.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_learning_switch.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_lockserv.tla", inv = "Mutex"),
+  Spec("endive-specs","MC3_lockserv_automaton.tla", inv = "Mutex"),
+  Spec("endive-specs","MC3_lockserver.tla", inv = "Inv"),
+  Spec("endive-specs","MC3_majorityset_leader_election.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_naive_consensus.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_quorum_leader_election.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_sharded_kv.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_sharded_kv_no_lost_keys.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_simple_decentralized_lock.tla", inv = "Inv"),
+  Spec("endive-specs","MC3_toy_consensus.tla", inv = "Inv"),
+  Spec("endive-specs","MC3_toy_consensus_epr.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_toy_consensus_forall.tla", inv = "Inv"),
+  Spec("endive-specs","MC3_two_phase_commit.tla", inv = "Safety"),
+  Spec("endive-specs","MC3_MongoLoglessDynamicRaft.tla", inv = "Safety")
 )
-
-def suiteForEncoding_endive(specs: Seq[(String, String, String)]) = {
-  val suiteTimeLimit = "1h"
-
-  def checkCmd(encoding: String, inv: String, searchInvMode: String, discardDisabled: String) = {
-    Cmd(
-      s"${encoding}-${discardDisabled}",
-      Opt("check"),
-      Opt("--no-deadlock"),
-      Opt("--init", "Init"),
-      Opt("--inv", inv),
-      Opt("--next", "Next"),
-      Opt("--smt-encoding", encoding),
-      Opt("--tuning-options", s"search.invariant.mode=$searchInvMode"),
-      Opt("--discard-disabled", discardDisabled)
-    )
-  }
-
-  def runsForSpec(spec: (String, String, String)) = {
-    val (name, inv, searchInvMode) = spec
-    val specFile = s"endive-specs/${name}"
-
-    Bench.Runs(
-      s"run-${name}",
-      timelimit = suiteTimeLimit,
-      cmds = Seq(
-        checkCmd("arrays", inv, searchInvMode, "true"),
-        checkCmd("arrays", inv, searchInvMode, "false"),
-        checkCmd("oopsla19", inv, searchInvMode, "true"),
-        checkCmd("oopsla19", inv, searchInvMode, "false")
-      ),
-      tasks = Seq(Tasks(s"task-$name", Seq(specFile))),
-    )
-  }
-
-  Bench.Suite(
-    name = s"004endive-apalache",
-    runs = specs.map(runsForSpec)
-  )
-}
