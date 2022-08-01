@@ -4,7 +4,7 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("003parametric-apalache", parametricSpecs, cmdGenGen)
+  suiteGen("003parametric-apalache", parametricSpecs, cmdParsDefault, cmdGenGen)
 )
 
 lazy val parametricSpecs = Seq(

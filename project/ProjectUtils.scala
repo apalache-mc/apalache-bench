@@ -23,6 +23,7 @@ object ProjectUtils {
   def suiteGen(
       suiteName: String,
       specs: Seq[Spec],
+      cmdPars: Seq[CmdPar],
       cmdGens: Seq[(Spec, CmdPar) => Cmd] = Seq(defaultCheckCmdGen)
     ): Bench.Suite[Bench.Specified] = {
 
@@ -31,16 +32,6 @@ object ProjectUtils {
       // We generates commands based on a given command generator and the values of the "smt-encoding",
       // "tuning-options=search.invariant.mode", and "discard-disabled" flags.
       def cmdsForCmdGen(cmdGen: (Spec, CmdPar) => Cmd) = {
-        val cmdPars = Seq(
-          CmdPar("arrays", "before", "true"),
-          CmdPar("arrays", "before", "false"),
-          CmdPar("arrays", "after", "true"),
-          CmdPar("arrays", "after", "false"),
-          CmdPar("oopsla19", "before", "true"),
-          CmdPar("oopsla19", "before", "false"),
-          CmdPar("oopsla19", "after", "true"),
-          CmdPar("oopsla19", "after", "false"),
-        )
         cmdPars.map(cmdGen(spec,_))
       }
 
@@ -74,4 +65,18 @@ object ProjectUtils {
       Opt("--discard-disabled", cmdPar.discardDisabled),
     )
   }
+
+  val cmdParsDefault: Seq[CmdPar] = Seq(
+    CmdPar("arrays", "before", "true"),
+    CmdPar("oopsla19", "before", "true"),
+  )
+
+  val cmdParsFull: Seq[CmdPar] = cmdParsDefault ++ Seq(
+    CmdPar("arrays", "before", "false"),
+    CmdPar("arrays", "after", "true"),
+    CmdPar("arrays", "after", "false"),
+    CmdPar("oopsla19", "before", "false"),
+    CmdPar("oopsla19", "after", "true"),
+    CmdPar("oopsla19", "after", "false"),
+  )
 }

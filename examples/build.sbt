@@ -3,7 +3,7 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("005examples-apalache", examplesSpecs)
+  suiteGen("005examples-apalache", examplesSpecs, cmdParsDefault)
 )
 
 lazy val examplesSpecs = Seq(

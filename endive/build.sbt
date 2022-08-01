@@ -3,7 +3,7 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("004endive-apalache", endiveSpecs)
+  suiteGen("004endive-apalache", endiveSpecs, cmdParsDefault)
 )
 
 lazy val endiveSpecs = Seq(
