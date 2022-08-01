@@ -67,7 +67,7 @@ object ProjectUtils {
       Opt("--length", spec.length),
       Opt("--init", spec.init),
       Opt("--next", spec.next),
-      Opt("--cInit", spec.cInit),
+      //Opt("--cInit", spec.cInit), // cInit cannot be an empty string
       Opt("--inv", spec.inv),
       Opt("--smt-encoding", cmdPar.encoding),
       Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
