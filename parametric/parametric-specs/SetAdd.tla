@@ -13,21 +13,21 @@
 EXTENDS FiniteSets, Constants
 
 CONSTANT
-  \* @type: Set(Int);
-  Values
+    \* @type: Set(Int);
+    Values
 
 VARIABLE
-  \* @type: Set(Int);
-  set
+    \* @type: Set(Int);
+    set
 
 Init ==
-  set = {}
+    set = {}
 
 AddOne ==
-  \E x \in (Values \ set) : set' = set \union {x}
+    \E x \in (Values \ set) : set' = set \union {x}
 
 Next ==
- AddOne
+    AddOne
 
 Inv == set /= Values
 

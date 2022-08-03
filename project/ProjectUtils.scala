@@ -10,7 +10,7 @@ object ProjectUtils {
     length: Int = 10,
     init: String = "Init",
     next: String = "Next",
-    cInit: String = "",
+    cInit: Option[String] = None,
     inv: String = "")
 
   /** Abstracts over the parameters that vary between the various fine tuning commands */
@@ -23,6 +23,7 @@ object ProjectUtils {
   def suiteGen(
       suiteName: String,
       specs: Seq[Spec],
+      cmdPars: Seq[CmdPar],
       cmdGens: Seq[(Spec, CmdPar) => Cmd] = Seq(defaultCheckCmdGen)
     ): Bench.Suite[Bench.Specified] = {
 
@@ -31,16 +32,6 @@ object ProjectUtils {
       // We generates commands based on a given command generator and the values of the "smt-encoding",
       // "tuning-options=search.invariant.mode", and "discard-disabled" flags.
       def cmdsForCmdGen(cmdGen: (Spec, CmdPar) => Cmd) = {
-        val cmdPars = Seq(
-          CmdPar("arrays", "before", "true"),
-          CmdPar("arrays", "before", "false"),
-          CmdPar("arrays", "after", "true"),
-          CmdPar("arrays", "after", "false"),
-          CmdPar("oopsla19", "before", "true"),
-          CmdPar("oopsla19", "before", "false"),
-          CmdPar("oopsla19", "after", "true"),
-          CmdPar("oopsla19", "after", "false"),
-        )
         cmdPars.map(cmdGen(spec,_))
       }
 
@@ -61,17 +52,34 @@ object ProjectUtils {
   }
 
   def defaultCheckCmdGen(spec: Spec, cmdPar: CmdPar): Cmd = {
-    Cmd(
-      s"$Cmd-${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
+    val cmdOpts: Seq[Opt] = Seq(
       Opt("check"),
       Opt("--length", spec.length),
       Opt("--init", spec.init),
       Opt("--next", spec.next),
-      Opt("--cInit", spec.cInit),
       Opt("--inv", spec.inv),
       Opt("--smt-encoding", cmdPar.encoding),
       Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
       Opt("--discard-disabled", cmdPar.discardDisabled),
+    ) ++ spec.cInit.map(Opt("--cInit", _)).toSeq // cInit cannot be an empty string
+
+    Cmd(
+      s"$Cmd-${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
+      cmdOpts: _*
     )
   }
+
+  val cmdParsDefault: Seq[CmdPar] = Seq(
+    CmdPar("arrays", "before", "true"),
+    CmdPar("oopsla19", "before", "true"),
+  )
+
+  val cmdParsFull: Seq[CmdPar] = cmdParsDefault ++ Seq(
+    CmdPar("arrays", "before", "false"),
+    CmdPar("arrays", "after", "true"),
+    CmdPar("arrays", "after", "false"),
+    CmdPar("oopsla19", "before", "false"),
+    CmdPar("oopsla19", "after", "true"),
+    CmdPar("oopsla19", "after", "false"),
+  )
 }

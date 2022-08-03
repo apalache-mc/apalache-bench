@@ -10,50 +10,50 @@
 EXTENDS FiniteSets, Constants
 
 CONSTANT
-  \* @type: Set(Int);
-  Values
+    \* @type: Set(Int);
+    Values
 
 VARIABLE
-  \* @type: Set(Int);
-  sender,
-  \* @type: Set(Int);
-  receiver,
-  \* @type: Set(Int);
-  medium
+    \* @type: Set(Int);
+    sender,
+    \* @type: Set(Int);
+    receiver,
+    \* @type: Set(Int);
+    medium
 
 Init ==
-  /\ sender = Values
-  /\ receiver = {}
-  /\ medium = {}
+    /\ sender = Values
+    /\ receiver = {}
+    /\ medium = {}
 
 Snd ==
-  \E x \in sender :
-    /\ sender' = sender \ {x}
-    /\ medium' = medium \union {x}
-    /\ UNCHANGED(<<receiver>>)
+    \E x \in sender :
+        /\ sender' = sender \ {x}
+        /\ medium' = medium \union {x}
+        /\ UNCHANGED(<<receiver>>)
 
 Drop ==
-  \E x \in medium :
-    /\ medium' = medium \ {x}
-    /\ UNCHANGED(<<sender, receiver>>)
+    \E x \in medium :
+        /\ medium' = medium \ {x}
+        /\ UNCHANGED(<<sender, receiver>>)
 
 \* On receive, we do not remove the message from the medium;
 \* this is both natural (multiple copies can be in transit),
 \* and makes model checking harder (more states to consider)
 Rcv ==
-  \E x \in medium :
-    /\ receiver' = receiver \union {x}
-    /\ UNCHANGED(<<sender, medium>>)
+    \E x \in medium :
+        /\ receiver' = receiver \union {x}
+        /\ UNCHANGED(<<sender, medium>>)
 
 
 Next ==
-  \/ Snd
-  \/ Drop
-  \/ Rcv
+    \/ Snd
+    \/ Drop
+    \/ Rcv
 
 Inv ==
-  \/ sender /= {}
-  \/ medium /= {}
-  \/ receiver /= {}
+    \/ sender /= {}
+    \/ medium /= {}
+    \/ receiver /= {}
 
 =============================================================================
