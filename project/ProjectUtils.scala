@@ -10,7 +10,7 @@ object ProjectUtils {
     length: Int = 10,
     init: String = "Init",
     next: String = "Next",
-    cInit: String = "",
+    cInit: Option[String] = None,
     inv: String = "")
 
   /** Abstracts over the parameters that vary between the various fine tuning commands */
@@ -52,17 +52,20 @@ object ProjectUtils {
   }
 
   def defaultCheckCmdGen(spec: Spec, cmdPar: CmdPar): Cmd = {
-    Cmd(
-      s"$Cmd-${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
+    val cmdOpts: Seq[Opt] = Seq(
       Opt("check"),
       Opt("--length", spec.length),
       Opt("--init", spec.init),
       Opt("--next", spec.next),
-      //Opt("--cInit", spec.cInit), // cInit cannot be an empty string
       Opt("--inv", spec.inv),
       Opt("--smt-encoding", cmdPar.encoding),
       Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
       Opt("--discard-disabled", cmdPar.discardDisabled),
+    ) ++ spec.cInit.map(Opt("--cInit", _)).toSeq // cInit cannot be an empty string
+
+    Cmd(
+      s"$Cmd-${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
+      cmdOpts: _*
     )
   }
 
