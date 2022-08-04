@@ -28,6 +28,8 @@ lazy val examplesSpecs = Seq(
   Spec("changRoberts", "MC4.tla", inv = "Correctness"),
   Spec("changRoberts", "MC10.tla", inv = "Correctness"),
   Spec("changRoberts", "MC20.tla", inv = "Correctness"),
+  Spec("ewd998", "MC4.tla", inv = "TerminationDetection"),
+  Spec("ewd998", "MC10.tla", inv = "TerminationDetection"),
   Spec("paxos", "MC3.tla", length = 13, inv = "V!OneValuePerBallot"),
   Spec("readersWriters", "MC4.tla", inv = "Safety"),
   Spec("readersWriters", "MC10.tla", inv = "Safety"),
