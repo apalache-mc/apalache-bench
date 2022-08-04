@@ -33,5 +33,6 @@ lazy val examplesSpecs = Seq(
   Spec("paxos", "MC3.tla", length = 13, inv = "V!OneValuePerBallot"),
   Spec("readersWriters", "MC4.tla", inv = "Safety"),
   Spec("readersWriters", "MC10.tla", inv = "Safety"),
-  Spec("readersWriters", "MC20.tla", inv = "Safety")
+  Spec("readersWriters", "MC20.tla", inv = "Safety"),
+  Spec("royal", "Royal.tla", inv = "ContractCantGoNegative")
 )
