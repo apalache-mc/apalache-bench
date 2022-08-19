@@ -8,16 +8,16 @@ benchmarks ++= Seq(
 )
 
 lazy val parametricSpecs = Seq(
-  Spec("parametric-specs", "SetAdd.tla", inv = "Inv"),
-  Spec("parametric-specs", "SetDel.tla", inv = "Inv"),
-  Spec("parametric-specs", "SetAddDel.tla", inv = "Inv"),
-  Spec("parametric-specs", "SetMembership.tla", inv = "Inv"),
-  Spec("parametric-specs", "Subset.tla", inv = "Inv"),
-  Spec("parametric-specs", "SetFilter.tla", inv = "Inv"),
-  Spec("parametric-specs", "SetMap.tla", inv = "Inv"),
-  Spec("parametric-specs", "SetSndRcv.tla", inv = "Inv"),
-  Spec("parametric-specs", "SetSndRcv_NoFullDrop.tla", inv = "Inv"),
-  Spec("parametric-specs", "FunUse.tla", inv = "Inv"),
+  Spec("parametric-specs", "SetAdd.tla", inv =  Some("Inv")),
+  Spec("parametric-specs", "SetDel.tla", inv =  Some("Inv")),
+  Spec("parametric-specs", "SetAddDel.tla", inv =  Some("Inv")),
+  Spec("parametric-specs", "SetMembership.tla", inv =  Some("Inv")),
+  Spec("parametric-specs", "Subset.tla", inv =  Some("Inv")),
+  Spec("parametric-specs", "SetFilter.tla", inv =  Some("Inv")),
+  Spec("parametric-specs", "SetMap.tla", inv =  Some("Inv")),
+  Spec("parametric-specs", "SetSndRcv.tla", inv =  Some("Inv")),
+  Spec("parametric-specs", "SetSndRcv_NoFullDrop.tla", inv =  Some("Inv")),
+  Spec("parametric-specs", "FunUse.tla", inv =  Some("Inv")),
 )
 
 // Here we generate a sequence of generators, one for each length
@@ -44,7 +44,7 @@ def parametricCheckCmdGen(length: Int) = {
       Opt("--init", spec.init),
       Opt("--next", spec.next),
       Opt("--cinit", s"CInit${length}"), // Parametric cinit
-      Opt("--inv", spec.inv),
+      Opt("--inv", spec.inv.get),
       Opt("--smt-encoding", cmdPar.encoding),
       Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
       Opt("--discard-disabled", cmdPar.discardDisabled),

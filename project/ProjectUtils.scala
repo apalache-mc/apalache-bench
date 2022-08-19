@@ -10,8 +10,8 @@ object ProjectUtils {
     length: Int = 10,
     init: String = "Init",
     next: String = "Next",
-    cInit: Option[String] = None,
-    inv: String = "")
+    cInit: Option[String] = None, // cinit cannot be an empty string
+    inv: Option[String] = None) // inv cannot be an empty string
 
   /** Abstracts over the parameters that vary between the various fine tuning commands */
   case class CmdPar(
@@ -57,12 +57,11 @@ object ProjectUtils {
       Opt("--length", spec.length),
       Opt("--init", spec.init),
       Opt("--next", spec.next),
-      Opt("--inv", spec.inv),
       Opt("--features", "rows"),
       Opt("--smt-encoding", cmdPar.encoding),
       Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
       Opt("--discard-disabled", cmdPar.discardDisabled),
-    ) ++ spec.cInit.map(Opt("--cinit", _)).toSeq // cInit cannot be an empty string
+    ) ++ spec.cInit.map(Opt("--cinit", _)).toSeq ++ spec.inv.map(Opt("--inv", _)).toSeq
 
     Cmd(
       s"$Cmd-${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
