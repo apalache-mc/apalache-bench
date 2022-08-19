@@ -62,7 +62,7 @@ object ProjectUtils {
       Opt("--smt-encoding", cmdPar.encoding),
       Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
       Opt("--discard-disabled", cmdPar.discardDisabled),
-    ) ++ spec.cInit.map(Opt("--cInit", _)).toSeq // cInit cannot be an empty string
+    ) ++ spec.cInit.map(Opt("--cinit", _)).toSeq // cInit cannot be an empty string
 
     Cmd(
       s"$Cmd-${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
