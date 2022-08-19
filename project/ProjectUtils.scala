@@ -72,6 +72,7 @@ object ProjectUtils {
 
   val cmdParsDefault: Seq[CmdPar] = Seq(
     CmdPar("arrays", "before", "true"),
+    CmdPar("funArrays", "before", "true"),
     CmdPar("oopsla19", "before", "true"),
   )
 

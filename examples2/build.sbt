@@ -7,5 +7,5 @@ benchmarks ++= Seq(
 )
 
 lazy val examplesSpecs = Seq(
-  Spec("specs", "EgalitarianPaxos.tla", cInit = Some("ConstInit"), inv = "ContractCantGoNegative")
+  Spec("specs", "EgalitarianPaxos.tla", cInit = Some("ConstInit"))
 )
