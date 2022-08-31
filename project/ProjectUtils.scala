@@ -57,7 +57,7 @@ object ProjectUtils {
       Opt("--length", spec.length),
       Opt("--init", spec.init),
       Opt("--next", spec.next),
-      Opt("--features", "rows"),
+      //Opt("--features", "rows"),
       Opt("--smt-encoding", cmdPar.encoding),
       Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
       Opt("--discard-disabled", cmdPar.discardDisabled),
