@@ -39,7 +39,7 @@ object ProjectUtils {
 
       Bench.Runs(
         s"run-${spec.folder}-${spec.file}",
-        timelimit = "24h", // Time units are "s", "min", and "h"
+        timelimit = "1h", // Time units are "s", "min", and "h"
         cmds = cmdGens.flatMap(cmdsForCmdGen),
         tasks = Seq(Tasks(s"task-${spec.file}", Seq(filePath))),
       )
@@ -57,7 +57,7 @@ object ProjectUtils {
       Opt("--length", spec.length),
       Opt("--init", spec.init),
       Opt("--next", spec.next),
-      //Opt("--features", "no-rows"), // might be needed until all specs are updated with rows
+      Opt("--features", "no-rows"), // needed until the specs are updated with rows
       Opt("--smt-encoding", cmdPar.encoding),
       Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
       Opt("--discard-disabled", cmdPar.discardDisabled),

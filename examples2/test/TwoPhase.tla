@@ -1,4 +1,4 @@
-------------------------------- MODULE TwoPhaseInt -----------------------------
+------------------------------- MODULE TwoPhase -----------------------------
 \* benchmark: tla-twophase
 EXTENDS TLC
 
