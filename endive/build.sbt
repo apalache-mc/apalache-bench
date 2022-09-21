@@ -3,7 +3,15 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("004endive-apalache", endiveSpecs, cmdParsDefault)
+  //suiteGen("004endive-apalache", endiveSpecs, cmdParsDefault)
+  suiteGen("004endive-apalache", quorumTest, cmdParsDefault)
+)
+
+lazy val quorumTest = Seq(
+  Spec("endive-specs", "MC3_quorum_leader_election.tla", inv = Some("Inv")),
+  Spec("endive-specs", "MC10_quorum_leader_election.tla", inv = Some("Inv")),
+  Spec("endive-specs", "MC15_quorum_leader_election.tla", inv = Some("Inv")),
+  Spec("endive-specs", "MC20_quorum_leader_election.tla", inv = Some("Inv"))
 )
 
 lazy val endiveSpecs = Seq(
