@@ -3,7 +3,11 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("005examples-apalache", examplesSpecs, cmdParsDefault)
+  suiteGen("005examples-apalache", testPaxos, cmdParsDefault)
+)
+
+lazy val testPaxos = Seq(
+  Spec("paxos", "MC3.tla", length = 13, inv = Some("V!OneValuePerBallot")),
 )
 
 lazy val examplesSpecs = Seq(
