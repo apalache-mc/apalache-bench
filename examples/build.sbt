@@ -3,11 +3,20 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("005examples-apalache", testPaxos, cmdParsDefault)
+  suiteGen("005examples-apalache", test, cmdParsDefault)
 )
 
-lazy val testPaxos = Seq(
-  Spec("paxos", "MC3.tla", length = 13, inv = Some("V!OneValuePerBallot")),
+lazy val test = Seq(
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
 )
 
 lazy val examplesSpecs = Seq(

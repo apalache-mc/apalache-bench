@@ -153,6 +153,8 @@ TypeOK ==
   /\ nRcvdR \in [ Proc -> 0..(nSntR + nByz) ]
 
 
+Unforg == \A i \in Proc : pc[i] # "AC" \* to be run with Init0
+
 Unforg_Ltl ==
   (\A i \in Proc : pc[i] = "V0") => []( \A i \in Proc : pc[i] # "AC" )
 
