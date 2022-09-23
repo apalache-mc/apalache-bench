@@ -3,10 +3,23 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("005examples-apalache", testRun, cmdParsDefault)
+  suiteGen("005examples-apalache", testRun2, cmdParsDefault)
 )
 
-lazy val testRun = Seq(
+lazy val testRun2 = Seq(
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide"))
+)
+
+lazy val testRun1 = Seq(
   Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
   Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
   Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
