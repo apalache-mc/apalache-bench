@@ -3,7 +3,11 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("005examples-apalache", testRun2, cmdParsDefault)
+  suiteGen("005examples-apalache", testRun3, cmdParsDefault)
+)
+
+lazy val testRun3 = Seq(
+  Spec("erc20", "MC_ERC20.tla", inv = Some("NoTransferAboveApproved")),
 )
 
 lazy val testRun2 = Seq(
