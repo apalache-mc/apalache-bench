@@ -3,37 +3,38 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("005examples-apalache", testRun3, cmdParsDefault)
+  suiteGen("005examples-apalache", testAba, cmdParsDefault),
 )
 
-lazy val testRun3 = Seq(
-  Spec("erc20", "MC_ERC20.tla", inv = Some("NoTransferAboveApproved")),
+lazy val testAba = Seq( // not related to a certain Swedish band
+  Spec("aba_asyn_byz", "MC4.tla", init = "Init0", inv = Some("Unforg")), // inv holds
+  Spec("aba_asyn_byz", "MC7.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC10.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC13.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC16.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC19.tla", init = "Init0", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC4.tla", init = "Init", inv = Some("Unforg")), // inv does not hold
+  Spec("aba_asyn_byz", "MC7.tla", init = "Init", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC10.tla", init = "Init", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC13.tla", init = "Init", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC16.tla", init = "Init", inv = Some("Unforg")),
+  Spec("aba_asyn_byz", "MC19.tla", init = "Init", inv = Some("Unforg")),
+  Spec("aba_asyn_byz_sets", "MC4.tla", init = "Init0", inv = Some("NoDecide")), // inv holds
+  Spec("aba_asyn_byz_sets", "MC7.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC10.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC13.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC16.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC19.tla", init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC4.tla", init = "Init", inv = Some("NoDecide")), // inv does not hold
+  Spec("aba_asyn_byz_sets", "MC7.tla", init = "Init", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC10.tla", init = "Init", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC13.tla", init = "Init", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC16.tla", init = "Init", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_sets", "MC19.tla", init = "Init", inv = Some("NoDecide")),
 )
 
-lazy val testRun2 = Seq(
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide")),
-  Spec("aba_asyn_byz_sets", "MC20.tla", init = "Init0", inv = Some("NoDecide"))
-)
-
-lazy val testRun1 = Seq(
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg")),
-  Spec("aba_asyn_byz", "MC20.tla", init = "Init0", inv = Some("Unforg"))
+lazy val testTendermint = Seq(
+  Spec("tendermint", "MC_n4_f1.tla", length = 1, init = "TypedInv", cInit = Some("ConstInit"), inv = Some("TypedInv")),
 )
 
 lazy val examplesSpecs = Seq(
@@ -61,5 +62,8 @@ lazy val examplesSpecs = Seq(
   Spec("readersWriters", "MC4.tla", inv = Some("Safety")),
   Spec("readersWriters", "MC10.tla", inv = Some("Safety")),
   Spec("readersWriters", "MC20.tla", inv = Some("Safety")),
-  Spec("royal", "Royal.tla", inv = Some("ContractCantGoNegative"))
+  Spec("royal", "Royal.tla", inv = Some("ContractCantGoNegative")),
+  Spec("floodmin", "MC13_4_4_floodmin_k1.tla", length = 20, inv = Some("ValidityInv")),
+  //Spec("erc20", "MC_ERC20.tla", inv = Some("NoTransferAboveApproved")), // spec needs updating
+  //Spec("egalitarianPaxos", "EgalitarianPaxos.tla", cInit = Some("ConstInit")), // spec is too complex for 1h execution
 )
