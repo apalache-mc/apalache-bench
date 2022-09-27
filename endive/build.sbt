@@ -57,7 +57,7 @@ lazy val endiveSpecs = Seq(
   Spec("endive-specs", "MC10_MongoLoglessDynamicRaft.tla", inv =  Some("Safety")),
 )
 
-lazy val twoPhase_Str_Int_test = Seq(
+lazy val twoPhase_Str_Int_test = Seq( // to evaluate the effect of using Str vs. Int
   Spec("test", "MC10_TwoPhaseStr.tla", inv =  Some("TCConsistent")),
   Spec("test", "MC10_TwoPhaseInt.tla", inv =  Some("TCConsistent")),
 )

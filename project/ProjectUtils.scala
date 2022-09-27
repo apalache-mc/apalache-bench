@@ -38,7 +38,7 @@ object ProjectUtils {
       val filePath = s"${spec.folder}/${spec.file}"
 
       Bench.Runs(
-        s"run-${spec.folder}-${spec.file}",
+        s"run-${spec.folder}-${spec.file}-${spec.init}-${spec.next}-${spec.inv}",
         timelimit = "1h", // Time units are "s", "min", and "h"
         cmds = cmdGens.flatMap(cmdsForCmdGen),
         tasks = Seq(Tasks(s"task-${spec.file}", Seq(filePath))),
