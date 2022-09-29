@@ -37,13 +37,13 @@ lazy val testAba = Seq( // not related to a certain Swedish band
 )
 
 lazy val testTendermint = Seq(
-  //Spec("tendermint", "MC_n4_f1.tla", length = 1, init = "TypedInv", cInit = Some("ConstInit"), inv = Some("TypedInv")),
-  Spec("tendermint", "MC_n4_f1.tla", length = 8, cInit = Some("ConstInit"), inv = Some("Agreement")),
-  Spec("tendermint", "MC_n5_f1.tla", length = 9, cInit = Some("ConstInit"), inv = Some("Agreement")),
-  Spec("tendermint", "MC_n6_f1.tla", length = 10, cInit = Some("ConstInit"), inv = Some("Agreement")),
-  Spec("tendermint", "MC_n4_f1.tla", length = 8, cInit = Some("ConstInit"), inv = Some("NoAgreement")),
-  Spec("tendermint", "MC_n5_f1.tla", length = 9, cInit = Some("ConstInit"), inv = Some("NoAgreement")),
-  Spec("tendermint", "MC_n6_f1.tla", length = 10, cInit = Some("ConstInit"), inv = Some("NoAgreement")),
+  //Spec("tendermint", "MC_n4_f1.tla", length = 1, init = "TypedInv", cInit = Some("ConstInit"), inv = Some("TypedInv"), features = None),
+  Spec("tendermint", "MC_n4_f1.tla", length = 8, cInit = Some("ConstInit"), inv = Some("Agreement"), features = None),
+  Spec("tendermint", "MC_n5_f1.tla", length = 9, cInit = Some("ConstInit"), inv = Some("Agreement"), features = None),
+  Spec("tendermint", "MC_n6_f1.tla", length = 10, cInit = Some("ConstInit"), inv = Some("Agreement"), features = None),
+  Spec("tendermint", "MC_n4_f1.tla", length = 8, cInit = Some("ConstInit"), inv = Some("NoAgreement"), features = None),
+  Spec("tendermint", "MC_n5_f1.tla", length = 9, cInit = Some("ConstInit"), inv = Some("NoAgreement"), features = None),
+  Spec("tendermint", "MC_n6_f1.tla", length = 10, cInit = Some("ConstInit"), inv = Some("NoAgreement"), features = None),
 )
 
 lazy val examplesSpecs = Seq(
