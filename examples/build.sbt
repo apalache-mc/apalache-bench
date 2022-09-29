@@ -3,7 +3,8 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  suiteGen("005examples-apalache", testAba, cmdParsDefault),
+  //suiteGen("005examples-apalache", testAba, cmdParsDefault),
+  suiteGen("005examples-apalache", testTendermint, cmdParsDefault),
 )
 
 lazy val testAba = Seq( // not related to a certain Swedish band
