@@ -1,4 +1,4 @@
------------------------------ MODULE MC_n4_f1 -------------------------------
+----------------------------- MODULE MC_n5_f1 -------------------------------
 CONSTANT
   \* @type: $round -> $process;
   Proposer
@@ -35,13 +35,13 @@ VARIABLES
   action        \* we use this variable to see which action was taken
 
 INSTANCE TendermintAccDebug_004_draft WITH
-  Corr <- {"c1", "c2", "c3"},
-  Faulty <- {"f1"},
-  N <- 4,
+  Corr <- {"c1", "c2", "c3", "c4"},
+  Faulty <- {"f5"},
+  N <- 5,
   T <- 1,
   ValidValues <- { "v0", "v1" },
   InvalidValues <- {"v2"},
-  MaxRound <- 5
+  MaxRound <- 2
 
 \* run Apalache with --cinit=ConstInit
 ConstInit == \* the proposer is arbitrary -- works for safety
