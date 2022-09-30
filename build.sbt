@@ -7,7 +7,7 @@ ThisBuild / sbtVersion := "1.6.1"
 ThisBuild / scalaVersion := "2.13.6"
 ThisBuild / organization := "systems.informal"
 
-ThisBuild / apalacheVersion := "#unstable"
+ThisBuild / apalacheVersion := "#main"
 ThisBuild / benchmarksToolVersion := apalacheEnableVersion.value
 
 lazy val performance = (project in file("performance"))
@@ -22,7 +22,7 @@ lazy val root = (project in file("."))
     performance,
     parametric,
     endive,
-    examples
+    examples,
   )
 
 // Configure GH pages site

@@ -59,7 +59,7 @@ object Apalache extends AutoPlugin {
   import autoImport._
 
   override lazy val globalSettings: Seq[Setting[_]] = Seq(
-    apalacheVersion := "#unstable"
+    apalacheVersion := "#main"
   )
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(

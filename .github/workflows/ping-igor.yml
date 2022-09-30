@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   schedule:
     # * is a special character in YAML so you have to quote this string
-    # Automatically run the benchmarks on unstable every Saturday
+    # Automatically run the benchmarks on main every Saturday
     # See https://crontab.guru/#0_0_*_*_6
     - cron: "0 0 * * 6"
 
