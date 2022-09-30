@@ -3,13 +3,14 @@ import ProjectUtils._
 enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
-  //suiteGen("005examples-apalache", testAba, cmdParsDefault),
+  suiteGen("005examples-apalache", testAba, cmdParsDefault),
   suiteGen("005examples-apalache", testTendermint, cmdParsDefault),
 )
 
 lazy val testAba = Seq( // not related to a certain Swedish band
   // length is 2T+3, with N > 3T; N is the number on the MC files
   // inv holds for Init0 and does not hold for Init
+  /*
   Spec("aba_asyn_byz", "MC4.tla", length = 5, init = "Init0", inv = Some("Unforg")),
   Spec("aba_asyn_byz", "MC7.tla", length = 7, init = "Init0", inv = Some("Unforg")),
   Spec("aba_asyn_byz", "MC10.tla", length = 9, init = "Init0", inv = Some("Unforg")),
@@ -22,6 +23,7 @@ lazy val testAba = Seq( // not related to a certain Swedish band
   Spec("aba_asyn_byz", "MC13.tla", length = 11, init = "Init", inv = Some("Unforg")),
   Spec("aba_asyn_byz", "MC16.tla", length = 13, init = "Init", inv = Some("Unforg")),
   Spec("aba_asyn_byz", "MC19.tla", length = 15, init = "Init", inv = Some("Unforg")),
+   */
   Spec("aba_asyn_byz_sets", "MC4.tla", length = 5, init = "Init0", inv = Some("NoDecide")),
   Spec("aba_asyn_byz_sets", "MC7.tla", length = 7, init = "Init0", inv = Some("NoDecide")),
   Spec("aba_asyn_byz_sets", "MC10.tla", length = 9, init = "Init0", inv = Some("NoDecide")),
@@ -41,9 +43,9 @@ lazy val testTendermint = Seq(
   Spec("tendermint", "MC_n4_f1.tla", length = 8, cInit = Some("ConstInit"), inv = Some("Agreement"), features = None),
   Spec("tendermint", "MC_n5_f1.tla", length = 9, cInit = Some("ConstInit"), inv = Some("Agreement"), features = None),
   Spec("tendermint", "MC_n6_f1.tla", length = 10, cInit = Some("ConstInit"), inv = Some("Agreement"), features = None),
-  Spec("tendermint", "MC_n4_f1.tla", length = 8, cInit = Some("ConstInit"), inv = Some("NoAgreement"), features = None),
-  Spec("tendermint", "MC_n5_f1.tla", length = 9, cInit = Some("ConstInit"), inv = Some("NoAgreement"), features = None),
-  Spec("tendermint", "MC_n6_f1.tla", length = 10, cInit = Some("ConstInit"), inv = Some("NoAgreement"), features = None),
+  Spec("tendermint", "MC_n4_f2.tla", length = 99, cInit = Some("ConstInit"), inv = Some("Agreement"), features = None),
+  Spec("tendermint", "MC_n5_f2.tla", length = 99, cInit = Some("ConstInit"), inv = Some("Agreement"), features = None),
+  Spec("tendermint", "MC_n6_f2.tla", length = 99, cInit = Some("ConstInit"), inv = Some("Agreement"), features = None),
 )
 
 lazy val examplesSpecs = Seq(
