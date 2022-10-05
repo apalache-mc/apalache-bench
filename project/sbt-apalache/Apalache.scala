@@ -59,7 +59,7 @@ object Apalache extends AutoPlugin {
   import autoImport._
 
   override lazy val globalSettings: Seq[Setting[_]] = Seq(
-    apalacheVersion := "#unstable"
+    apalacheVersion := "#main"
   )
 
   override lazy val projectSettings: Seq[Setting[_]] = Seq(
@@ -82,6 +82,9 @@ object Apalache extends AutoPlugin {
   private def fetchBranch(destDir: File) =
     s"git -C ${destDir} pull"
 
+  private def gitRev(destDir: File) =
+    s"git -C ${destDir} rev-parse --short HEAD"
+
   lazy val apalacheFetchImpl: Def.Initialize[Task[File]] = Def.task {
     val log = streams.value.log
 
@@ -91,27 +94,42 @@ object Apalache extends AutoPlugin {
 
     version match {
       case Version.Release(version) => {
-        IO.createDirectory(destDir)
-        val destTar = destDir / "apalache.tgz"
-        log.info(s"Fetching Apalache release version ${version} to ${destDir}")
-        Execute.succeed(Process(fetchByVersion(version, destTar)), log)
-        log.info(s"Unpacking Apalache to ${destDir}")
-        Execute.succeed(
-          Process(s"tar zxvf ${destTar} --strip-components=1 -C ${destDir}"),
-          log,
-        )
+        if (destDir.exists()) {
+          log.info(s"Apalache version ${version} is already fetched")
+        } else {
+          IO.createDirectory(destDir)
+          val destTar = destDir / "apalache.tgz"
+          log.info(
+            s"Fetching Apalache release version ${version} to ${destDir}"
+          )
+          Execute.succeed(Process(fetchByVersion(version, destTar)), log)
+          log.info(s"Unpacking Apalache to ${destDir}")
+          Execute.succeed(
+            Process(s"tar zxvf ${destTar} --strip-components=1 -C ${destDir}"),
+            log,
+          )
+        }
       }
       case Version.Branch(version) => {
-        if (destDir.exists()) {
+        val shouldBuild = if (destDir.exists()) {
+          val prevRev = Process(gitRev(destDir)) !! log
           log.info(s"Updating Apalache branch ${version} in ${destDir}")
           Process(fetchBranch(destDir)) ! log
+          val nextRev = Process(gitRev(destDir)) !! log
+          prevRev != nextRev
         } else {
           IO.createDirectory(destDir)
           log.info(s"Fetching Apalache branch ${version} to ${destDir}")
           Execute.succeed(Process(fetchByBranch(version, destDir)), log)
+          true
         }
-        log.info("Building Apalache")
-        Execute.succeed(Process(s"make -C ${destDir} package"), log)
+        if (shouldBuild) {
+          log.info("Building Apalache")
+          Execute.succeed(Process(s"make -C ${destDir} package"), log)
+        } else {
+          log.info("Apalache repo up to date, no need to rebuild")
+        }
+
       }
     }
     destDir
