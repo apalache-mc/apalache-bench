@@ -85,8 +85,8 @@ Init1 ==
 
 \* @type: ($charFn, $charFn) => Bool;
 FnSubseteq(lhs, rhs) ==
-    \* Assumption: DOMAIN lhs = DOMAIN rhs = Corr
-    \A p \in Corr: lhs[p] => rhs[p]
+    \* Assumption: DOMAIN lhs \subseteq DOMAIN rhs
+    \A p \in DOMAIN lhs: lhs[p] => rhs[p]
 
 Receive(p, nextEcho, nextReady) ==
     /\ FnSubseteq(rcvdEcho[p], nextEcho)
@@ -124,7 +124,7 @@ Decide(p, nextReady) ==
     /\ pc' = [ pc EXCEPT ![p] = "AC" ]
     /\ UNCHANGED <<sentEcho, sentReady>>
 
-SentFnSet == [Corr -> BOOLEAN]
+SentFnSet == [Byz -> BOOLEAN]
 
 Next ==
     \E p \in Corr, nextEcho \in SentFnSet, nextReady \in SentFnSet:
