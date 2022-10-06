@@ -115,4 +115,8 @@ NoDecide ==
     \A p \in Corr:
         pc[p] /= "AC"
 
+NoDecide2 == { p \in Corr : pc[p] = "AC"} = {}
+
+NoDecide3 == "AC" \notin { pc[p] : p \in Corr }
+
 ===============================================================================
