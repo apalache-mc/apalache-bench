@@ -24,7 +24,6 @@ lazy val root = (project in file("."))
     parametric,
     endive,
     examples,
-    examples2
   )
 
 // Configure GH pages site
