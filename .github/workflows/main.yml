@@ -5,7 +5,7 @@ on:
     # Allows manually triggering release
     inputs:
       release_version:
-        description: "Version/branch to benchmark. See README.md for syntax. (defaults to unstable branch)"
+        description: "Version/branch to benchmark. See README.md for syntax. (defaults to main branch)"
         required: false
         default: ""
       filter_experiments:
@@ -18,14 +18,14 @@ on:
         default: ""
   schedule:
     # * is a special character in YAML so you have to quote this string
-    # Automatically run the benchmarks on unstable every Saturday
+    # Automatically run the benchmarks on main every Saturday
     # See https://crontab.guru/#0_0_*_*_6
     - cron: "0 0 * * 6"
 
 name: benchmarks
 
 env:
-  VERSION: ${{ github.event.inputs.release_version || '#unstable' }}
+  VERSION: ${{ github.event.inputs.release_version || '#main' }}
   FILTER_EXPERIMENTS: ${{ github.event.inputs.filter_experiments }}
   ENCODING_COMPARISON_MAX_LENGTH: ${{ github.event.inputs.encoding_comparison_max_length }}
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

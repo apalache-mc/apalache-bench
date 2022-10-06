@@ -18,6 +18,7 @@ import io.circe.syntax._
 import sbt._
 import Keys._
 import java.io.InputStream
+import java.util.UUID
 
 object BenchExec extends AutoPlugin {
   val Chart = LongitudinalChart
@@ -105,8 +106,10 @@ object BenchExec extends AutoPlugin {
       }
     }
 
-  private def timestamp() =
-    new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date())
+  private def timestamp() = {
+    val stamp = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(new Date())
+    s"${stamp}-${UUID.randomUUID()}"
+  }
 
   lazy val benchexecRun: Def.Initialize[Task[Seq[Bench.T[Bench.Executed]]]] =
     Def.task {

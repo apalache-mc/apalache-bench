@@ -201,6 +201,19 @@ sbt 'set apalacheVersion := "#main"; benchmarksReport'
 sbt 'set apalacheVersion := "#c1ed9ef1596bb6e8df6b4f77a8335448eebfa80f"; benchmarksReport'
 ```
 
+#### Build and link a version of Apalache
+
+`apalache-bench` will try not to rebuild and relink Apalache if nothing has
+changed. You can ensure that the build and linking of the configured Apalache is
+performed via
+
+``` sh
+sbt apalacheEnableVersion
+```
+
+This will ensure the configured Apalche version is downloaded, built, and that
+the executable is available for subsequent benchmarks in that shell session.
+
 ### For a specific project
 
 The general recipe for running benchmarks and generating reports for a specific project is:
