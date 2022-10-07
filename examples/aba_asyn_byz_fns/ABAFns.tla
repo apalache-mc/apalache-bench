@@ -69,9 +69,9 @@ InitFrom(InitLocs) ==
     /\ rcvdEcho = [ p \in Corr |-> EmptySetFn ]
     /\ rcvdReady = [ p \in Corr |-> EmptySetFn ]
     \* the Byzantine processes are free to send messages whenever they like
-    /\ sentEcho \in [Byz -> BOOLEAN]
+    /\ sentEcho \in [Proc -> BOOLEAN]
     /\ \A p \in Corr: sentEcho[p] = FALSE
-    /\ sentReady \in [Byz -> BOOLEAN]
+    /\ sentReady \in [Proc -> BOOLEAN]
     /\ \A p \in Corr: sentReady[p] = FALSE
 
 Init ==
