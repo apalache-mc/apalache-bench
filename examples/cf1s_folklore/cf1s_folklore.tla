@@ -24,7 +24,11 @@ CONSTANTS
     \* The upper bound on the number of faulty processes
     \*
     \* @type: Int;
-    T
+    T,
+    \* The actual number of faulty processes
+    \*
+    \* @type: Int;
+    F
 
 VARIABLES 
   \* @type: Int;
@@ -61,7 +65,7 @@ Init ==
   /\ nRcvd1 = [ i \in Proc |-> 0 ]
   
 Faulty(i) ==
-  /\ nFaulty < T
+  /\ nFaulty < F
   /\ pc[i] # "BYZ"
   /\ pc' = [ pc EXCEPT ![i] = "BYZ" ] 
   /\ nFaulty' = nFaulty + 1  
