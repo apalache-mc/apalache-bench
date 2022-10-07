@@ -41,11 +41,7 @@ VARIABLE
   \* @type: Int;
   sent           (* the # of messages sent by all correct processes *)
 
-Proc == 1 .. N       
-M == { "ECHO" }
-
-ByzMsgs == Faulty \X M
-                            
+Proc == 1 .. N             
 vars == << pc, rcvd, sent>>
 
 
