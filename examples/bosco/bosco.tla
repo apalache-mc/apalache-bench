@@ -156,7 +156,7 @@ Init ==
   /\ rcvd1 = [ i \in Corr |-> 0 ]
 
  (* Initial step *)
- Init0 ==
+Init0 ==
    /\ pc \in [ Corr -> {"V0"} ]
    /\ sent0 = 0
    /\ sent1 = 0

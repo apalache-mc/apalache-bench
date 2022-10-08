@@ -162,6 +162,6 @@ OneStep0_Ltl ==
 OneStep1_Ltl ==  
   (\A i \in Proc : pc[i] = "V1") => <>(\A i \in Proc : pc[i] # "U0" /\ pc[i] # "U1" /\ pc[i] # "D0")
   
-         
+OneStep0 == \A i \in Proc : pc[i] # "U0" /\ pc[i] # "U1"
 
 =============================================================================
