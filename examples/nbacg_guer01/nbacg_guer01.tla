@@ -179,4 +179,6 @@ CommitValidityLtl ==
 TerminationLtl ==
   ([](\A i \in Proc : pc[i] # "BYZ" /\ someFail[i] = FALSE)) => <>(\A i \in Proc : pc[i] = "COMMIT" \/ pc[i] = "ABORT")      
 
+Agrr == (~(\E i \in Proc, j \in Proc :  pc[i] = "COMMIT" /\ pc[j] = "ABORT"))
+
 =============================================================================
