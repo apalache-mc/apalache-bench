@@ -127,7 +127,7 @@ UnforgLtl == (\A i \in Corr: pc[i] = "V0") => [](\A i \in Corr: pc[i] /= "AC")
 (* The special case of the unforgeability property. When our algorithms start with InitNoBcast,
    we can rewrite UnforgLtl as a first-order formula.     
  *)          
-Unforg == (\A i \in Proc: i \in Corr => (pc[i] /= "AC")) 
+Unforg == (\A i \in Corr: (pc[i] /= "AC"))
             
 IndInv_Unforg_NoBcast ==  
   /\ TypeOK

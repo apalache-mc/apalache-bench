@@ -35,7 +35,6 @@ lazy val testAba = Seq( // not related to a certain Swedish band
   Spec("aba_asyn_byz_sets", "MC13.tla", length = 11, init = "Init", inv = Some("NoDecide")),
   Spec("aba_asyn_byz_sets", "MC16.tla", length = 13, init = "Init", inv = Some("NoDecide")),
   Spec("aba_asyn_byz_sets", "MC19.tla", length = 15, init = "Init", inv = Some("NoDecide")),
-   */
   Spec("aba_asyn_byz_fns", "MC4.tla", length = 5, init = "Init0", inv = Some("NoDecide")),
   Spec("aba_asyn_byz_fns", "MC7.tla", length = 7, init = "Init0", inv = Some("NoDecide")),
   Spec("aba_asyn_byz_fns", "MC10.tla", length = 9, init = "Init0", inv = Some("NoDecide")),
@@ -48,6 +47,36 @@ lazy val testAba = Seq( // not related to a certain Swedish band
   Spec("aba_asyn_byz_fns", "MC13.tla", length = 11, init = "Init", inv = Some("NoDecide")),
   Spec("aba_asyn_byz_fns", "MC16.tla", length = 13, init = "Init", inv = Some("NoDecide")),
   Spec("aba_asyn_byz_fns", "MC19.tla", length = 15, init = "Init", inv = Some("NoDecide")),
+   */
+  Spec("aba_asyn_byz_counters", "MC4.tla", length = 5, init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC7.tla", length = 7, init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC10.tla", length = 9, init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC13.tla", length = 11, init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC16.tla", length = 13, init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC19.tla", length = 15, init = "Init0", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC4.tla", length = 5, init = "Init", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC7.tla", length = 7, init = "Init", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC10.tla", length = 9, init = "Init", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC13.tla", length = 11, init = "Init", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC16.tla", length = 13, init = "Init", inv = Some("NoDecide")),
+  Spec("aba_asyn_byz_counters", "MC19.tla", length = 15, init = "Init", inv = Some("NoDecide")),
+)
+
+lazy val testOther = Seq(
+  // length is 2T+3, with N > 3T; N is the number on the MC files
+  // inv holds for Init0 and does not hold for Init
+  Spec("bcastByz", "MC4.tla", length = 5, init = "InitNoBcast", inv = Some("Unforg")),
+  Spec("bcastByz", "MC7.tla", length = 7, init = "InitNoBcast", inv = Some("Unforg")),
+  Spec("bcastByz", "MC10.tla", length = 9, init = "InitNoBcast", inv = Some("Unforg")),
+  Spec("bcastByz", "MC13.tla", length = 11, init = "InitNoBcast", inv = Some("Unforg")),
+  Spec("bcastByz", "MC16.tla", length = 13, init = "InitNoBcast", inv = Some("Unforg")),
+  Spec("bcastByz", "MC19.tla", length = 15, init = "InitNoBcast", inv = Some("Unforg")),
+  Spec("bcastByz", "MC4.tla", length = 5, init = "Init", inv = Some("Unforg")),
+  Spec("bcastByz", "MC7.tla", length = 7, init = "Init", inv = Some("Unforg")),
+  Spec("bcastByz", "MC10.tla", length = 9, init = "Init", inv = Some("Unforg")),
+  Spec("bcastByz", "MC13.tla", length = 11, init = "Init", inv = Some("Unforg")),
+  Spec("bcastByz", "MC16.tla", length = 13, init = "Init", inv = Some("Unforg")),
+  Spec("bcastByz", "MC19.tla", length = 15, init = "Init", inv = Some("Unforg")),
 )
 
 lazy val testTendermint = Seq(
