@@ -4,7 +4,7 @@ enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
   suiteGen("005examples-apalache", testAba, cmdParsDefault),
-  //suiteGen("005examples-apalache", testTendermint, cmdParsDefault),
+  suiteGen("005examples-apalache-other", testOther, cmdParsDefault),
 )
 
 lazy val testAba = Seq( // not related to a certain Swedish band
@@ -64,7 +64,6 @@ lazy val testAba = Seq( // not related to a certain Swedish band
 
 lazy val testOther = Seq(
   // length is 2T+3, with N > 3T; N is the number on the MC files
-  // inv holds for Init0 and does not hold for Init
   Spec("bcastByz", "MC4.tla", length = 5, init = "InitNoBcast", inv = Some("Unforg")),
   Spec("bcastByz", "MC7.tla", length = 7, init = "InitNoBcast", inv = Some("Unforg")),
   Spec("bcastByz", "MC10.tla", length = 9, init = "InitNoBcast", inv = Some("Unforg")),
@@ -77,6 +76,18 @@ lazy val testOther = Seq(
   Spec("bcastByz", "MC13.tla", length = 11, init = "Init", inv = Some("Unforg")),
   Spec("bcastByz", "MC16.tla", length = 13, init = "Init", inv = Some("Unforg")),
   Spec("bcastByz", "MC19.tla", length = 15, init = "Init", inv = Some("Unforg")),
+  Spec("bosco", "MC4.tla", length = 5, init = "Init0", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC7.tla", length = 7, init = "Init0", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC10.tla", length = 9, init = "Init0", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC13.tla", length = 11, init = "Init0", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC16.tla", length = 13, init = "Init0", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC19.tla", length = 15, init = "Init0", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC4.tla", length = 5, init = "Init", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC7.tla", length = 7, init = "Init", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC10.tla", length = 9, init = "Init", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC13.tla", length = 11, init = "Init", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC16.tla", length = 13, init = "Init", inv = Some("OneStep0Mod")),
+  Spec("bosco", "MC19.tla", length = 15, init = "Init", inv = Some("OneStep0Mod")),
 )
 
 lazy val testTendermint = Seq(
