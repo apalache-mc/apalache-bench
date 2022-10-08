@@ -1,16 +1,21 @@
 ------------------------- MODULE nbacg_guer01_vars ---------------------------------
 
-VARIABLE
-  \* @typeAlias: msgCtr = Int -> Int;
+VARIABLES
+  \* @type: Int;
+  nSntNo,
+  \* @type: Int;
+  nSntYes,
+  \* @type: Int;
+  nSntNoF,
+  \* @type: Int;
+  nSntYesF,
+  \* @type: Int -> Int;
+  nRcvdYes,
+  \* @type: Int -> Int;
+  nRcvdNo,
+  \* @type: Int -> Bool;
+  someFail,
   \* @type: Int -> Str;
-  pc,
-  \* @type: $msgCtr;
-  rcvd0,
-  \* @type: $msgCtr;
-  rcvd1,
-  \* @type: Int;
-  sent0,
-  \* @type: Int;
-  sent1
+  pc
 
 ===============================================================================

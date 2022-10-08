@@ -1,16 +1,21 @@
 ------------------------- MODULE cf1s_folklore_vars ---------------------------------
 
-VARIABLE
-  \* @typeAlias: msgCtr = Int -> Int;
+VARIABLES
+  \* @type: Int;
+  nSnt0,
+  \* @type: Int;
+  nSnt1,
+  \* @type: Int;
+  nSnt0F,
+  \* @type: Int;
+  nSnt1F,
+  \* @type: Int;
+  nFaulty,
   \* @type: Int -> Str;
   pc,
-  \* @type: $msgCtr;
-  rcvd0,
-  \* @type: $msgCtr;
-  rcvd1,
-  \* @type: Int;
-  sent0,
-  \* @type: Int;
-  sent1
+  \* @type: Int -> Int;
+  nRcvd0,
+  \* @type: Int -> Int;
+  nRcvd1
 
 ===============================================================================
