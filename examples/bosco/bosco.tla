@@ -25,11 +25,6 @@ CONSTANTS
     \* @type: Int;
     F
 
-CInit ==
-  /\ N = 4
-  /\ T = 1
-  /\ F = 1
-
 \* The set of correct processes
 Corr == 1..(N - F)
 
@@ -159,15 +154,7 @@ Init ==
   /\ sent1 = 0
   /\ rcvd0 = [ i \in Corr |-> 0 ]
   /\ rcvd1 = [ i \in Corr |-> 0 ]
-
- (* Initial step *)
-Init0 ==
-   /\ pc \in [ Corr -> {"V0"} ]
-   /\ sent0 = 0
-   /\ sent1 = 0
-   /\ rcvd0 = [ i \in Corr |-> 0 ]
-   /\ rcvd1 = [ i \in Corr |-> 0 ]
-
+ 
 Next == 
   \E self \in Corr: Step(self)
 
@@ -199,10 +186,5 @@ OneStep1 ==
             /\ pc[i] /= "D0"
             /\ pc[i] /= "U0"
             /\ pc[i] /= "U1")
-
-OneStep0Mod == \A i \in Corr:
-                    /\ pc[i] /= "D1"
-                    /\ pc[i] /= "U0"
-                    /\ pc[i] /= "U1"
 
 =============================================================================

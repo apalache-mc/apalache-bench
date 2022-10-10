@@ -5,9 +5,7 @@
  
    [1] Guerraoui, Rachid. "On the hardness of failure-sensitive agreement problems." Information 
    Processing Letters 79.2 (2001): 99-104.
- 
-   Jure Kukovec, 2022
- 
+  
    This file is a subject to the license that is bundled together with this package and can 
    be found in the file LICENSE.
  *)

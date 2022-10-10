@@ -79,8 +79,7 @@ UponAcceptNotSentBefore(self) ==
   /\ pc[self] \in { "V0", "V1" }
   /\ \E newRcvd \in Int:
     /\ rcvd' = [rcvd EXCEPT ![self] = newRcvd]
-    /\ newRcvd >= N - 2*T
-    /\ newRcvd <= N 
+    /\ newRcvd >= N - T
   /\ pc' = [ pc EXCEPT ![self] = "AC" ]
   /\ sent' = sent + 1
         
@@ -89,7 +88,6 @@ UponAcceptSentBefore(self) ==
   /\ \E newRcvd \in Int:
     /\ rcvd' = [rcvd EXCEPT ![self] = newRcvd]
     /\ newRcvd >= N - T
-    /\ newRcvd <= N 
   /\ pc' = [pc EXCEPT ![self] = "AC"]
   /\ UNCHANGED sent
 

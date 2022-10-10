@@ -6,8 +6,6 @@
    
    [1] Dobre, Dan, and Neeraj Suri. "One-step consensus with zero-degradation." Dependable Systems and 
    Networks, 2006. DSN 2006. International Conference on. IEEE, 2006.
-                                                               
-   Jure Kukovec, 2022
   
    This file is a subject to the license that is bundled together with this package and can be found 
    in the file LICENSE.
@@ -156,7 +154,8 @@ TypeOK ==
   
  (* If all processes propose 0, then every process crashes or decides 0. *) 
 OneStep0_Ltl ==
-  (\A i \in Proc : pc[i] = "V0") => [](\A i \in Proc : pc[i] # "U0" /\ pc[i] # "U1" /\ pc[i] # "D1")
+  (\A i \in Proc : pc[i] = "V0") => 
+  [](\A i \in Proc : pc[i] # "U0" /\ pc[i] # "U1" /\ pc[i] # "D1")
 
 (* If all processes propose 1, then every process crashes or decides 1. *)
 OneStep1_Ltl ==  
