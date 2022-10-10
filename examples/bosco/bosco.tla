@@ -25,6 +25,11 @@ CONSTANTS
     \* @type: Int;
     F
 
+CInit ==
+  /\ N = 4
+  /\ T = 1
+  /\ F = 1
+
 \* The set of correct processes
 Corr == 1..(N - F)
 
@@ -82,7 +87,7 @@ UponOneStep0(self) ==
     /\ r0 <= N
     /\ r0 + rcvd1[self] >= N - T \* rcvd1' = rcvd1
     /\ r0 >= moreNplus3Tdiv2
-  /\ UNCHANGED rcvd1
+  /\ rcvd1' = rcvd1
   /\ pc' = [pc EXCEPT ![self] = "D0"]
   /\ UNCHANGED sent
                       
@@ -93,7 +98,7 @@ UponOneStep1(self) ==
     /\ r1 <= N
     /\ r1 + rcvd0[self] >= N - T \* rcvd0' = rcvd0
     /\ r1 >= moreNplus3Tdiv2
-  /\ UNCHANGED rcvd0
+  /\ rcvd0' = rcvd0
   /\ pc' = [pc EXCEPT ![self] = "D1"]
   /\ UNCHANGED sent
                   
