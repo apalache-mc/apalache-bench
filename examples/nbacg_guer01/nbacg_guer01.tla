@@ -81,7 +81,7 @@ Crash(i) ==
   /\ pc[i] # "BYZ"                      
   /\ pc' = [ pc EXCEPT ![i] = "BYZ" ]
   /\ nSntYesF' = nSntYesF + IF pc[i] = "YES" THEN 1 ELSE 0
-  /\ nSntNoF' = nSntNoF + IF pc[i] = "No" THEN 1 ELSE 0
+  /\ nSntNoF' = nSntNoF + IF pc[i] = "NO" THEN 1 ELSE 0
   /\ UNCHANGED << nSntNo, nSntYes, nRcvdNo, nRcvdYes, someFail >>
 
 (* A process starts receiving messages after sending its vote. If a process crashed or decides, 
