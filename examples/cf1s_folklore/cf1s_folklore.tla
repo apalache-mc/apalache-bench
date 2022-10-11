@@ -82,15 +82,16 @@ Propose(i) ==
      /\ UNCHANGED << nSnt0, nSnt0F, nSnt1F, nFaulty, nRcvd0, nRcvd1 >>
      
 Receive(i) ==
-  \/ /\ nRcvd0[i] < nSnt0 + nSnt0F
-     /\ nRcvd0' = [ nRcvd0 EXCEPT ![i] = nRcvd0[i] + 1 ]
+  \/ /\ \E k \in Int:
+      /\ nRcvd0[i] < k
+      /\ k <= nSnt0 + nSnt0F
+      /\ nRcvd0' = [ nRcvd0 EXCEPT ![i] = k ]
      /\ UNCHANGED << nSnt0, nSnt1, nSnt0F, nFaulty, pc, nSnt1F, nRcvd1 >>     
-  \/ /\ nRcvd1[i] < nSnt1 + nSnt1F
-     /\ nRcvd1' = [ nRcvd1 EXCEPT ![i] = nRcvd1[i] + 1 ]
+  \/ /\ \E k \in Int:
+      /\ nRcvd1[i] < k
+      /\ k <= nSnt1 + nSnt1F
+      /\ nRcvd1' = [ nRcvd1 EXCEPT ![i] = k ]
      /\ UNCHANGED << nSnt0, nSnt1, nSnt0F, nFaulty, pc, nSnt1F, nRcvd0 >>    
-  \/ /\ nRcvd0[i] = nSnt0
-     /\ nRcvd1[i] = nSnt1
-     /\ UNCHANGED vars 
      
 Decide(i) ==
   /\ \/ pc[i] = "S0"
@@ -102,12 +103,8 @@ Decide(i) ==
         /\ pc' = [ pc EXCEPT ![i] = "D1" ]
      \/ /\ nRcvd0[i] < N - T
         /\ nRcvd1[i] < N - T
-        /\ pc[i] = "S0"
-        /\ pc' = [ pc EXCEPT ![i] = "U0" ]
-     \/ /\ nRcvd0[i] < N - T
-        /\ nRcvd1[i] < N - T
-        /\ pc[i] = "S1"
-        /\ pc' = [ pc EXCEPT ![i] = "U1" ]
+        /\ pc[i] \in {"S0", "S1"}
+        /\ pc' = [ pc EXCEPT ![i] = IF pc[i] = "S0" THEN "U0" ELSE "U1" ]
   /\ UNCHANGED << nSnt0, nSnt1, nSnt0F, nSnt1F, nFaulty, nRcvd0, nRcvd1 >>
 
 Next ==
