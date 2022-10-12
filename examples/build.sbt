@@ -89,35 +89,35 @@ lazy val testOther = Seq(
   Spec("bosco", "MC13.tla", length = 11, init = "Init", inv = Some("OneStep0Mod")),
   Spec("bosco", "MC16.tla", length = 13, init = "Init", inv = Some("OneStep0Mod")),
   Spec("bosco", "MC19.tla", length = 15, init = "Init", inv = Some("OneStep0Mod")),
-
+   */
   // folklore is N+2
-  Spec("cf1s_folklore", "MC4.tla", length = 5, init = "Init0", inv = Some("OneStep0")),
-  Spec("cf1s_folklore", "MC7.tla", length = 7, init = "Init0", inv = Some("OneStep0")),
-  Spec("cf1s_folklore", "MC10.tla", length = 9, init = "Init0", inv = Some("OneStep0")),
-  Spec("cf1s_folklore", "MC13.tla", length = 11, init = "Init0", inv = Some("OneStep0")),
-  Spec("cf1s_folklore", "MC16.tla", length = 13, init = "Init0", inv = Some("OneStep0")),
-  Spec("cf1s_folklore", "MC19.tla", length = 15, init = "Init0", inv = Some("OneStep0")),
-   */
-  Spec("cf1s_folklore", "MC4.tla", length = 6, init = "Init", inv = Some("OneStep0")),
-  Spec("cf1s_folklore", "MC7.tla", length = 8, init = "Init", inv = Some("OneStep0")),
-  Spec("cf1s_folklore", "MC10.tla", length = 10, init = "Init", inv = Some("OneStep0")),
-  //Spec("cf1s_folklore", "MC13.tla", length = 12, init = "Init", inv = Some("OneStep0")),
-  //Spec("cf1s_folklore", "MC16.tla", length = 14, init = "Init", inv = Some("OneStep0")),
-  //Spec("cf1s_folklore", "MC19.tla", length = 16, init = "Init", inv = Some("OneStep0")),
+  Spec("cf1s_folklore", "MC4.tla", length = 6, init = "Init0", inv = Some("OneStep0")),
+  Spec("cf1s_folklore", "MC7.tla", length = 8, init = "Init0", inv = Some("OneStep0")),
+  Spec("cf1s_folklore", "MC10.tla", length = 10, init = "Init0", inv = Some("OneStep0")),
+  Spec("cf1s_folklore", "MC13.tla", length = 12, init = "Init0", inv = Some("OneStep0")),
+  Spec("cf1s_folklore", "MC16.tla", length = 14, init = "Init0", inv = Some("OneStep0")),
+  Spec("cf1s_folklore", "MC19.tla", length = 16, init = "Init0", inv = Some("OneStep0")),
   /*
-  Spec("nbacg_guer01", "MC4.tla", length = 5, init = "InitYes", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC7.tla", length = 7, init = "InitYes", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC10.tla", length = 9, init = "InitYes", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC13.tla", length = 11, init = "InitYes", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC16.tla", length = 13, init = "InitYes", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC19.tla", length = 15, init = "InitYes", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC4.tla", length = 5, init = "Init", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC7.tla", length = 7, init = "Init", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC10.tla", length = 9, init = "Init", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC13.tla", length = 11, init = "Init", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC16.tla", length = 13, init = "Init", inv = Some("Agrr")),
-  Spec("nbacg_guer01", "MC19.tla", length = 15, init = "Init", inv = Some("Agrr")),
-   */
+    Spec("cf1s_folklore", "MC4.tla", length = 6, init = "Init", inv = Some("OneStep0")),
+    Spec("cf1s_folklore", "MC7.tla", length = 8, init = "Init", inv = Some("OneStep0")),
+    Spec("cf1s_folklore", "MC10.tla", length = 10, init = "Init", inv = Some("OneStep0")),
+    Spec("cf1s_folklore", "MC13.tla", length = 12, init = "Init", inv = Some("OneStep0")),
+    Spec("cf1s_folklore", "MC16.tla", length = 14, init = "Init", inv = Some("OneStep0")),
+    Spec("cf1s_folklore", "MC19.tla", length = 16, init = "Init", inv = Some("OneStep0")),
+
+    Spec("nbacg_guer01", "MC4.tla", length = 5, init = "InitYes", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC7.tla", length = 7, init = "InitYes", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC10.tla", length = 9, init = "InitYes", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC13.tla", length = 11, init = "InitYes", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC16.tla", length = 13, init = "InitYes", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC19.tla", length = 15, init = "InitYes", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC4.tla", length = 5, init = "Init", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC7.tla", length = 7, init = "Init", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC10.tla", length = 9, init = "Init", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC13.tla", length = 11, init = "Init", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC16.tla", length = 13, init = "Init", inv = Some("Agrr")),
+    Spec("nbacg_guer01", "MC19.tla", length = 15, init = "Init", inv = Some("Agrr")),
+     */
 )
 
 lazy val testTendermint = Seq(
