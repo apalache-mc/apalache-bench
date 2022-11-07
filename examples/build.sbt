@@ -17,7 +17,7 @@ lazy val examplesSpecs = Seq(
   Spec("2PCwithBTM", "MC10_TRUE_TRUE.tla", inv = Some("Consistency")),
   Spec("aba_asyn_byz", "MC4.tla"),
   Spec("aba_asyn_byz", "MC10.tla"),
-  Spec("aba_asyn_byz", "MC20.tla"),
+  Spec("aba_asyn_byz", "MC19.tla"),
   Spec("bakery", "MC3.tla", inv = Some("MutualExclusion")),
   Spec("bakery", "MC5.tla", inv = Some("MutualExclusion")),
   Spec("bakery", "MC10.tla", inv = Some("MutualExclusion")),
