@@ -2,15 +2,16 @@
 <!DOCTYPE html SYSTEM "about:legacy-compat">
 <!-- NOTE: This file is generated. Edit the build.sbt instead. -->
 <html lang="en">
-  <head>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
-    <meta content="utf-8" http-equiv="encoding"/>
-    <title>Longitudinal Results For 001indinv-apalache</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  </head>
-  <body>
-    <style>
-      body {
+        <head>
+            <meta content="text/html;charset=utf-8" http-equiv="Content-Type"/>
+            <meta content="utf-8" http-equiv="encoding"/>
+            <title>Longitudinal Results For 001indinv-apalache</title>
+                <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+            </head>
+        <body>
+            <style>
+                
+body {
   max-width: 80%;
   padding: 10px;
   margin: auto;
@@ -19,9 +20,10 @@
 .metric-header {
   text-align: center;
 }
-    </style>
-    <script type="application/json" id="report-data">
-      [
+
+            </style>
+            <script type="application/json" id="report-data">
+                [
   {
     "metric" : "cputime",
     "data" : {
@@ -41,22 +43,22 @@
       ],
       "datasets" : [
         {
-          "label" : "v0.25.7-2-gbcb75a2a",
+          "label" : "v0.30.0-7-g20b0c4fda",
           "data" : [
-            13.1683267,
-            8.6175593,
-            14.2053097,
-            8.6869347,
-            9.71813,
-            8.2823072,
-            13.6264008,
-            14.4408024,
-            6.6093435,
-            7.4726956,
-            12.1893236,
-            14.8415081
+            0.7147758,
+            0.6949565,
+            0.6919472,
+            0.6853263,
+            0.714347,
+            0.6976943,
+            0.7015047,
+            0.7189257,
+            0.7059463,
+            0.7139566,
+            0.7148001,
+            0.7051934
           ],
-          "borderColor" : "#acd45a",
+          "borderColor" : "#4ebb19",
           "tension" : 0.1
         }
       ]
@@ -81,22 +83,22 @@
       ],
       "datasets" : [
         {
-          "label" : "v0.25.7-2-gbcb75a2a",
+          "label" : "v0.30.0-7-g20b0c4fda",
           "data" : [
-            7.375373551999985,
-            4.934882027000015,
-            8.492815208000025,
-            5.0483202880000135,
-            5.582693827000014,
-            4.945749539000019,
-            8.76749160700001,
-            8.997590848000016,
-            3.961263616999986,
-            4.450768917000005,
-            6.832656021999981,
-            8.444703688999994
+            0.7334665859999632,
+            0.6930684690000248,
+            0.6448044640000035,
+            0.6217238579999957,
+            0.683418276999987,
+            0.5984717490000548,
+            0.680145863000007,
+            0.7060850340000115,
+            0.688956851999933,
+            0.717202297999961,
+            0.7244044210000311,
+            0.7141094849999945
           ],
-          "borderColor" : "#acd45a",
+          "borderColor" : "#4ebb19",
           "tension" : 0.1
         }
       ]
@@ -121,50 +123,49 @@
       ],
       "datasets" : [
         {
-          "label" : "v0.25.7-2-gbcb75a2a",
+          "label" : "v0.30.0-7-g20b0c4fda",
           "data" : [
-            367.77984,
-            301.678592,
-            482.377728,
-            322.433024,
-            341.655552,
-            311.369728,
-            555.286528,
-            548.63872,
-            284.803072,
-            285.106176,
-            434.290688,
-            612.818944
+            53.280768,
+            52.846592,
+            54.964224,
+            52.666368,
+            53.153792,
+            53.039104,
+            53.116928,
+            53.325824,
+            53.141504,
+            53.297152,
+            53.32992,
+            53.080064
           ],
-          "borderColor" : "#acd45a",
+          "borderColor" : "#4ebb19",
           "tension" : 0.1
         }
       ]
     }
   }
 ]
-    </script>
-    <h1>Longitudinal Results For 001indinv-apalache</h1>
-    <div class="chart-section">
-      <h2 class="metric-header">cputime</h2>
-      <div id="cputime-div" class="chart-container">
-        <canvas id="cputime-canvas"></canvas>
-      </div>
+            </script>
+            <h1>Longitudinal Results For 001indinv-apalache</h1>
+            <div class="chart-section">
+        <h2 class="metric-header">cputime</h2>
+        <div id="cputime-div" class="chart-container">
+            <canvas id="cputime-canvas"></canvas>
+        </div>
+    </div><div class="chart-section">
+        <h2 class="metric-header">walltime</h2>
+        <div id="walltime-div" class="chart-container">
+            <canvas id="walltime-canvas"></canvas>
+        </div>
+    </div><div class="chart-section">
+        <h2 class="metric-header">memory</h2>
+        <div id="memory-div" class="chart-container">
+            <canvas id="memory-canvas"></canvas>
+        </div>
     </div>
-    <div class="chart-section">
-      <h2 class="metric-header">walltime</h2>
-      <div id="walltime-div" class="chart-container">
-        <canvas id="walltime-canvas"></canvas>
-      </div>
-    </div>
-    <div class="chart-section">
-      <h2 class="metric-header">memory</h2>
-      <div id="memory-div" class="chart-container">
-        <canvas id="memory-canvas"></canvas>
-      </div>
-    </div>
-    <script>
-      const reportData = JSON.parse(document.getElementById("report-data").innerHTML)
+            <script>
+                
+const reportData = JSON.parse(document.getElementById("report-data").innerHTML)
 for (const data of reportData) {
     const ctx = document.getElementById(data.metric + '-canvas').getContext('2d');
     new Chart(ctx, {
@@ -184,6 +185,7 @@ for (const data of reportData) {
         }
     )
 };
-    </script>
-  </body>
-</html>
+
+            </script>
+        </body>
+      </html>
