@@ -4,6 +4,7 @@ enablePlugins(BenchExec)
 
 benchmarks ++= Seq(
   suiteGen("004endive-apalache", endiveSpecs, cmdParsDefault),
+  //suiteGen("004endive-apalache", twoPhase_Str_Int_test, cmdParsDefault),
 )
 
 lazy val endiveSpecs = Seq(
@@ -37,8 +38,8 @@ lazy val endiveSpecs = Seq(
   Spec("endive-specs", "MC10_naive_consensus.tla", inv =  Some("Safety")),
   Spec("endive-specs", "MC3_quorum_leader_election.tla", inv =  Some("Inv")),
   Spec("endive-specs", "MC10_quorum_leader_election.tla", inv =  Some("Inv")),
-  //Spec("endive-specs", "MC15_quorum_leader_election.tla", inv = Some("Inv")), // increased size to check scalability
-  //Spec("endive-specs", "MC20_quorum_leader_election.tla", inv = Some("Inv")), // increased size to check scalability
+  //Spec("endive-specs", "MC15_quorum_leader_election.tla", inv = Some("Inv")), // to check scalability, leads to TO
+  //Spec("endive-specs", "MC20_quorum_leader_election.tla", inv = Some("Inv")), // to check scalability, leads to TO
   Spec("endive-specs", "MC3_sharded_kv.tla", inv =  Some("Safety")),
   Spec("endive-specs", "MC10_sharded_kv.tla", inv =  Some("Safety")),
   Spec("endive-specs", "MC3_sharded_kv_no_lost_keys.tla", inv =  Some("Safety")),
@@ -57,7 +58,8 @@ lazy val endiveSpecs = Seq(
   Spec("endive-specs", "MC10_MongoLoglessDynamicRaft.tla", inv =  Some("Safety")),
 )
 
-lazy val twoPhase_Str_Int_test = Seq( // to evaluate the effect of using Str vs. Int
+// Specs to evaluate the effect of using Str vs. Int
+lazy val twoPhase_Str_Int_test = Seq(
   Spec("test", "MC10_TwoPhaseStr.tla", inv =  Some("TCConsistent")),
   Spec("test", "MC10_TwoPhaseInt.tla", inv =  Some("TCConsistent")),
 )

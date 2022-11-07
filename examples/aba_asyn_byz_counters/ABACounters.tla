@@ -113,7 +113,7 @@ Decide(p, nextReady) ==
     /\ UNCHANGED <<sentEcho, sentReady>>
 
 Next ==
-    \E p \in Corr, nextEcho, nextReady \in Int:
+    \E p \in Corr, nextEcho, nextReady \in Int: \* If running on TLC, change Int to 0..N
         /\ 0 <= nextEcho
         /\ 0 <= nextReady
         /\ nextEcho <= sentEcho

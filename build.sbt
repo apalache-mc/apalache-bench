@@ -14,7 +14,6 @@ lazy val performance = (project in file("performance"))
 lazy val parametric = (project in file("parametric"))
 lazy val endive = (project in file("endive"))
 lazy val examples = (project in file("examples"))
-lazy val examples2 = (project in file("examples2"))
 
 lazy val root = (project in file("."))
   .enablePlugins(Apalache)
