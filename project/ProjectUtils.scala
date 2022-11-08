@@ -10,8 +10,9 @@ object ProjectUtils {
     length: Int = 10,
     init: String = "Init",
     next: String = "Next",
-    cInit: Option[String] = None,
-    inv: String = "")
+    cInit: Option[String] = None, // cinit cannot be an empty string
+    inv: Option[String] = None, // inv cannot be an empty string
+    features: Option[String] = Some("no-rows")) // optional features, no-rows are needed until the specs are updated
 
   /** Abstracts over the parameters that vary between the various fine tuning commands */
   case class CmdPar(
@@ -38,7 +39,7 @@ object ProjectUtils {
       val filePath = s"${spec.folder}/${spec.file}"
 
       Bench.Runs(
-        s"run-${spec.folder}-${spec.file}",
+        s"run-${spec.folder}-${spec.file}-${spec.init}-${spec.next}-${spec.inv}",
         timelimit = "1h", // Time units are "s", "min", and "h"
         cmds = cmdGens.flatMap(cmdsForCmdGen),
         tasks = Seq(Tasks(s"task-${spec.file}", Seq(filePath))),
@@ -57,11 +58,10 @@ object ProjectUtils {
       Opt("--length", spec.length),
       Opt("--init", spec.init),
       Opt("--next", spec.next),
-      Opt("--inv", spec.inv),
       Opt("--smt-encoding", cmdPar.encoding),
       Opt("--tuning-options", s"search.invariant.mode=${cmdPar.searchInvMode}"),
       Opt("--discard-disabled", cmdPar.discardDisabled),
-    ) ++ spec.cInit.map(Opt("--cInit", _)).toSeq // cInit cannot be an empty string
+    ) ++ spec.cInit.map(Opt("--cinit", _)).toSeq ++ spec.inv.map(Opt("--inv", _)).toSeq ++ spec.features.map(Opt("--features", _)).toSeq
 
     Cmd(
       s"$Cmd-${cmdPar.encoding}-${cmdPar.discardDisabled}-${cmdPar.searchInvMode}",
@@ -71,6 +71,7 @@ object ProjectUtils {
 
   val cmdParsDefault: Seq[CmdPar] = Seq(
     CmdPar("arrays", "before", "true"),
+    CmdPar("funArrays", "before", "true"),
     CmdPar("oopsla19", "before", "true"),
   )
 
