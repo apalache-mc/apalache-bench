@@ -1,0 +1,21 @@
+tool		Apalache v0.30.1-27-g0795560e3	Apalache v0.30.1-27-g0795560e3	Apalache v0.30.1-27-g0795560e3	Apalache v0.30.1-27-g0795560e3
+run set		[length-30.APAEWD840; APAPrisoners.APAPrisoners; APASimpleAllocator.APASimpleAllocator; ConstInit3.APATwoPhase; ConstInit7.APATwoPhase; ConstInit6.APAbcastByz; ConstInit20.APAbcastFolklore; ConstInit4.APAbcastFolklore; APAraft.APAraft; APATraffic.APATraffic; Apa3Paxos.Apa3Paxos; Apa5Paxos.Apa5Paxos; MutualExlusion-invariant.Bakery; ewd998-atd.ewd998-atd; ewd998.ewd998]	[length-30.APAEWD840; APAPrisoners.APAPrisoners; APASimpleAllocator.APASimpleAllocator; ConstInit3.APATwoPhase; ConstInit7.APATwoPhase; ConstInit6.APAbcastByz; ConstInit20.APAbcastFolklore; ConstInit4.APAbcastFolklore; APAraft.APAraft; APATraffic.APATraffic; Apa3Paxos.Apa3Paxos; Apa5Paxos.Apa5Paxos; MutualExlusion-invariant.Bakery; ewd998-atd.ewd998-atd; ewd998.ewd998]	[length-30.APAEWD840; APAPrisoners.APAPrisoners; APASimpleAllocator.APASimpleAllocator; ConstInit3.APATwoPhase; ConstInit7.APATwoPhase; ConstInit6.APAbcastByz; ConstInit20.APAbcastFolklore; ConstInit4.APAbcastFolklore; APAraft.APAraft; APATraffic.APATraffic; Apa3Paxos.Apa3Paxos; Apa5Paxos.Apa5Paxos; MutualExlusion-invariant.Bakery; ewd998-atd.ewd998-atd; ewd998.ewd998]	[length-30.APAEWD840; APAPrisoners.APAPrisoners; APASimpleAllocator.APASimpleAllocator; ConstInit3.APATwoPhase; ConstInit7.APATwoPhase; ConstInit6.APAbcastByz; ConstInit20.APAbcastFolklore; ConstInit4.APAbcastFolklore; APAraft.APAraft; APATraffic.APATraffic; Apa3Paxos.Apa3Paxos; Apa5Paxos.Apa5Paxos; MutualExlusion-invariant.Bakery; ewd998-atd.ewd998-atd; ewd998.ewd998]
+/home/runner/work/apalache-bench/apalache-bench/performance/target/scala-2.13/resource_managed/main/		status	cputime (s)	walltime (s)	memory (MB)
+002bmc-apalache-001-APAEWD840-APAEWD840.yml	-0	ERROR (1)	0.7182298	0.6929810649999695	55.250944
+002bmc-apalache-001-APAEWD840-APAEWD840.yml	-1	ERROR (1)	0.7017626	0.6480382350000014	53.477376
+002bmc-apalache-001-APAPrisoners-APAPrisoners.yml	-2	ERROR (1)	0.7228133	0.7336428259999934	53.424128
+002bmc-apalache-001-APASimpleAllocator-APASimpleAllocator.yml	-3	ERROR (1)	0.7174397	0.7193683190000115	55.291904
+002bmc-apalache-001-APASimpleAllocator-APASimpleAllocator.yml	-4	ERROR (1)	0.714434	0.697536963999994	53.297152
+002bmc-apalache-001-APATwoPhase-APATwoPhase.yml	-5	ERROR (1)	0.7185696	0.6992427860000134	53.420032
+002bmc-apalache-001-APATwoPhase-APATwoPhase.yml	-6	ERROR (1)	0.7239854	0.7243005899999844	53.415936
+002bmc-apalache-001-APAbcastByz-APAbcastByz.yml	-7	ERROR (1)	0.7044036	0.6406098369999995	53.149696
+002bmc-apalache-001-APAbcastByz-APAbcastByz.yml	-8	ERROR (1)	0.7118886	0.6619711829999915	54.677504
+002bmc-apalache-001-APAbcastFolklore-APAbcastFolklore.yml	-9	ERROR (1)	0.7187323	0.7262068320000026	53.485568
+002bmc-apalache-001-APAbcastFolklore-APAbcastFolklore.yml	-10	ERROR (1)	0.7131561	0.6322079999999914	53.141504
+002bmc-apalache-001-APAraft-APAraft.yml	-11	ERROR (1)	0.7146342	0.6877207999999655	53.391360
+002bmc-apalache-001-APAtraffic-APATraffic.yml	-12	ERROR (1)	0.7095706	0.6672638480000046	54.018048
+002bmc-apalache-001-Apa3Paxos-Apa3Paxos.yml	-13	ERROR (1)	0.7345411	0.7298187800000164	53.948416
+002bmc-apalache-001-Apa5Paxos-Apa5Paxos.yml	-14	ERROR (1)	0.721305	0.6927657809999914	53.526528
+002bmc-apalache-001-Bakery-Bakery.yml	-15	ERROR (1)	0.7320541	0.7182586769999943	53.395456
+002bmc-apalache-001-ewd998-atd-ewd998-atd.yml	-16	ERROR (1)	0.7138141	0.6925203229999966	53.223424
+002bmc-apalache-001-ewd998-ewd998.yml	-17	ERROR (1)	0.7068507	0.6633584459999611	53.788672
