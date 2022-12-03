@@ -1,0 +1,15 @@
+tool		Apalache v0.30.1-44-g0b3aa4e7e	Apalache v0.30.1-44-g0b3aa4e7e	Apalache v0.30.1-44-g0b3aa4e7e	Apalache v0.30.1-44-g0b3aa4e7e
+run set		[--init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla; --init=Init.Bakery; --init=Inv.Bakery; inductive base.ewd998; inductive step.ewd998]	[--init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla; --init=Init.Bakery; --init=Inv.Bakery; inductive base.ewd998; inductive step.ewd998]	[--init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla; --init=Init.Bakery; --init=Inv.Bakery; inductive base.ewd998; inductive step.ewd998]	[--init=InvAndTypeOK.APAEWD840; no init.APAEWD840; --init=InitInv.APATwoPhase.tla; no init.APATwoPhase.tla; --init=IndInv_Unforg_NoBcast.APAbcastByz.tla; --init=InitNoBcast.APAbcastByz.tla; --init=Init.Bakery; --init=Inv.Bakery; inductive base.ewd998; inductive step.ewd998]
+/home/runner/work/apalache-bench/apalache-bench/performance/target/scala-2.13/resource_managed/main/		status	cputime (s)	walltime (s)	memory (MB)
+001indinv-apalache-001-APAEWD840-APAEWD840.yml	-0	ERROR (1)	0.7537811	0.7739237310000817	53.465088
+001indinv-apalache-001-APAEWD840-APAEWD840.yml	-1	ERROR (1)	0.7418167	0.7512727840000935	53.379072
+001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml	-2	ERROR (1)	0.7557422	0.7527966989999868	53.559296
+001indinv-apalache-001-APATwoPhase-APATwoPhase.tla.yml	-3	ERROR (1)	0.7269052	0.7291229420000036	53.235712
+001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml	-4	ERROR (1)	0.7468642	0.7533185060000278	53.374976
+001indinv-apalache-001-APAbcastByz-APAbcastByz.tla.yml	-5	ERROR (1)	0.7393172	0.7143693809999832	54.296576
+001indinv-apalache-001-Bakery-Bakery.yml	-6	ERROR (1)	0.7322822	0.7426639899999827	53.121024
+001indinv-apalache-001-Bakery-Bakery.yml	-7	ERROR (1)	0.7374817	0.7953894629999922	53.395456
+001indinv-apalache-001-ewd998-atd-ewd998.yml	-8	ERROR (1)	0.7179702	0.6616425060000211	53.256192
+001indinv-apalache-001-ewd998-atd-ewd998.yml	-9	ERROR (1)	0.7489242	0.771841706000032	53.460992
+001indinv-apalache-001-ewd998-ewd998.yml	-10	ERROR (1)	0.7487794	0.7606136850000667	53.477376
+001indinv-apalache-001-ewd998-ewd998.yml	-11	ERROR (1)	0.7548879	0.7689517740000156	53.481472
