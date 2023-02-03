@@ -32,7 +32,7 @@ env:
 
 jobs:
   run-benchmarks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04 # BenchExec requires cgroupsv1 support, see #112
     steps:
       - uses: actions/checkout@v2
         with:
