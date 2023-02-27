@@ -33,6 +33,9 @@ env:
 jobs:
   run-benchmarks:
     runs-on: ubuntu-20.04 # BenchExec requires cgroupsv1 support, see #112
+    strategy:
+      matrix:
+        APA_HEURISTIC: ["", 0, 4, 8, 12, 16]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -60,7 +63,9 @@ jobs:
           BENCH_CONTAINER: false
           # Set to `true` to enable debug output for benchexec
           BENCH_DEBUG: true
+          APA_HEURISTIC: ${{ matrix.APA_HEURISTIC }}
         run: |
+          echo APA_HEURISTIC: $APA_HEURISTIC
           # Ensure we have the needed dirs in PATH and PYTHONPATH
           source ./.envrc
           sbt 'set apalacheVersion := "${{ env.VERSION }}"; set performance/benchmarksFilterExperiments := Set(${{ env.FILTER_EXPERIMENTS }}); benchmarksReport'
@@ -85,11 +90,12 @@ jobs:
         run: sbt site/benchmarksLongitudinalUpdate site/benchmarksIndexUpdate makeSite
       - name: Commit updated results
         # ONLY RUN IF ON TRUNK
-        if: github.ref == 'refs/heads/trunk'
+        # if: github.ref == 'refs/heads/trunk'
         run: |
           git config --global user.name 'apalache-bench-ci'
           git config --global user.email 'apalache-bench-ci@users.noreply.github.com'
           git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          git checkout -b APA_HEURISTIC/${{ matrix.APA_HEURISTIC }}
           git add -A
           git commit -m "[Bot] Adding reports from run of Apalache version ${{ env.VERSION }}"
           git push
