@@ -16,11 +16,12 @@ on:
         description: "Set checking length for encoding comparison benchmarks (defaults to 8)"
         required: false
         default: ""
-  schedule:
+  # Disable scheduled runs, since the benchmarks are broken
+  # schedule:
     # * is a special character in YAML so you have to quote this string
     # Automatically run the benchmarks on main every Saturday
     # See https://crontab.guru/#0_0_*_*_6
-    - cron: "0 0 * * 6"
+    # - cron: "0 0 * * 6"
 
 name: benchmarks
 
