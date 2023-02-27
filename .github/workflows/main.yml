@@ -63,7 +63,7 @@ jobs:
         run: |
           # Ensure we have the needed dirs in PATH and PYTHONPATH
           source ./.envrc
-          sbt 'set apalacheVersion := "${{ env.VERSION }}"; set ThisBuild/benchmarksFilterExperiments := Set(${{ env.FILTER_EXPERIMENTS }}); benchmarksReport'
+          sbt 'set apalacheVersion := "${{ env.VERSION }}"; set performance/benchmarksFilterExperiments := Set(${{ env.FILTER_EXPERIMENTS }}); benchmarksReport'
       - name: Report any errors
         # TODO
         # ONLY RUN IF ON TRUNK
