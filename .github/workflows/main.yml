@@ -69,7 +69,7 @@ jobs:
           echo APA_HEURISTIC: $APA_HEURISTIC
           # Ensure we have the needed dirs in PATH and PYTHONPATH
           source ./.envrc
-          sbt 'set apalacheVersion := "${{ env.VERSION }}"; set performance/benchmarksFilterExperiments := Set(${{ env.FILTER_EXPERIMENTS }}); benchmarksReport'
+          sbt 'set apalacheVersion := "${{ env.VERSION }}"; set benchmarksFilterExperiments := Set(${{ env.FILTER_EXPERIMENTS }}); performance/benchmarksReport'
       - name: Report any errors
         # TODO
         # ONLY RUN IF ON TRUNK
