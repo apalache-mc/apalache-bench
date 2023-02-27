@@ -99,7 +99,7 @@ jobs:
           git checkout -b APA_HEURISTIC/${{ matrix.APA_HEURISTIC }}
           git add -A
           git commit -m "[Bot] Adding reports from run of Apalache version ${{ env.VERSION }}"
-          git push
+          git push --set-upstream origin APA_HEURISTIC/0
       - name: Deploy updated site
         # ONLY RUN IF ON TRUNK
         if: github.ref == 'refs/heads/trunk'
