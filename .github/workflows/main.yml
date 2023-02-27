@@ -25,7 +25,7 @@ on:
 name: benchmarks
 
 env:
-  VERSION: ${{ github.event.inputs.release_version || '#main' }}
+  VERSION: "#jk/ptrHeuristics"
   FILTER_EXPERIMENTS: ${{ github.event.inputs.filter_experiments }}
   ENCODING_COMPARISON_MAX_LENGTH: ${{ github.event.inputs.encoding_comparison_max_length }}
   # GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
